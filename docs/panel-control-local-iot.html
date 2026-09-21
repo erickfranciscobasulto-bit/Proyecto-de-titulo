@@ -10,9 +10,10 @@
     --ink-mute:#6b7a75;
     --accent:#0f6f5c;
     --accent-ink:#ffffff;
-    --layer-fisica:#5a6663;
+    --layer-fisica:#b45309;
     --layer-control:#0f6f5c;
     --layer-seguridad:#b3261e;
+    --layer-ia:#6d28d9;
     --layer-cloud:#2851c4;
     --shadow: 0 1px 2px rgba(18,33,29,.06), 0 8px 24px -12px rgba(18,33,29,.18);
   }
@@ -27,9 +28,10 @@
       --ink-mute:#87a099;
       --accent:#3ccda6;
       --accent-ink:#06201a;
-      --layer-fisica:#a3b0ab;
+      --layer-fisica:#e2a244;
       --layer-control:#3ccda6;
       --layer-seguridad:#ff7a63;
+      --layer-ia:#b58bff;
       --layer-cloud:#7c9dff;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6);
     }
@@ -44,9 +46,10 @@
     --ink-mute:#87a099;
     --accent:#3ccda6;
     --accent-ink:#06201a;
-    --layer-fisica:#a3b0ab;
+    --layer-fisica:#e2a244;
     --layer-control:#3ccda6;
     --layer-seguridad:#ff7a63;
+    --layer-ia:#b58bff;
     --layer-cloud:#7c9dff;
     --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6);
   }
@@ -107,45 +110,18 @@
   }
   nav.jump a:hover, nav.jump a:focus-visible{ border-color:var(--accent); color:var(--accent); }
 
-  /* ---------- Architecture diagram ---------- */
-  .arch{
-    display:flex; flex-wrap:wrap; align-items:stretch; gap:0;
-    margin-bottom:14px;
-  }
-  .layer-card{
-    flex:1 1 190px;
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-top:4px solid var(--layer-color);
-    border-radius:14px;
-    padding:16px 16px 18px;
-    box-shadow:var(--shadow);
-    display:flex; flex-direction:column; gap:8px;
-  }
-  .layer-card .layer-icon{ color:var(--layer-color); }
-  .layer-card .layer-name{
-    font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--layer-color);
-  }
-  .layer-card h3{ font-size:1rem; margin:0; line-height:1.3; }
-  .layer-card ul{ margin:0; padding-left:1.05em; font-size:.86rem; color:var(--ink-2); line-height:1.5; }
-  .layer-card ul li + li{ margin-top:3px; }
-
-  .arrow-slot{
-    flex:0 0 auto; display:flex; align-items:center; justify-content:center;
-    color:var(--ink-mute); padding-inline:4px;
-  }
-  .arrow-h{ display:inline; } .arrow-v{ display:none; }
-  @media (max-width:760px){
-    .arch{ flex-direction:column; }
-    .arrow-slot{ padding-block:2px; transform:rotate(90deg); }
-  }
-
-  .arch-note{
-    font-size:.82rem; color:var(--ink-mute); margin:14px 0 40px;
-    display:flex; align-items:center; gap:8px;
-  }
-  .arch-note svg{ flex:none; color:var(--accent); }
+  /* ---------- Network-topology diagrams ---------- */
+  figure.diagram{ margin:20px 0 6px; }
+  .topo-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:14px; }
+  .topo{ display:block; width:100%; min-width:760px; height:auto; }
+  .topo .grp{ fill:none; stroke:currentColor; stroke-width:2; stroke-dasharray:7 6; opacity:.8; }
+  .topo .grp-label{ font-size:11px; font-weight:600; letter-spacing:.06em; font-family:'IBM Plex Mono', monospace; }
+  .topo .boundary-label{ font-size:10px; letter-spacing:.05em; fill:var(--ink-mute); font-family:'IBM Plex Mono', monospace; text-transform:uppercase; }
+  .topo .edges line{ stroke:var(--ink-mute); stroke-width:1.6; }
+  .topo .edge-labels rect{ fill:var(--surface); stroke:var(--border); stroke-width:1; }
+  .topo .edge-labels text{ font-size:10.5px; fill:var(--ink-2); font-family:'IBM Plex Mono', monospace; }
+  .topo .node .node-lbl{ font-size:11px; fill:var(--ink); font-family:'IBM Plex Sans', sans-serif; font-weight:500; }
+  figcaption.diagram-cap{ font-size:.8rem; color:var(--ink-mute); line-height:1.55; margin-top:10px; max-width:74ch; }
 
   /* ---------- Sections ---------- */
   section.chapter-section{
@@ -184,40 +160,6 @@
   }
   .callout strong{ color:var(--ink); }
 
-  /* ---------- X.3 pipeline ---------- */
-  .pipeline{
-    margin-top:22px; display:flex; flex-wrap:wrap; gap:10px; align-items:stretch;
-  }
-  .pipe-node{
-    flex:1 1 150px; background:var(--surface); border:1px solid var(--border);
-    border-radius:12px; padding:12px 14px; box-shadow:var(--shadow);
-  }
-  .pipe-node .node-label{ font-size:.7rem; color:var(--ink-mute); letter-spacing:.06em; text-transform:uppercase; }
-  .pipe-node .node-title{ font-weight:600; font-size:.92rem; margin-top:4px; }
-
-  /* ---------- X.5 correlation diagram ---------- */
-  .correlate{
-    margin-top:24px; display:flex; align-items:center; justify-content:center;
-    gap:0; flex-wrap:wrap;
-  }
-  .corr-box{
-    flex:1 1 220px; max-width:260px; background:var(--surface); border:1px solid var(--border);
-    border-radius:12px; padding:14px; text-align:center; box-shadow:var(--shadow);
-    font-size:.86rem;
-  }
-  .corr-box .corr-title{ font-weight:600; margin-bottom:4px; }
-  .corr-box .corr-sub{ color:var(--ink-mute); font-size:.76rem; }
-  .corr-mid{
-    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px;
-    padding:0 16px; color:var(--ink-mute); font-size:.72rem; text-align:center;
-  }
-  .corr-mid svg{ color:var(--layer-cloud); }
-  @media (max-width:600px){
-    .correlate{ flex-direction:column; }
-    .corr-mid{ padding:10px 0; }
-    .corr-mid svg{ transform:rotate(90deg); }
-  }
-
   footer.end{
     margin-top:40px; padding-top:20px; border-top:1px solid var(--border);
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
@@ -249,62 +191,91 @@
       <h2>Arquitectura por capas</h2>
     </div>
 
-    <div class="arch">
-      <div class="layer-card" style="--layer-color:var(--layer-fisica)">
-        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg>
-        <div class="layer-name">Física</div>
-        <h3>Campo</h3>
-        <ul>
-          <li>Sensores capacitivos de humedad</li>
-          <li>Nodo ESP32 + radio LoRa</li>
-          <li>Relé, contactor, electroválvula/bomba</li>
-        </ul>
+    <figure class="diagram">
+      <div class="topo-wrap">
+        <svg class="topo" viewBox="0 0 1100 700" role="img" aria-label="Topología del nodo: sensores y actuadores de campo se enlazan por LoRa al gateway Raspberry Pi, que publica por MQTT hacia el panel y hacia AWS IoT Core. El agente Wazuh y Suricata vigilan host y red, cruzan la frontera de la red local hacia el servidor Wazuh central, cuyo motor de IA notifica por Telegram o Teams y responde bloqueando IPs de vuelta hacia el gateway.">
+          <defs>
+            <pattern id="dg-main" width="16" height="16" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1.1" fill="var(--border)"/>
+            </pattern>
+            <marker id="arrow-main" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="var(--ink-mute)"/>
+            </marker>
+            <symbol id="dev-main" viewBox="-18 -18 36 36">
+              <path d="M0 -16 L16 0 L0 16 L-16 0 Z" fill="var(--surface)" stroke="currentColor" stroke-width="2"/>
+              <path d="M-7 0h14M0 -7v14" stroke="currentColor" stroke-width="1.3"/>
+            </symbol>
+          </defs>
+
+          <rect x="0" y="0" width="1100" height="700" fill="url(#dg-main)"/>
+
+          <ellipse cx="160" cy="205" rx="155" ry="140" class="grp" style="color:var(--layer-fisica)"/>
+          <ellipse cx="500" cy="205" rx="170" ry="140" class="grp" style="color:var(--layer-control)"/>
+          <ellipse cx="330" cy="505" rx="270" ry="110" class="grp" style="color:var(--layer-seguridad)"/>
+          <ellipse cx="860" cy="195" rx="125" ry="140" class="grp" style="color:var(--layer-ia)"/>
+          <ellipse cx="910" cy="495" rx="150" ry="100" class="grp" style="color:var(--layer-cloud)"/>
+
+          <text x="160" y="53" class="grp-label" text-anchor="middle" style="fill:var(--layer-fisica)">FÍSICA · CAMPO</text>
+          <text x="500" y="53" class="grp-label" text-anchor="middle" style="fill:var(--layer-control)">CONTROL · GATEWAY</text>
+          <text x="330" y="383" class="grp-label" text-anchor="middle" style="fill:var(--layer-seguridad)">SEGURIDAD · LOCAL (HOST + RED)</text>
+          <text x="860" y="43" class="grp-label" text-anchor="middle" style="fill:var(--layer-ia)">SEGURIDAD CENTRAL + IA</text>
+          <text x="910" y="383" class="grp-label" text-anchor="middle" style="fill:var(--layer-cloud)">CLOUD · AWS</text>
+
+          <line x1="700" y1="35" x2="700" y2="665" stroke="var(--layer-seguridad)" stroke-width="2" stroke-dasharray="7 6"/>
+          <text x="690" y="50" text-anchor="end" class="boundary-label">Red local del nodo</text>
+          <text x="710" y="50" text-anchor="start" class="boundary-label">Servidor central · cloud</text>
+
+          <g class="edges">
+            <line x1="100" y1="171" x2="100" y2="259" marker-end="url(#arrow-main)"/>
+            <line x1="118" y1="275" x2="432" y2="275" marker-end="url(#arrow-main)"/>
+            <line x1="437" y1="168" x2="255" y2="266" marker-end="url(#arrow-main)"/>
+            <line x1="466" y1="269" x2="584" y2="161" marker-end="url(#arrow-main)"/>
+            <line x1="592" y1="169" x2="243" y2="484" marker-end="url(#arrow-main)"/>
+            <line x1="412" y1="522" x2="248" y2="498" marker-end="url(#arrow-main)"/>
+            <line x1="246" y1="486" x2="844" y2="144" marker-end="url(#arrow-main)"/>
+            <line x1="860" y1="153" x2="860" y2="237" marker-end="url(#arrow-main)"/>
+            <line x1="875" y1="265" x2="1015" y2="355" marker-end="url(#arrow-main)"/>
+            <line x1="464" y1="167" x2="836" y2="483" marker-end="url(#arrow-main)"/>
+            <line x1="868" y1="495" x2="952" y2="495" marker-end="url(#arrow-main)"/>
+            <line x1="842" y1="136" x2="468" y2="154" stroke-dasharray="5 5" marker-end="url(#arrow-main)"/>
+          </g>
+
+          <g class="edge-labels">
+            <g transform="translate(122,215)"><rect x="-24" y="-11" width="48" height="20" rx="6"/><text text-anchor="middle" dy="4">LoRa</text></g>
+            <g transform="translate(275,259)"><rect x="-26" y="-11" width="52" height="20" rx="6"/><text text-anchor="middle" dy="4">MQTT</text></g>
+            <g transform="translate(378,206)"><rect x="-56" y="-11" width="112" height="20" rx="6"/><text text-anchor="middle" dy="4">comando riego</text></g>
+            <g transform="translate(525,201)"><rect x="-38" y="-11" width="76" height="20" rx="6"/><text text-anchor="middle" dy="4">MQTT sub</text></g>
+            <g transform="translate(378,359)"><rect x="-56" y="-11" width="112" height="20" rx="6"/><text text-anchor="middle" dy="4">bitácora / FIM</text></g>
+            <g transform="translate(352,479)"><rect x="-36" y="-11" width="72" height="20" rx="6"/><text text-anchor="middle" dy="4">eve.json</text></g>
+            <g transform="translate(660,235)"><rect x="-32" y="-11" width="64" height="20" rx="6"/><text text-anchor="middle" dy="4">alertas</text></g>
+            <g transform="translate(918,195)"><rect x="-54" y="-11" width="108" height="20" rx="6"/><text text-anchor="middle" dy="4">alta / crítica</text></g>
+            <g transform="translate(945,302)"><rect x="-64" y="-11" width="128" height="20" rx="6"/><text text-anchor="middle" dy="4">resumen + MITRE</text></g>
+            <g transform="translate(670,342)"><rect x="-58" y="-11" width="116" height="20" rx="6"/><text text-anchor="middle" dy="4">MQTT/TLS · mTLS</text></g>
+            <g transform="translate(910,473)"><rect x="-50" y="-11" width="100" height="20" rx="6"/><text text-anchor="middle" dy="4">persistencia</text></g>
+            <g transform="translate(655,120)"><rect x="-46" y="-11" width="92" height="20" rx="6"/><text text-anchor="middle" dy="4">bloqueo IP</text></g>
+          </g>
+
+          <g class="node" style="color:var(--layer-fisica)" transform="translate(100,155)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Sensores</text><text class="node-lbl" text-anchor="middle" y="45">de humedad</text></g>
+          <g class="node" style="color:var(--layer-fisica)" transform="translate(100,275)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">ESP32 +</text><text class="node-lbl" text-anchor="middle" y="45">LoRa</text></g>
+          <g class="node" style="color:var(--layer-fisica)" transform="translate(240,275)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Actuadores</text><text class="node-lbl" text-anchor="middle" y="45">(relé / válvula)</text></g>
+
+          <g class="node" style="color:var(--layer-control)" transform="translate(450,155)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Raspberry</text><text class="node-lbl" text-anchor="middle" y="45">Pi 4</text></g>
+          <g class="node" style="color:var(--layer-control)" transform="translate(450,275)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Broker</text><text class="node-lbl" text-anchor="middle" y="45">MQTT</text></g>
+          <g class="node" style="color:var(--layer-control)" transform="translate(600,155)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Panel web</text><text class="node-lbl" text-anchor="middle" y="45">(HTTPS)</text></g>
+
+          <g class="node" style="color:var(--layer-seguridad)" transform="translate(230,495)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Agente</text><text class="node-lbl" text-anchor="middle" y="45">Wazuh</text></g>
+          <g class="node" style="color:var(--layer-seguridad)" transform="translate(430,525)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Suricata</text><text class="node-lbl" text-anchor="middle" y="45">IDS</text></g>
+
+          <g class="node" style="color:var(--layer-ia)" transform="translate(860,135)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Servidor</text><text class="node-lbl" text-anchor="middle" y="45">Wazuh</text></g>
+          <g class="node" style="color:var(--layer-ia)" transform="translate(860,255)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Motor de</text><text class="node-lbl" text-anchor="middle" y="45">alertas IA</text></g>
+          <g class="node" style="color:var(--layer-ia)" transform="translate(1030,365)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Telegram /</text><text class="node-lbl" text-anchor="middle" y="45">MS Teams</text></g>
+
+          <g class="node" style="color:var(--layer-cloud)" transform="translate(850,495)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">AWS IoT</text><text class="node-lbl" text-anchor="middle" y="45">Core</text></g>
+          <g class="node" style="color:var(--layer-cloud)" transform="translate(970,495)"><use href="#dev-main" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">DynamoDB</text><text class="node-lbl" text-anchor="middle" y="45">/ RDS</text></g>
+        </svg>
       </div>
-      <div class="arrow-slot" aria-hidden="true">
-        <svg class="arrow-h" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
-        <svg class="arrow-v" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
-      </div>
-      <div class="layer-card" style="--layer-color:var(--layer-control)">
-        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="10.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/></svg>
-        <div class="layer-name">Control</div>
-        <h3>Gateway &mdash; Raspberry Pi 4</h3>
-        <ul>
-          <li>Broker MQTT (Eclipse Mosquitto)</li>
-          <li>Evaluación de umbral de humedad</li>
-          <li>Comando de riego</li>
-        </ul>
-      </div>
-      <div class="arrow-slot" aria-hidden="true">
-        <svg class="arrow-h" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
-        <svg class="arrow-v" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
-      </div>
-      <div class="layer-card" style="--layer-color:var(--layer-seguridad)">
-        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
-        <div class="layer-name">Seguridad</div>
-        <h3>Detección &amp; alerta</h3>
-        <ul>
-          <li>Registro de actividad anómala</li>
-          <li>Sobre el nodo y su red</li>
-        </ul>
-      </div>
-      <div class="arrow-slot" aria-hidden="true">
-        <svg class="arrow-h" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
-        <svg class="arrow-v" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
-      </div>
-      <div class="layer-card" style="--layer-color:var(--layer-cloud)">
-        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 8.5a4.5 4.5 0 01-.5 9H7z"/></svg>
-        <div class="layer-name">Cloud &mdash; AWS</div>
-        <h3>Persistencia &amp; auditoría</h3>
-        <ul>
-          <li>Reportería histórica</li>
-          <li>Trazabilidad de eventos</li>
-        </ul>
-      </div>
-    </div>
-    <div class="arch-note">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5L12 2z"/></svg>
-      Los flujos entre capas están definidos y autenticados: todo evento operativo es rastreable hasta su origen físico y contrastable con la información de seguridad.
-    </div>
+      <figcaption class="diagram-cap">Topología del nodo: los sensores y actuadores de campo (naranja) se enlazan por LoRa al gateway Raspberry&nbsp;Pi (verde), que publica por MQTT hacia el panel y hacia AWS. El agente Wazuh y Suricata (rojo) vigilan host y red, y cruzan la frontera de la red local &mdash;línea roja&mdash; hacia el servidor Wazuh y el motor de IA (morado), que notifican por Telegram/Teams y responden bloqueando IPs de vuelta hacia el gateway (línea discontinua).</figcaption>
+    </figure>
 
     <div class="prose">
       <p>El sistema de riego se organiza en cuatro capas interdependientes. La <strong>capa física</strong> incluye los sensores capacitivos de humedad de suelo, los nodos de campo ESP32 con radio LoRa y los actuadores (módulo de relé, contactor y electroválvula o bomba). La <strong>capa de control</strong> reside en la Raspberry Pi 4, que actúa como gateway: recibe las lecturas, las publica en el broker MQTT (Eclipse Mosquitto), evalúa el umbral de humedad definido y comanda el riego.</p>
@@ -342,24 +313,41 @@
       <p>De forma complementaria, <strong>Suricata</strong> opera como IDS sobre el tráfico de la VLAN IoT. Sus eventos (<code>eve.json</code>) son leídos por el agente y normalizados con los decodificadores y reglas de Suricata que incluye Wazuh, de modo que las alertas de host y de red convergen en una sola consola (escaneos de puertos, intentos de intrusión). Ante patrones de fuerza bruta, la respuesta activa de Wazuh puede bloquear temporalmente la IP de origen, con lista blanca para las direcciones de administración.</p>
     </div>
 
-    <div class="pipeline">
-      <div class="pipe-node">
-        <div class="node-label">Host</div>
-        <div class="node-title">Agente Wazuh</div>
+    <figure class="diagram">
+      <div class="topo-wrap">
+        <svg class="topo" viewBox="0 0 720 260" role="img" aria-label="El agente Wazuh en el host y Suricata en la red envían sus eventos a una consola unificada, que ante fuerza bruta dispara una respuesta activa de bloqueo de IP con lista blanca para las direcciones de administración.">
+          <defs>
+            <pattern id="dg-x3" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1.1" fill="var(--border)"/></pattern>
+            <marker id="arrow-x3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink-mute)"/></marker>
+            <symbol id="dev-x3" viewBox="-18 -18 36 36">
+              <path d="M0 -16 L16 0 L0 16 L-16 0 Z" fill="var(--surface)" stroke="currentColor" stroke-width="2"/>
+              <path d="M-7 0h14M0 -7v14" stroke="currentColor" stroke-width="1.3"/>
+            </symbol>
+          </defs>
+          <rect x="0" y="0" width="720" height="260" fill="url(#dg-x3)"/>
+
+          <ellipse cx="110" cy="140" rx="95" ry="110" class="grp" style="color:var(--layer-seguridad)"/>
+          <text x="110" y="22" class="grp-label" text-anchor="middle" style="fill:var(--layer-seguridad)">SEGURIDAD · LOCAL</text>
+
+          <g class="edges">
+            <line x1="127" y1="94" x2="343" y2="137" marker-end="url(#arrow-x3)"/>
+            <line x1="127" y1="187" x2="343" y2="144" marker-end="url(#arrow-x3)"/>
+            <line x1="378" y1="140" x2="582" y2="140" stroke-dasharray="5 5" marker-end="url(#arrow-x3)"/>
+          </g>
+          <g class="edge-labels">
+            <g transform="translate(240,101)"><rect x="-46" y="-11" width="92" height="20" rx="6"/><text text-anchor="middle" dy="4">alertas host</text></g>
+            <g transform="translate(240,192)"><rect x="-34" y="-11" width="68" height="20" rx="6"/><text text-anchor="middle" dy="4">eve.json</text></g>
+            <g transform="translate(480,124)"><rect x="-64" y="-11" width="128" height="20" rx="6"/><text text-anchor="middle" dy="4">fuerza bruta detectada</text></g>
+          </g>
+
+          <g class="node" style="color:var(--layer-seguridad)" transform="translate(110,90)"><use href="#dev-x3" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Agente</text><text class="node-lbl" text-anchor="middle" y="45">Wazuh (host)</text></g>
+          <g class="node" style="color:var(--layer-seguridad)" transform="translate(110,190)"><use href="#dev-x3" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Suricata</text><text class="node-lbl" text-anchor="middle" y="45">IDS (red)</text></g>
+          <g class="node" style="color:var(--layer-ia)" transform="translate(360,140)"><use href="#dev-x3" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Consola</text><text class="node-lbl" text-anchor="middle" y="45">unificada</text></g>
+          <g class="node" style="color:var(--layer-ia)" transform="translate(600,140)"><use href="#dev-x3" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Bloqueo IP</text><text class="node-lbl" text-anchor="middle" y="45">+ whitelist admin</text></g>
+        </svg>
       </div>
-      <div class="pipe-node">
-        <div class="node-label">Red · VLAN IoT</div>
-        <div class="node-title">Suricata IDS (eve.json)</div>
-      </div>
-      <div class="pipe-node">
-        <div class="node-label">Correlación</div>
-        <div class="node-title">Consola unificada</div>
-      </div>
-      <div class="pipe-node">
-        <div class="node-label">Respuesta activa</div>
-        <div class="node-title">Bloqueo de IP + whitelist admin</div>
-      </div>
-    </div>
+      <figcaption class="diagram-cap">Host y red convergen en una sola consola; ante un patrón de fuerza bruta, la respuesta activa bloquea temporalmente la IP de origen, exceptuando las direcciones de administración.</figcaption>
+    </figure>
 
     <div class="facts">
       <span class="chip">FIM: Mosquitto, scripts, servicio del panel</span>
@@ -406,20 +394,35 @@
       <p>Además, la bitácora de riego en JSON es leída por el agente Wazuh, lo que permite correlacionar eventos de operación y de seguridad bajo un identificador común (dispositivo y evento). Así se habilita la auditoría, la reportería histórica y el análisis posterior de incidentes.</p>
     </div>
 
-    <div class="correlate">
-      <div class="corr-box">
-        <div class="corr-title">Bitácora de riego (JSON)</div>
-        <div class="corr-sub">inicio · duración · modo · humedad · usuario</div>
+    <figure class="diagram">
+      <div class="topo-wrap">
+        <svg class="topo" viewBox="0 0 620 200" role="img" aria-label="La bitácora de riego en JSON y las alertas de Wazuh convergen bajo un identificador común de dispositivo y evento, habilitando la correlación entre operación y seguridad.">
+          <defs>
+            <pattern id="dg-x5" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1.1" fill="var(--border)"/></pattern>
+            <marker id="arrow-x5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="var(--ink-mute)"/></marker>
+            <symbol id="dev-x5" viewBox="-18 -18 36 36">
+              <path d="M0 -16 L16 0 L0 16 L-16 0 Z" fill="var(--surface)" stroke="currentColor" stroke-width="2"/>
+              <path d="M-7 0h14M0 -7v14" stroke="currentColor" stroke-width="1.3"/>
+            </symbol>
+          </defs>
+          <rect x="0" y="0" width="620" height="200" fill="url(#dg-x5)"/>
+
+          <g class="edges">
+            <line x1="108" y1="100" x2="292" y2="100" marker-end="url(#arrow-x5)"/>
+            <line x1="512" y1="100" x2="328" y2="100" marker-end="url(#arrow-x5)"/>
+          </g>
+          <g class="edge-labels">
+            <g transform="translate(200,84)"><rect x="-34" y="-11" width="68" height="20" rx="6"/><text text-anchor="middle" dy="4">vincula</text></g>
+            <g transform="translate(420,84)"><rect x="-34" y="-11" width="68" height="20" rx="6"/><text text-anchor="middle" dy="4">vincula</text></g>
+          </g>
+
+          <g class="node" style="color:var(--layer-cloud)" transform="translate(90,100)"><use href="#dev-x5" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Bitácora riego</text><text class="node-lbl" text-anchor="middle" y="45">(JSON)</text></g>
+          <g class="node" style="color:var(--layer-ia)" transform="translate(310,100)"><use href="#dev-x5" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">ID común</text><text class="node-lbl" text-anchor="middle" y="45">dispositivo + evento</text></g>
+          <g class="node" style="color:var(--layer-seguridad)" transform="translate(530,100)"><use href="#dev-x5" width="36" height="36" x="-18" y="-18"/><text class="node-lbl" text-anchor="middle" y="32">Alertas</text><text class="node-lbl" text-anchor="middle" y="45">Wazuh</text></g>
+        </svg>
       </div>
-      <div class="corr-mid">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12h9M11 12l-3-3M11 12l-3 3M22 12h-9M13 12l3-3M13 12l3 3"/></svg>
-        ID común<br>dispositivo + evento
-      </div>
-      <div class="corr-box">
-        <div class="corr-title">Alertas Wazuh</div>
-        <div class="corr-sub">autenticación · integridad · red</div>
-      </div>
-    </div>
+      <figcaption class="diagram-cap">Inicio, duración, modo, humedad y usuario del riego se cruzan con autenticación, integridad y red desde Wazuh bajo un mismo identificador de dispositivo y evento.</figcaption>
+    </figure>
     <div class="callout" style="margin-top:18px">
       <strong>Ejemplo de correlación &mdash;</strong> un accionamiento manual fuera de horario, precedido por intentos fallidos de autenticación, queda vinculado bajo el mismo identificador y se eleva como posible incidente.
     </div>
