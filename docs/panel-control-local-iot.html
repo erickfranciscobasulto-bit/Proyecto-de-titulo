@@ -1,0 +1,441 @@
+<title>Nodo de Riego Seguro</title>
+<style>
+  :root{
+    --bg:#eef2f1;
+    --surface:#ffffff;
+    --surface-2:#e3e9e7;
+    --border:#cad5d1;
+    --ink:#12211d;
+    --ink-2:#44544f;
+    --ink-mute:#6b7a75;
+    --accent:#0f6f5c;
+    --accent-ink:#ffffff;
+    --layer-fisica:#5a6663;
+    --layer-control:#0f6f5c;
+    --layer-seguridad:#b3261e;
+    --layer-cloud:#2851c4;
+    --shadow: 0 1px 2px rgba(18,33,29,.06), 0 8px 24px -12px rgba(18,33,29,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0d1614;
+      --surface:#142320;
+      --surface-2:#1b2b27;
+      --border:#25423b;
+      --ink:#eaf2ef;
+      --ink-2:#b9c8c3;
+      --ink-mute:#87a099;
+      --accent:#3ccda6;
+      --accent-ink:#06201a;
+      --layer-fisica:#a3b0ab;
+      --layer-control:#3ccda6;
+      --layer-seguridad:#ff7a63;
+      --layer-cloud:#7c9dff;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0d1614;
+    --surface:#142320;
+    --surface-2:#1b2b27;
+    --border:#25423b;
+    --ink:#eaf2ef;
+    --ink-2:#b9c8c3;
+    --ink-mute:#87a099;
+    --accent:#3ccda6;
+    --accent-ink:#06201a;
+    --layer-fisica:#a3b0ab;
+    --layer-control:#3ccda6;
+    --layer-seguridad:#ff7a63;
+    --layer-cloud:#7c9dff;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px -16px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    padding-inline:20px;
+    padding-block:0 48px;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+  code, .mono, .chip, .fact dt, .stat-num, .node-label{
+    font-family:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .wrap{max-width:880px; margin-inline:auto;}
+
+  /* ---------- Masthead ---------- */
+  header.masthead{
+    padding-block:40px 28px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:36px;
+  }
+  .eyebrow{
+    display:flex; align-items:center; gap:10px;
+    font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:16px;
+  }
+  .eyebrow .chapter-mark{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:28px; height:28px; border-radius:8px;
+    background:var(--accent); color:var(--accent-ink);
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:.95rem;
+    letter-spacing:0;
+  }
+  h1.title{
+    font-size:clamp(1.6rem, 1.1rem + 2.2vw, 2.5rem);
+    line-height:1.12; font-weight:700; margin:0 0 14px;
+    max-width:20ch;
+  }
+  p.dek{
+    font-size:1.02rem; line-height:1.6; color:var(--ink-2);
+    max-width:62ch; margin:0 0 22px;
+  }
+  nav.jump{
+    display:flex; flex-wrap:wrap; gap:8px;
+  }
+  nav.jump a{
+    font-size:.82rem; color:var(--ink-2); text-decoration:none;
+    padding:6px 12px; border:1px solid var(--border); border-radius:999px;
+    background:var(--surface); transition:border-color .15s, color .15s;
+  }
+  nav.jump a:hover, nav.jump a:focus-visible{ border-color:var(--accent); color:var(--accent); }
+
+  /* ---------- Architecture diagram ---------- */
+  .arch{
+    display:flex; flex-wrap:wrap; align-items:stretch; gap:0;
+    margin-bottom:14px;
+  }
+  .layer-card{
+    flex:1 1 190px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-top:4px solid var(--layer-color);
+    border-radius:14px;
+    padding:16px 16px 18px;
+    box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .layer-card .layer-icon{ color:var(--layer-color); }
+  .layer-card .layer-name{
+    font-size:.72rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--layer-color);
+  }
+  .layer-card h3{ font-size:1rem; margin:0; line-height:1.3; }
+  .layer-card ul{ margin:0; padding-left:1.05em; font-size:.86rem; color:var(--ink-2); line-height:1.5; }
+  .layer-card ul li + li{ margin-top:3px; }
+
+  .arrow-slot{
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center;
+    color:var(--ink-mute); padding-inline:4px;
+  }
+  .arrow-h{ display:inline; } .arrow-v{ display:none; }
+  @media (max-width:760px){
+    .arch{ flex-direction:column; }
+    .arrow-slot{ padding-block:2px; transform:rotate(90deg); }
+  }
+
+  .arch-note{
+    font-size:.82rem; color:var(--ink-mute); margin:14px 0 40px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .arch-note svg{ flex:none; color:var(--accent); }
+
+  /* ---------- Sections ---------- */
+  section.chapter-section{
+    padding-block:34px;
+    border-bottom:1px solid var(--border);
+    scroll-margin-top:16px;
+  }
+  section.chapter-section:last-of-type{ border-bottom:none; }
+  .sec-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:14px; }
+  .sec-num{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.4rem;
+    color:var(--sec-color, var(--accent));
+  }
+  .sec-head h2{ font-size:1.28rem; margin:0; }
+
+  .prose{ font-size:1rem; line-height:1.72; color:var(--ink-2); max-width:68ch; }
+  .prose p + p{ margin-top:14px; }
+  .prose strong{ color:var(--ink); font-weight:600; }
+
+  .facts{
+    margin-top:20px; display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .chip{
+    font-size:.76rem; line-height:1.4; color:var(--ink);
+    background:var(--surface-2); border:1px solid var(--border);
+    border-left:3px solid var(--sec-color, var(--accent));
+    border-radius:8px; padding:6px 10px;
+  }
+
+  .callout{
+    margin-top:20px; padding:14px 16px; border-radius:12px;
+    background:var(--surface); border:1px solid var(--border);
+    border-left:4px solid var(--sec-color, var(--accent));
+    font-size:.92rem; line-height:1.6; color:var(--ink-2);
+    box-shadow:var(--shadow);
+  }
+  .callout strong{ color:var(--ink); }
+
+  /* ---------- X.3 pipeline ---------- */
+  .pipeline{
+    margin-top:22px; display:flex; flex-wrap:wrap; gap:10px; align-items:stretch;
+  }
+  .pipe-node{
+    flex:1 1 150px; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:12px 14px; box-shadow:var(--shadow);
+  }
+  .pipe-node .node-label{ font-size:.7rem; color:var(--ink-mute); letter-spacing:.06em; text-transform:uppercase; }
+  .pipe-node .node-title{ font-weight:600; font-size:.92rem; margin-top:4px; }
+
+  /* ---------- X.5 correlation diagram ---------- */
+  .correlate{
+    margin-top:24px; display:flex; align-items:center; justify-content:center;
+    gap:0; flex-wrap:wrap;
+  }
+  .corr-box{
+    flex:1 1 220px; max-width:260px; background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:14px; text-align:center; box-shadow:var(--shadow);
+    font-size:.86rem;
+  }
+  .corr-box .corr-title{ font-weight:600; margin-bottom:4px; }
+  .corr-box .corr-sub{ color:var(--ink-mute); font-size:.76rem; }
+  .corr-mid{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:0 16px; color:var(--ink-mute); font-size:.72rem; text-align:center;
+  }
+  .corr-mid svg{ color:var(--layer-cloud); }
+  @media (max-width:600px){
+    .correlate{ flex-direction:column; }
+    .corr-mid{ padding:10px 0; }
+    .corr-mid svg{ transform:rotate(90deg); }
+  }
+
+  footer.end{
+    margin-top:40px; padding-top:20px; border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    font-size:.78rem; color:var(--ink-mute);
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow"><span class="chapter-mark">X</span> Sistema de riego inteligente &mdash; capítulo de arquitectura</div>
+    <h1 class="title">Panel de control local, monitorización de seguridad y trazabilidad del nodo IoT</h1>
+    <p class="dek">Cuatro capas interdependientes &mdash; física, control, seguridad y cloud &mdash; conectadas por flujos autenticados, de modo que cada accionamiento de riego puede rastrearse hasta su origen y contrastarse con la señal de seguridad del nodo.</p>
+    <nav class="jump">
+      <a href="#x1">X.1 Arquitectura</a>
+      <a href="#x2">X.2 Panel local</a>
+      <a href="#x3">X.3 Wazuh &amp; Suricata</a>
+      <a href="#x4">X.4 Alertas con IA</a>
+      <a href="#x5">X.5 Trazabilidad cloud</a>
+    </nav>
+  </header>
+
+  <!-- ================= X.1 ================= -->
+  <section class="chapter-section" id="x1" style="--sec-color:var(--layer-fisica)">
+    <div class="sec-head">
+      <span class="sec-num">X.1</span>
+      <h2>Arquitectura por capas</h2>
+    </div>
+
+    <div class="arch">
+      <div class="layer-card" style="--layer-color:var(--layer-fisica)">
+        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg>
+        <div class="layer-name">Física</div>
+        <h3>Campo</h3>
+        <ul>
+          <li>Sensores capacitivos de humedad</li>
+          <li>Nodo ESP32 + radio LoRa</li>
+          <li>Relé, contactor, electroválvula/bomba</li>
+        </ul>
+      </div>
+      <div class="arrow-slot" aria-hidden="true">
+        <svg class="arrow-h" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
+        <svg class="arrow-v" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
+      </div>
+      <div class="layer-card" style="--layer-color:var(--layer-control)">
+        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><circle cx="8.5" cy="10.5" r="1"/><circle cx="12" cy="10.5" r="1"/><circle cx="15.5" cy="10.5" r="1"/></svg>
+        <div class="layer-name">Control</div>
+        <h3>Gateway &mdash; Raspberry Pi 4</h3>
+        <ul>
+          <li>Broker MQTT (Eclipse Mosquitto)</li>
+          <li>Evaluación de umbral de humedad</li>
+          <li>Comando de riego</li>
+        </ul>
+      </div>
+      <div class="arrow-slot" aria-hidden="true">
+        <svg class="arrow-h" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
+        <svg class="arrow-v" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
+      </div>
+      <div class="layer-card" style="--layer-color:var(--layer-seguridad)">
+        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+        <div class="layer-name">Seguridad</div>
+        <h3>Detección &amp; alerta</h3>
+        <ul>
+          <li>Registro de actividad anómala</li>
+          <li>Sobre el nodo y su red</li>
+        </ul>
+      </div>
+      <div class="arrow-slot" aria-hidden="true">
+        <svg class="arrow-h" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
+        <svg class="arrow-v" width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 7h16M11 1l6 6-6 6"/></svg>
+      </div>
+      <div class="layer-card" style="--layer-color:var(--layer-cloud)">
+        <svg class="layer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 18a4 4 0 01-.6-7.96A5.5 5.5 0 0117 8.5a4.5 4.5 0 01-.5 9H7z"/></svg>
+        <div class="layer-name">Cloud &mdash; AWS</div>
+        <h3>Persistencia &amp; auditoría</h3>
+        <ul>
+          <li>Reportería histórica</li>
+          <li>Trazabilidad de eventos</li>
+        </ul>
+      </div>
+    </div>
+    <div class="arch-note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5L12 2z"/></svg>
+      Los flujos entre capas están definidos y autenticados: todo evento operativo es rastreable hasta su origen físico y contrastable con la información de seguridad.
+    </div>
+
+    <div class="prose">
+      <p>El sistema de riego se organiza en cuatro capas interdependientes. La <strong>capa física</strong> incluye los sensores capacitivos de humedad de suelo, los nodos de campo ESP32 con radio LoRa y los actuadores (módulo de relé, contactor y electroválvula o bomba). La <strong>capa de control</strong> reside en la Raspberry Pi 4, que actúa como gateway: recibe las lecturas, las publica en el broker MQTT (Eclipse Mosquitto), evalúa el umbral de humedad definido y comanda el riego.</p>
+      <p>La <strong>capa de seguridad</strong> provee detección, registro y alerta ante actividad anómala sobre el nodo y su red. La <strong>capa cloud</strong>, alojada en AWS, aporta persistencia, auditoría y reportería histórica.</p>
+    </div>
+  </section>
+
+  <!-- ================= X.2 ================= -->
+  <section class="chapter-section" id="x2" style="--sec-color:var(--layer-control)">
+    <div class="sec-head">
+      <span class="sec-num">X.2</span>
+      <h2>Panel de control local</h2>
+    </div>
+    <div class="prose">
+      <p>La Raspberry Pi expone un <strong>panel web interactivo</strong>, accesible solo desde la VLAN de administración mediante HTTPS y autenticación de usuario. Se suscribe al broker MQTT y presenta en tiempo real la humedad de cada punto de riego, el estado de las válvulas y la marca de tiempo de la última lectura.</p>
+      <p>Además del <strong>modo automático</strong> por umbral &mdash;con histéresis para evitar accionamientos repetitivos&mdash;, permite el <strong>accionamiento manual</strong> controlado de aspersores y regadores. Este exige confirmación explícita, tiene una duración máxima configurable y se cierra automáticamente al vencer el temporizador. Cada acción queda registrada con usuario, modo y hora.</p>
+    </div>
+    <div class="facts">
+      <span class="chip">Acceso: VLAN admin + HTTPS + login</span>
+      <span class="chip">Tiempo real: humedad, válvulas, última lectura</span>
+      <span class="chip">Automático: umbral + histéresis</span>
+      <span class="chip">Manual: confirmación + timer + cierre automático</span>
+      <span class="chip">Bitácora: usuario · modo · hora</span>
+    </div>
+  </section>
+
+  <!-- ================= X.3 ================= -->
+  <section class="chapter-section" id="x3" style="--sec-color:var(--layer-seguridad)">
+    <div class="sec-head">
+      <span class="sec-num">X.3</span>
+      <h2>Ciberseguridad y monitorización con Wazuh y Suricata</h2>
+    </div>
+    <div class="prose">
+      <p>El nodo incorpora un <strong>agente Wazuh</strong> (sobre Raspberry Pi OS de 64 bits) que reporta a un servidor Wazuh central (Manager, Indexer y Dashboard). El agente supervisa la autenticación y la elevación de privilegios, la integridad de archivos críticos (configuración de Mosquitto, scripts de control y servicio del panel), la configuración segura (SCA) y los puertos y procesos activos &mdash;permitiendo detectar, registrar y alertar intentos de acceso no autorizado y ataques de fuerza bruta.</p>
+      <p>De forma complementaria, <strong>Suricata</strong> opera como IDS sobre el tráfico de la VLAN IoT. Sus eventos (<code>eve.json</code>) son leídos por el agente y normalizados con los decodificadores y reglas de Suricata que incluye Wazuh, de modo que las alertas de host y de red convergen en una sola consola (escaneos de puertos, intentos de intrusión). Ante patrones de fuerza bruta, la respuesta activa de Wazuh puede bloquear temporalmente la IP de origen, con lista blanca para las direcciones de administración.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-node">
+        <div class="node-label">Host</div>
+        <div class="node-title">Agente Wazuh</div>
+      </div>
+      <div class="pipe-node">
+        <div class="node-label">Red · VLAN IoT</div>
+        <div class="node-title">Suricata IDS (eve.json)</div>
+      </div>
+      <div class="pipe-node">
+        <div class="node-label">Correlación</div>
+        <div class="node-title">Consola unificada</div>
+      </div>
+      <div class="pipe-node">
+        <div class="node-label">Respuesta activa</div>
+        <div class="node-title">Bloqueo de IP + whitelist admin</div>
+      </div>
+    </div>
+
+    <div class="facts">
+      <span class="chip">FIM: Mosquitto, scripts, servicio del panel</span>
+      <span class="chip">SCA · puertos y procesos activos</span>
+      <span class="chip">Server: Manager + Indexer + Dashboard</span>
+    </div>
+  </section>
+
+  <!-- ================= X.4 ================= -->
+  <section class="chapter-section" id="x4" style="--sec-color:var(--layer-seguridad)">
+    <div class="sec-head">
+      <span class="sec-num">X.4</span>
+      <h2>Alertas asistidas por inteligencia artificial</h2>
+    </div>
+    <div class="prose">
+      <p>Un servicio de notificación consume las alertas de Wazuh (incluidas las originadas en Suricata), las agrupa por regla y agente, filtra por severidad y evita duplicados durante ráfagas de eventos. Para las alertas de <strong>nivel alto o crítico</strong>, un modelo de lenguaje genera un resumen técnico, una clasificación probable (por ejemplo, técnica MITRE ATT&amp;CK), el posible impacto en el riego y las acciones recomendadas. El resultado se entrega a los responsables mediante un bot de Telegram o un canal de Microsoft Teams (webhook de Workflows).</p>
+    </div>
+
+    <div class="callout">
+      <strong>Rol exclusivamente consultivo.</strong> La IA no ejecuta acciones sobre el riego ni sobre el firewall, no recibe credenciales ni datos sensibles; si no está disponible, el sistema envía la alerta original sin enriquecer.
+    </div>
+
+    <div class="prose" style="margin-top:16px">
+      <p>Esta cadena fue validada en laboratorio con escaneos de puertos (<code>nmap</code>) y fuerza bruta SSH (<code>hydra</code>), detectados de extremo a extremo.</p>
+    </div>
+
+    <div class="facts">
+      <span class="chip">Agrupación por regla + agente</span>
+      <span class="chip">Filtro por severidad · anti-duplicados</span>
+      <span class="chip">Salida: resumen + MITRE ATT&amp;CK + impacto + acciones</span>
+      <span class="chip">Canales: Telegram · MS Teams</span>
+      <span class="chip">Validado: nmap + hydra (end-to-end)</span>
+    </div>
+  </section>
+
+  <!-- ================= X.5 ================= -->
+  <section class="chapter-section" id="x5" style="--sec-color:var(--layer-cloud)">
+    <div class="sec-head">
+      <span class="sec-num">X.5</span>
+      <h2>Trazabilidad y telemetría en la nube</h2>
+    </div>
+    <div class="prose">
+      <p>Cada evento de riego &mdash;inicio, término, duración, modo automático o manual, disparador, humedad previa y posterior, usuario&mdash; se registra con marca de tiempo exacta en UTC (ISO 8601), sincronizada por NTP y presentada en hora local. Los eventos se publican desde el broker local hacia AWS mediante MQTT sobre TLS con certificado por dispositivo (AWS IoT Core) y se persisten en una base de datos cloud (por ejemplo, Amazon DynamoDB o Amazon RDS for PostgreSQL). Un almacenamiento local temporal evita la pérdida de datos ante caídas del enlace.</p>
+      <p>Además, la bitácora de riego en JSON es leída por el agente Wazuh, lo que permite correlacionar eventos de operación y de seguridad bajo un identificador común (dispositivo y evento). Así se habilita la auditoría, la reportería histórica y el análisis posterior de incidentes.</p>
+    </div>
+
+    <div class="correlate">
+      <div class="corr-box">
+        <div class="corr-title">Bitácora de riego (JSON)</div>
+        <div class="corr-sub">inicio · duración · modo · humedad · usuario</div>
+      </div>
+      <div class="corr-mid">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12h9M11 12l-3-3M11 12l-3 3M22 12h-9M13 12l3-3M13 12l3 3"/></svg>
+        ID común<br>dispositivo + evento
+      </div>
+      <div class="corr-box">
+        <div class="corr-title">Alertas Wazuh</div>
+        <div class="corr-sub">autenticación · integridad · red</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:18px">
+      <strong>Ejemplo de correlación &mdash;</strong> un accionamiento manual fuera de horario, precedido por intentos fallidos de autenticación, queda vinculado bajo el mismo identificador y se eleva como posible incidente.
+    </div>
+
+    <div class="facts">
+      <span class="chip">Timestamp: UTC · ISO 8601 · NTP</span>
+      <span class="chip">Transporte: MQTT/TLS · cert. por dispositivo</span>
+      <span class="chip">Ingesta: AWS IoT Core</span>
+      <span class="chip">Persistencia: DynamoDB / RDS PostgreSQL</span>
+      <span class="chip">Buffer local ante caída de enlace</span>
+    </div>
+  </section>
+
+  <footer class="end">
+    <span>Nodo de riego IoT &mdash; arquitectura de control, seguridad y trazabilidad</span>
+    <span>Capítulo X · secciones X.1&ndash;X.5</span>
+  </footer>
+
+</div>
