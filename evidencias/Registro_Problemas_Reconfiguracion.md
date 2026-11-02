@@ -30,3 +30,15 @@ Cada entrada indica el equipo, el síntoma, la causa técnica, la solución apli
 | **Causa** | El ping se escribió hacia 192.169.10.193 en lugar de 192.168.10.193. |
 | **Solución** | Repetir el ping con la IP correcta: exitoso. |
 | **Aprendizaje** | Si la IP del gateway aparece en la tabla ARP, la capa 2 funciona; el problema está en capa 3 o en el comando. |
+
+---
+
+## P-03 · Mensajes NATIVE_VLAN_MISMATCH en los puertos del puente (comportamiento esperado)
+
+| Campo | Detalle |
+|---|---|
+| **Equipos** | SW-PUENTE (e0/1, e0/2) y DIST-CONCEPCION (e2/2, e2/3) |
+| **Síntoma** | `%CDP-4-NATIVE_VLAN_MISMATCH: ... Ethernet0/1 (210), with DIST-CONCEPCION Ethernet2/2 (10)` y lo mismo para 250/50. |
+| **Causa** | CDP informa la VLAN de acceso de cada extremo. En estos puertos la diferencia es **intencional**: es la traducción de VLAN 210→10 y 250→50 que permite que los equipos físicos operen como Concepción. |
+| **Impacto** | Ninguno; el tráfico funciona. Solo genera mensajes en la consola. |
+| **Solución (opcional)** | `no cdp enable` en SW-PUENTE e0/1-2 y DIST-CONCEPCION e2/2-3 para limpiar los logs. |
