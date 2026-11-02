@@ -1,7 +1,7 @@
 ! ==========================================================
 ! ACC1-TEMUCO - Switch de acceso 1 casa matriz (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 3)
+! Estado: EN PROGRESO (partes 1 a 4)
 ! ==========================================================
 enable
 configure terminal
@@ -66,4 +66,32 @@ interface port-channel 1
  exit
 interface port-channel 3
  description PO3-HACIA-ACC2-TEMUCO
+ exit
+!
+! --- Puertos de acceso (datos + voz) ---
+interface ethernet 1/0
+ description PC-V10-TEM-SIEMBRA
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface ethernet 1/1
+ description PC-V20-TEM-COSECHA
+ switchport mode access
+ switchport access vlan 20
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface ethernet 1/2
+ description TEL-V50-TEM-TELEFONO
+ switchport mode access
+ switchport access vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
  exit
