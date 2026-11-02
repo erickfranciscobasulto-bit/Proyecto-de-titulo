@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TALCA - Router sucursal Talca / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 5)
+! Estado: EN PROGRESO (partes 1 a 6)
 ! ==========================================================
 enable
 configure terminal
@@ -145,4 +145,22 @@ ip access-list extended INVITADOS-IN
  exit
 interface ethernet 0/1.60
  ip access-group INVITADOS-IN in
+ exit
+!
+! --- IPsec fase 1 (IKE / ISAKMP) ---
+crypto isakmp policy 10
+ encryption aes 256
+ hash sha256
+ authentication pre-share
+ group 14
+ lifetime 86400
+ exit
+crypto isakmp key AgroTunel2026 address 203.0.113.2
+!
+! --- IPsec fase 2 (transform-set y perfil) ---
+crypto ipsec transform-set TS-AGRO esp-aes 256 esp-sha256-hmac
+ mode transport
+ exit
+crypto ipsec profile PROF-AGRO
+ set transform-set TS-AGRO
  exit
