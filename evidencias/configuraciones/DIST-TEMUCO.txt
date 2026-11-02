@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-TEMUCO - Switch de distribucion casa matriz (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 5)
+! Estado: EN PROGRESO (partes 1 a 6)
 ! ==========================================================
 enable
 configure terminal
@@ -105,3 +105,11 @@ interface ethernet 2/2
  switchport trunk allowed vlan 10,50,80,99,999
  no shutdown
  exit
+!
+! --- IP de gestion (VLAN 99) ---
+interface vlan 99
+ description GESTION-DIST-TEMUCO
+ ip address 192.168.40.242 255.255.255.240
+ no shutdown
+ exit
+ip default-gateway 192.168.40.241
