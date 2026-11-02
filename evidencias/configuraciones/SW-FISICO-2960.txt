@@ -2,7 +2,7 @@
 ! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
-! Estado: EN PROGRESO (partes 1 a 2)
+! Estado: EN PROGRESO (partes 1 a 3) - Gi0/1 trunking nativa 999 verificado
 ! ==========================================================
 enable
 configure terminal
@@ -39,5 +39,42 @@ interface gigabitEthernet 0/1
  switchport mode trunk
  switchport trunk native vlan 999
  switchport trunk allowed vlan 10,50,80,99,210,250,999
+ no shutdown
+ exit
+!
+! --- Puertos de acceso ---
+interface fastEthernet 0/2
+ description PC-FISICO-TEMUCO
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface fastEthernet 0/3
+ description SRV-ISSABEL-VLAN80
+ switchport mode access
+ switchport access vlan 80
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface fastEthernet 0/4
+ description PC-TEL-FISICO-CONCEPCION-V210-V250
+ switchport mode access
+ switchport access vlan 210
+ switchport voice vlan 250
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface fastEthernet 0/5
+ description TELEFONO-FISICO-TEMUCO
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
  no shutdown
  exit
