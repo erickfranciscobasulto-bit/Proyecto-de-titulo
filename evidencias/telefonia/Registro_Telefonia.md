@@ -139,3 +139,12 @@ write memory
 Resultado en `tail -f /var/log/messages | grep -i tftp`: el teléfono (192.168.40.178) ya consulta al TFTP y pide `ITLFile.tlv`, `SEP7802B142A521.cnf.xml.sgn`, `XMLDefault.cnf.xml.sgn`, `CTLSEP…tlv`, `ITLSEP…tlv`, `AppDialRules.xml` (todos *File not found*).
 
 **T-03 · El teléfono solo pide archivos firmados (.sgn).** Pide la versión firmada `SEP…cnf.xml.sgn` y no la versión `.cnf.xml`: conserva una lista de confianza (ITL/CTL) de la central Cisco del laboratorio y está en modo seguro, por lo que rechaza configuraciones sin firma. Solución: restablecer la configuración de seguridad del teléfono (borrar la lista de confianza) para que acepte el archivo XML sin firma.
+
+**Resultado tras restablecer la seguridad del teléfono (Admin Settings → Reset Settings → Security settings):**
+```
+RRQ from 192.168.40.178 filename SEP7802B142A521.cnf.xml
+Client 192.168.40.178 finished SEP7802B142A521.cnf.xml      <- descarga exitosa
+```
+✅ El teléfono descargó su configuración sin firma. Los demás archivos (`ITLFile.tlv`, `CTLSEP…tlv`, `/sl-be-sip.jar`, `/g3-tones.xml`, `AppDialRules.xml`, `defaultheadsetconfig.json`) son opcionales; su *File not found* no impide el registro.
+
+**T-04 · Tras aplicar la configuración el teléfono pasa a la IP 192.168.40.130 (VLAN 10).** Después de la descarga, las siguientes solicitudes provienen de 192.168.40.130, del pool de datos (VLAN 10) y no del de voz (VLAN 50). El teléfono dejó de usar la VLAN de voz, por lo que su tráfico se mezcla con los datos y no recibe la prioridad prevista. Pendiente: forzar la VLAN de voz en el teléfono (Admin VLAN ID = 50) o verificar que mantenga CDP activo.
