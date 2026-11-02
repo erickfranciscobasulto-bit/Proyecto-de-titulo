@@ -38,6 +38,16 @@ El CP-8861-K9 no se configura desde pantalla ni web: al arrancar descarga `SEP<M
 - PBX → PBX Configuration → Extensions → 2001 · tecnología **PJSIP** · secret anotado.
 
 ### Paso 2 – Servidor TFTP en Issabel (en curso)
+
+**T-01 · `yum install` falla con error 403.** El repositorio `mirror.issabel.org` rechaza la descarga (Status code 403). No es un problema de red (la VM tiene salida a Internet). Se verificó que no hacía falta instalar nada:
+
+```
+rpm -q tftp-server xinetd    # tftp-server-5.2-26.el8 y xinetd-2.3.15-25.el8 ya instalados
+ls -ld /tftpboot             # drwxrwxrwx root root /tftpboot (existe)
+head -2 /etc/os-release      # Rocky Linux 8.8 (Issabel 5)
+```
+
+Comandos previstos originalmente (no necesarios en esta instalación):
 ```
 yum install -y tftp-server xinetd
 sed -i 's/disable.*= yes/disable = no/' /etc/xinetd.d/tftp
