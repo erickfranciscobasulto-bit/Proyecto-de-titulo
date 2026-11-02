@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TALCA - Router sucursal Talca / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 8) - Tunnel1 QM_IDLE y ping 172.16.0.1 OK
+! Estado: COMPLETA (partes 1 a 9) - Tunnel1 QM_IDLE, OSPF FULL con 1.1.1.1, 9 rutas de Temuco, ping 192.168.40.241 OK
 ! ==========================================================
 enable
 configure terminal
@@ -184,3 +184,6 @@ router ospf 1
  network 192.168.10.0 0.0.0.255 area 0
  network 172.16.0.0 0.0.0.3 area 0
  exit
+!
+end
+write memory
