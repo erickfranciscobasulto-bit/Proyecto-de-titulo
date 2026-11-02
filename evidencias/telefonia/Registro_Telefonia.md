@@ -131,3 +131,11 @@ ip dhcp pool V50-VOZ-TEM
 end
 write memory
 ```
+
+### Paso 5 – Arranque del teléfono y descarga por TFTP
+
+**T-02 · El teléfono no consultaba al TFTP de Issabel.** En el teléfono, *Servidor TFTP 1* estaba vacío (la option 150 no se aplicaba porque se había agregado a un pool nuevo y vacío, ver P-04). Se configuró manualmente **Servidor TFTP 1 = 192.168.40.226** (además de la option 150 en VLAN50-VOZ-TEM).
+
+Resultado en `tail -f /var/log/messages | grep -i tftp`: el teléfono (192.168.40.178) ya consulta al TFTP y pide `ITLFile.tlv`, `SEP7802B142A521.cnf.xml.sgn`, `XMLDefault.cnf.xml.sgn`, `CTLSEP…tlv`, `ITLSEP…tlv`, `AppDialRules.xml` (todos *File not found*).
+
+**T-03 · El teléfono solo pide archivos firmados (.sgn).** Pide la versión firmada `SEP…cnf.xml.sgn` y no la versión `.cnf.xml`: conserva una lista de confianza (ITL/CTL) de la central Cisco del laboratorio y está en modo seguro, por lo que rechaza configuraciones sin firma. Solución: restablecer la configuración de seguridad del teléfono (borrar la lista de confianza) para que acepte el archivo XML sin firma.
