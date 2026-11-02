@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-CONCEPCION - Router sucursal Concepcion / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 3b)
+! Estado: EN PROGRESO (partes 1 a 4a)
 ! ==========================================================
 enable
 configure terminal
@@ -79,3 +79,12 @@ interface ethernet 0/1.999
  description VLAN-NATIVA-SIN-USO
  encapsulation dot1Q 999 native
  exit
+!
+! --- DHCP: direcciones excluidas (gateways) ---
+ip dhcp excluded-address 192.168.20.1
+ip dhcp excluded-address 192.168.20.33
+ip dhcp excluded-address 192.168.20.65
+ip dhcp excluded-address 192.168.20.97
+ip dhcp excluded-address 192.168.20.113
+ip dhcp excluded-address 192.168.20.129
+ip dhcp excluded-address 192.168.20.145
