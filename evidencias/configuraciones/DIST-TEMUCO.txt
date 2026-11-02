@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-TEMUCO - Switch de distribucion casa matriz (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 2)
+! Estado: EN PROGRESO (partes 1 a 3)
 ! ==========================================================
 enable
 configure terminal
@@ -39,3 +39,13 @@ vlan 999
 ! --- Rapid-PVST+ (root primario) ---
 spanning-tree mode rapid-pvst
 spanning-tree vlan 10,20,30,40,50,60,70,80,99,999 root primary
+!
+! --- Troncal hacia R-TEMUCO e0/1 ---
+interface ethernet 0/0
+ description TRONCAL-HACIA-R-TEMUCO-e0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,60,70,80,99,999
+ no shutdown
+ exit
