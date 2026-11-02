@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-CONCEPCION - Switch de distribucion sucursal Concepcion (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 2)
+! Estado: EN PROGRESO (partes 1 a 3)
 ! ==========================================================
 enable
 configure terminal
@@ -72,4 +72,23 @@ interface port-channel 1
  exit
 interface port-channel 2
  description PO2-HACIA-ACC2-CONCEPCION
+ exit
+!
+! --- Puertos hacia SW-PUENTE (rack fisico: PC y telefono de Concepcion) ---
+! SW-PUENTE traduce VLAN 210 -> 10 (datos) y 250 -> 50 (voz) mediante puertos de acceso
+interface ethernet 2/2
+ description DESDE-SW-PUENTE-e0/1-DATOS-V210-A-V10
+ duplex full
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+interface ethernet 2/3
+ description DESDE-SW-PUENTE-e0/2-VOZ-V250-A-V50
+ duplex full
+ switchport mode access
+ switchport access vlan 50
+ spanning-tree bpdufilter enable
+ no shutdown
  exit
