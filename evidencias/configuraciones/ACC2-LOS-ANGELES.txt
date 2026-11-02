@@ -1,7 +1,7 @@
 ! ==========================================================
 ! ACC2-LOS-ANGELES - Switch de acceso 2 sucursal Los Angeles (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 3)
+! Estado: EN PROGRESO (partes 1 a 4)
 ! ==========================================================
 enable
 configure terminal
@@ -99,3 +99,13 @@ interface ethernet 1/3
  spanning-tree bpduguard enable
  no shutdown
  exit
+!
+! --- IP de gestion (VLAN 99) ---
+interface vlan 99
+ description GESTION-ACC2-LOS-ANGELES
+ ip address 192.168.30.132 255.255.255.240
+ no shutdown
+ exit
+ip default-gateway 192.168.30.129
+! IOL L2 trae "ip routing" activo: se agrega ruta por defecto (ver P-01)
+ip route 0.0.0.0 0.0.0.0 192.168.30.129
