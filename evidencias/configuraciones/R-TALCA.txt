@@ -1,0 +1,13 @@
+! ==========================================================
+! R-TALCA - Router sucursal Talca / spoke (IOL L3)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Estado: EN PROGRESO (parte 1)
+! ==========================================================
+enable
+configure terminal
+hostname R-TALCA
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
