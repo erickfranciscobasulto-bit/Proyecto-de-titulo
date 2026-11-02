@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TEMUCO - Router casa matriz / hub de tuneles (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 4b)
+! Estado: EN PROGRESO (partes 1 a 4c)
 ! ==========================================================
 enable
 configure terminal
@@ -114,5 +114,23 @@ ip dhcp pool V30-ENVASADO-TEM
 ip dhcp pool V40-VENTAS-TEM
  network 192.168.40.160 255.255.255.240
  default-router 192.168.40.161
+ dns-server 1.1.1.1
+ exit
+!
+! --- DHCP: pools de voz, invitados e IoT ---
+ip dhcp pool V50-VOZ-TEM
+ network 192.168.40.176 255.255.255.240
+ default-router 192.168.40.177
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V60-INVITADOS-TEM
+ network 192.168.40.192 255.255.255.240
+ default-router 192.168.40.193
+ dns-server 1.1.1.1
+ lease 0 2
+ exit
+ip dhcp pool V70-IOT-TEM
+ network 192.168.40.208 255.255.255.240
+ default-router 192.168.40.209
  dns-server 1.1.1.1
  exit
