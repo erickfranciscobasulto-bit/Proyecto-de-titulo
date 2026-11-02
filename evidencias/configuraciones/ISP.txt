@@ -1,0 +1,56 @@
+! ==========================================================
+! ISP - Proveedor de Internet simulado (IOL L3)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! ==========================================================
+enable
+configure terminal
+hostname ISP
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
+!
+interface ethernet 0/0
+ description HACIA-FW-TEMUCO-vtnet0
+ ip address 203.0.113.17 255.255.255.252
+ ip nat inside
+ no shutdown
+ exit
+interface ethernet 0/1
+ description HACIA-R-TALCA-e0/0
+ ip address 203.0.113.5 255.255.255.252
+ ip nat inside
+ no shutdown
+ exit
+interface ethernet 0/3
+ description HACIA-R-CONCEPCION-e0/0
+ ip address 203.0.113.9 255.255.255.252
+ ip nat inside
+ no shutdown
+ exit
+interface ethernet 0/2
+ description HACIA-R-LOS-ANGELES-e0/0
+ ip address 203.0.113.13 255.255.255.252
+ ip nat inside
+ no shutdown
+ exit
+interface ethernet 1/0
+ description HACIA-CLOUD-INTERNET
+ ip address dhcp
+ ip nat outside
+ no shutdown
+ exit
+interface loopback 0
+ description INTERNET-SIMULADO
+ ip address 8.8.8.8 255.255.255.255
+ exit
+!
+ip route 203.0.113.0 255.255.255.252 203.0.113.18
+ip access-list standard NAT-ISP
+ permit 203.0.113.0 0.0.0.15
+ permit 203.0.113.16 0.0.0.3
+ exit
+ip nat inside source list NAT-ISP interface ethernet 1/0 overload
+end
+write memory

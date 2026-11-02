@@ -1,0 +1,53 @@
+! ==========================================================
+! R-TEMUCO - Router casa matriz / hub de tuneles (IOL L3)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Estado: EN PROGRESO (partes 1 a 3a)
+! ==========================================================
+enable
+configure terminal
+hostname R-TEMUCO
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
+!
+! --- WAN hacia FW-TEMUCO (vtnet1) ---
+interface ethernet 0/0
+ description HACIA-FW-TEMUCO-vtnet1
+ ip address 203.0.113.2 255.255.255.252
+ ip nat outside
+ no shutdown
+ exit
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+!
+! --- Troncal hacia DIST-TEMUCO (router-on-a-stick) ---
+interface ethernet 0/1
+ description TRONCAL-HACIA-DIST-TEMUCO
+ no ip address
+ no shutdown
+ exit
+interface ethernet 0/1.10
+ description GW-SIEMBRA-RIEGO
+ encapsulation dot1Q 10
+ ip address 192.168.40.129 255.255.255.224
+ ip nat inside
+ exit
+interface ethernet 0/1.20
+ description GW-COSECHA-MOLIENDA
+ encapsulation dot1Q 20
+ ip address 192.168.40.1 255.255.255.192
+ ip nat inside
+ exit
+interface ethernet 0/1.30
+ description GW-ENVASADO-BODEGA
+ encapsulation dot1Q 30
+ ip address 192.168.40.65 255.255.255.192
+ ip nat inside
+ exit
+interface ethernet 0/1.40
+ description GW-VENTAS
+ encapsulation dot1Q 40
+ ip address 192.168.40.161 255.255.255.240
+ ip nat inside
+ exit

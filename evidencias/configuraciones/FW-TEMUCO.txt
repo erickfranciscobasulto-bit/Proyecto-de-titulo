@@ -1,0 +1,21 @@
+==========================================================
+FW-TEMUCO - OPNsense 26.7 (QEMU)
+Proyecto Agroprodel Ltda. - Configuracion vigente (verificada)
+==========================================================
+Interfaces
+  WAN  (vtnet0) 203.0.113.18/30  -> ISP e0/0 (203.0.113.17)
+  LAN  (vtnet1) 203.0.113.1/30   -> R-TEMUCO e0/0 (203.0.113.2)
+  OPT1 (vtnet2) DHCP 192.168.133.188/24 -> MGMT (Web GUI)
+  WAN: "Block private networks" y "Block bogon networks" desactivados
+  NAT de salida (Outbound NAT): deshabilitado (R-TEMUCO hace PAT)
+
+Alias
+  SUCURSALES (Host(s)): 203.0.113.6, 203.0.113.10, 203.0.113.14
+
+Reglas
+  LAN  : IPv4 any desde LAN net -> any (Default allow LAN)
+  OPT1 : TCP desde OPT1 net -> This Firewall puerto 443 (Acceso web MGMT)
+  WAN  : UDP desde SUCURSALES -> 203.0.113.2 puerto 500  (IKE)
+  WAN  : UDP desde SUCURSALES -> 203.0.113.2 puerto 4500 (NAT-T)
+  WAN  : ESP desde SUCURSALES -> 203.0.113.2            (trafico IPsec)
+  WAN  : ICMP desde any -> LAN net                       (pruebas de ping)
