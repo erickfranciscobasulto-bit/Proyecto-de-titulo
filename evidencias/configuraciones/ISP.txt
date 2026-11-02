@@ -1,6 +1,7 @@
 ! ==========================================================
 ! ISP - Proveedor de Internet simulado (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Estado: COMPLETA - verificada (e0/0 up/up, NAT inside/outside, ping 8.8.8.8 OK)
 ! ==========================================================
 enable
 configure terminal
@@ -11,12 +12,15 @@ line console 0
  exec-timeout 0 0
  exit
 !
+! --- Enlace hacia FW-TEMUCO (vtnet0) ---
 interface ethernet 0/0
  description HACIA-FW-TEMUCO-vtnet0
  ip address 203.0.113.17 255.255.255.252
  ip nat inside
  no shutdown
  exit
+!
+! --- Enlaces hacia las sucursales ---
 interface ethernet 0/1
  description HACIA-R-TALCA-e0/0
  ip address 203.0.113.5 255.255.255.252
@@ -35,6 +39,8 @@ interface ethernet 0/2
  ip nat inside
  no shutdown
  exit
+!
+! --- Salida a Internet (Cloud) e Internet simulado ---
 interface ethernet 1/0
  description HACIA-CLOUD-INTERNET
  ip address dhcp
@@ -46,6 +52,7 @@ interface loopback 0
  ip address 8.8.8.8 255.255.255.255
  exit
 !
+! --- Ruta hacia Temuco y NAT del ISP ---
 ip route 203.0.113.0 255.255.255.252 203.0.113.18
 ip access-list standard NAT-ISP
  permit 203.0.113.0 0.0.0.15
