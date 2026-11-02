@@ -113,3 +113,5 @@ interface vlan 99
  no shutdown
  exit
 ip default-gateway 192.168.40.241
+! IOL L2 trae "ip routing" activo: el default-gateway se ignora, se agrega ruta por defecto
+ip route 0.0.0.0 0.0.0.0 192.168.40.241
