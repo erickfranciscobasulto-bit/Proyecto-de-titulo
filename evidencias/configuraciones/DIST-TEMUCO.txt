@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-TEMUCO - Switch de distribucion casa matriz (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 3)
+! Estado: EN PROGRESO (partes 1 a 4)
 ! ==========================================================
 enable
 configure terminal
@@ -48,4 +48,32 @@ interface ethernet 0/0
  switchport trunk native vlan 999
  switchport trunk allowed vlan 10,20,30,40,50,60,70,80,99,999
  no shutdown
+ exit
+!
+! --- EtherChannel LACP: Po1 hacia ACC1, Po2 hacia ACC2 ---
+interface range ethernet 0/1 - 2
+ description PO1-HACIA-ACC1-TEMUCO
+ duplex full
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,60,70,80,99,999
+ channel-group 1 mode active
+ no shutdown
+ exit
+interface range ethernet 0/3 , ethernet 1/0
+ description PO2-HACIA-ACC2-TEMUCO
+ duplex full
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,50,60,70,80,99,999
+ channel-group 2 mode active
+ no shutdown
+ exit
+interface port-channel 1
+ description PO1-HACIA-ACC1-TEMUCO
+ exit
+interface port-channel 2
+ description PO2-HACIA-ACC2-TEMUCO
  exit
