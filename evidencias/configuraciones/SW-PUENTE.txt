@@ -3,7 +3,7 @@
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Uso exclusivo de laboratorio: lleva el PC y telefono fisicos a Temuco
 ! y a Concepcion por un solo cable (VLAN 210 -> 10 y 250 -> 50 de Concepcion)
-! Estado: EN PROGRESO (partes 1 a 3)
+! Estado: COMPLETA (partes 1 a 4) - CDP: e0/0->DIST-TEMUCO e2/2, e0/1->DIST-CONCEPCION e2/2, e0/2->DIST-CONCEPCION e2/3
 ! ==========================================================
 enable
 configure terminal
@@ -70,3 +70,6 @@ interface ethernet 0/2
  spanning-tree bpdufilter enable
  no shutdown
  exit
+!
+end
+write memory
