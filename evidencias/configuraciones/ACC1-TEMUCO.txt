@@ -1,0 +1,37 @@
+! ==========================================================
+! ACC1-TEMUCO - Switch de acceso 1 casa matriz (IOL L2)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Estado: EN PROGRESO (parte 1)
+! ==========================================================
+enable
+configure terminal
+hostname ACC1-TEMUCO
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
+!
+! --- VTP y VLANs ---
+vtp mode transparent
+vlan 10
+ name SIEMBRA-RIEGO
+vlan 20
+ name COSECHA-MOLIENDA
+vlan 30
+ name ENVASADO-BODEGA
+vlan 40
+ name VENTAS
+vlan 50
+ name VOZ
+vlan 60
+ name INVITADOS
+vlan 70
+ name IOT-RIEGO
+vlan 80
+ name SERVIDORES
+vlan 99
+ name ADMINISTRACION
+vlan 999
+ name NATIVA
+ exit

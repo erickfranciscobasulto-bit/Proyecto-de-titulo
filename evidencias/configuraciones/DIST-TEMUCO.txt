@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-TEMUCO - Switch de distribucion casa matriz (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 6)
+! Estado: COMPLETA (partes 1 a 7) - verificada
 ! ==========================================================
 enable
 configure terminal
@@ -15,11 +15,11 @@ line console 0
 ! --- VTP y VLANs ---
 vtp mode transparent
 vlan 10
- name SIEMBRA_RIEGO
+ name SIEMBRA-RIEGO
 vlan 20
- name COSECHA_MOLIENDA
+ name COSECHA-MOLIENDA
 vlan 30
- name ENVASADO_BODEGA
+ name ENVASADO-BODEGA
 vlan 40
  name VENTAS
 vlan 50
@@ -27,7 +27,7 @@ vlan 50
 vlan 60
  name INVITADOS
 vlan 70
- name IOT_RIEGO
+ name IOT-RIEGO
 vlan 80
  name SERVIDORES
 vlan 99
@@ -115,3 +115,6 @@ interface vlan 99
 ip default-gateway 192.168.40.241
 ! IOL L2 trae "ip routing" activo: el default-gateway se ignora, se agrega ruta por defecto
 ip route 0.0.0.0 0.0.0.0 192.168.40.241
+!
+end
+write memory
