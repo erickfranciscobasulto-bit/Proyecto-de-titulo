@@ -1,0 +1,24 @@
+==========================================================
+SRV-ISSABEL - Central telefonica IP (VM VirtualBox en PC fisico)
+Proyecto Agroprodel Ltda. - Configuracion de red aplicada
+Estado: red configurada - ping a gateway 192.168.40.225 y 8.8.8.8 OK
+==========================================================
+Conexion fisica
+  PC anfitrion -> SW-FISICO-TEM Fa0/3 (access VLAN 80 Servidores)
+  Adaptador 1 VM: solo anfitrion (eth0) -> administracion web local
+  Adaptador 2 VM: puente a la NIC del PC (eth1) -> red del proyecto
+
+Red de la VM (eth1, conexion NetworkManager LAB-VLAN80)
+  IP      192.168.40.226/28  (antes 192.168.40.195, cambio por VLSM nuevo)
+  Gateway 192.168.40.225     (R-TEMUCO e0/1.80)
+  DNS     1.1.1.1
+
+Comandos aplicados
+  nmcli con mod LAB-VLAN80 ipv4.addresses 192.168.40.226/28 ipv4.gateway 192.168.40.225 ipv4.dns 1.1.1.1
+  nmcli con up LAB-VLAN80
+  ip addr show eth1
+  ping -c 4 192.168.40.225
+  ping -c 4 8.8.8.8
+
+Windows del PC anfitrion (misma VLAN 80, IP estatica)
+  IP 192.168.40.230 / 255.255.255.240, gateway 192.168.40.225, DNS 1.1.1.1
