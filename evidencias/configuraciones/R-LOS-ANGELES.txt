@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-LOS-ANGELES - Router sucursal Los Angeles / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 4a)
+! Estado: EN PROGRESO (partes 1 a 4b)
 ! ==========================================================
 enable
 configure terminal
@@ -88,3 +88,25 @@ ip dhcp excluded-address 192.168.30.65
 ip dhcp excluded-address 192.168.30.81
 ip dhcp excluded-address 192.168.30.97
 ip dhcp excluded-address 192.168.30.113
+!
+! --- DHCP: pools de datos ---
+ip dhcp pool V10-SIEMBRA-LAN
+ network 192.168.30.32 255.255.255.240
+ default-router 192.168.30.33
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V20-COSECHA-LAN
+ network 192.168.30.48 255.255.255.240
+ default-router 192.168.30.49
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V30-ENVASADO-LAN
+ network 192.168.30.0 255.255.255.224
+ default-router 192.168.30.1
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V40-VENTAS-LAN
+ network 192.168.30.64 255.255.255.240
+ default-router 192.168.30.65
+ dns-server 1.1.1.1
+ exit
