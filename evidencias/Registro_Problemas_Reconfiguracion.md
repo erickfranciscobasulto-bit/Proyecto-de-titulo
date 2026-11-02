@@ -42,3 +42,16 @@ Cada entrada indica el equipo, el síntoma, la causa técnica, la solución apli
 | **Causa** | CDP informa la VLAN de acceso de cada extremo. En estos puertos la diferencia es **intencional**: es la traducción de VLAN 210→10 y 250→50 que permite que los equipos físicos operen como Concepción. |
 | **Impacto** | Ninguno; el tráfico funciona. Solo genera mensajes en la consola. |
 | **Solución (opcional)** | `no cdp enable` en SW-PUENTE e0/1-2 y DIST-CONCEPCION e2/2-3 para limpiar los logs. |
+
+---
+
+## P-04 · Pool DHCP de voz de Temuco vacío
+
+| Campo | Detalle |
+|---|---|
+| **Equipo** | R-TEMUCO |
+| **Síntoma** | Al agregar `option 150`, `show running-config \| section V50-VOZ-TEM` muestra solo esa línea. `show ip dhcp pool V50-VOZ-TEM` indica *Total addresses 0* y *0 subnet is currently in the pool*. |
+| **Causa** | Las líneas `network`, `default-router` y `dns-server` del pool V50-VOZ-TEM no quedaron aplicadas en la Parte 4c (el pool existía solo con su nombre). Los teléfonos de la VLAN 50 no podían recibir IP por DHCP. |
+| **Solución** | Completar el pool: `network 192.168.40.176 255.255.255.240`, `default-router 192.168.40.177`, `dns-server 1.1.1.1`, `option 150 ip 192.168.40.226` y `write memory`. |
+| **Verificación** | `show ip dhcp pool V50-VOZ-TEM` → subred 192.168.40.176, 14 direcciones totales. Revisión de los demás pools con `show ip dhcp pool \| include Pool\|Total`. |
+| **Aprendizaje** | Verificar cada pool con `show ip dhcp pool` (no solo `show running-config`) inmediatamente después de crearlo. |
