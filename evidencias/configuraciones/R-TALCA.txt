@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TALCA - Router sucursal Talca / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 4a)
+! Estado: EN PROGRESO (partes 1 a 4b)
 ! ==========================================================
 enable
 configure terminal
@@ -88,3 +88,25 @@ ip dhcp excluded-address 192.168.10.129
 ip dhcp excluded-address 192.168.10.145
 ip dhcp excluded-address 192.168.10.161
 ip dhcp excluded-address 192.168.10.177
+!
+! --- DHCP: pools de datos ---
+ip dhcp pool V10-SIEMBRA-TAL
+ network 192.168.10.64 255.255.255.224
+ default-router 192.168.10.65
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V20-COSECHA-TAL
+ network 192.168.10.96 255.255.255.224
+ default-router 192.168.10.97
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V30-ENVASADO-TAL
+ network 192.168.10.0 255.255.255.192
+ default-router 192.168.10.1
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V40-VENTAS-TAL
+ network 192.168.10.128 255.255.255.240
+ default-router 192.168.10.129
+ dns-server 1.1.1.1
+ exit
