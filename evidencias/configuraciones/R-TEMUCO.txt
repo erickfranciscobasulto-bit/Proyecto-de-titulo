@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TEMUCO - Router casa matriz / hub de tuneles (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 6b)
+! Estado: EN PROGRESO (partes 1 a 7)
 ! ==========================================================
 enable
 configure terminal
@@ -171,4 +171,33 @@ crypto ipsec transform-set TS-AGRO esp-aes 256 esp-sha256-hmac
  exit
 crypto ipsec profile PROF-AGRO
  set transform-set TS-AGRO
+ exit
+!
+! --- Tuneles GRE + IPsec hacia las sucursales ---
+interface tunnel 1
+ description TUNEL-HACIA-R-TALCA
+ ip address 172.16.0.1 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.6
+ tunnel protection ipsec profile PROF-AGRO
+ exit
+interface tunnel 2
+ description TUNEL-HACIA-R-CONCEPCION
+ ip address 172.16.0.5 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.10
+ tunnel protection ipsec profile PROF-AGRO
+ exit
+interface tunnel 3
+ description TUNEL-HACIA-R-LOS-ANGELES
+ ip address 172.16.0.9 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.14
+ tunnel protection ipsec profile PROF-AGRO
  exit
