@@ -1,7 +1,7 @@
 ! ==========================================================
 ! ACC1-TEMUCO - Switch de acceso 1 casa matriz (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 4)
+! Estado: EN PROGRESO (partes 1 a 5)
 ! ==========================================================
 enable
 configure terminal
@@ -95,3 +95,13 @@ interface ethernet 1/2
  spanning-tree bpduguard enable
  no shutdown
  exit
+!
+! --- IP de gestion (VLAN 99) ---
+interface vlan 99
+ description GESTION-ACC1-TEMUCO
+ ip address 192.168.40.243 255.255.255.240
+ no shutdown
+ exit
+ip default-gateway 192.168.40.241
+! IOL L2 trae "ip routing" activo: se agrega ruta por defecto (ver P-01)
+ip route 0.0.0.0 0.0.0.0 192.168.40.241
