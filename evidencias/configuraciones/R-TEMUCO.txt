@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TEMUCO - Router casa matriz / hub de tuneles (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 3b)
+! Estado: EN PROGRESO (partes 1 a 4b)
 ! ==========================================================
 enable
 configure terminal
@@ -84,4 +84,35 @@ interface ethernet 0/1.99
 interface ethernet 0/1.999
  description VLAN-NATIVA-SIN-USO
  encapsulation dot1Q 999 native
+ exit
+!
+! --- DHCP: direcciones excluidas (gateways) ---
+ip dhcp excluded-address 192.168.40.129
+ip dhcp excluded-address 192.168.40.1
+ip dhcp excluded-address 192.168.40.65
+ip dhcp excluded-address 192.168.40.161
+ip dhcp excluded-address 192.168.40.177
+ip dhcp excluded-address 192.168.40.193
+ip dhcp excluded-address 192.168.40.209
+!
+! --- DHCP: pools de datos ---
+ip dhcp pool V10-SIEMBRA-TEM
+ network 192.168.40.128 255.255.255.224
+ default-router 192.168.40.129
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V20-COSECHA-TEM
+ network 192.168.40.0 255.255.255.192
+ default-router 192.168.40.1
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V30-ENVASADO-TEM
+ network 192.168.40.64 255.255.255.192
+ default-router 192.168.40.65
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V40-VENTAS-TEM
+ network 192.168.40.160 255.255.255.240
+ default-router 192.168.40.161
+ dns-server 1.1.1.1
  exit
