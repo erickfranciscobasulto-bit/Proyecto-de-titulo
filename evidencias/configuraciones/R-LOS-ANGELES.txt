@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-LOS-ANGELES - Router sucursal Los Angeles / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 8)
+! Estado: COMPLETA (partes 1 a 9)
 ! ==========================================================
 enable
 configure terminal
@@ -184,3 +184,6 @@ router ospf 1
  network 192.168.30.0 0.0.0.255 area 0
  network 172.16.0.8 0.0.0.3 area 0
  exit
+!
+end
+write memory
