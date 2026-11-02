@@ -3,7 +3,7 @@
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Uso exclusivo de laboratorio: lleva el PC y telefono fisicos a Temuco
 ! y a Concepcion por un solo cable (VLAN 210 -> 10 y 250 -> 50 de Concepcion)
-! Estado: EN PROGRESO (parte 1)
+! Estado: EN PROGRESO (partes 1 a 2)
 ! ==========================================================
 enable
 configure terminal
@@ -32,3 +32,23 @@ vlan 999
  name NATIVA
  exit
 spanning-tree mode rapid-pvst
+!
+! --- Troncal hacia el rack fisico (Cloud / switch Cisco 2960) ---
+interface ethernet 1/0
+ description TRONCAL-HACIA-RACK-FISICO-2960
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,50,80,99,210,250,999
+ no shutdown
+ exit
+!
+! --- Troncal hacia DIST-TEMUCO e2/2 ---
+interface ethernet 0/0
+ description TRONCAL-HACIA-DIST-TEMUCO-e2/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,50,80,99,999
+ no shutdown
+ exit
