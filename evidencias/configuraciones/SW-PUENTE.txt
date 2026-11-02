@@ -3,7 +3,7 @@
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Uso exclusivo de laboratorio: lleva el PC y telefono fisicos a Temuco
 ! y a Concepcion por un solo cable (VLAN 210 -> 10 y 250 -> 50 de Concepcion)
-! Estado: EN PROGRESO (partes 1 a 2)
+! Estado: EN PROGRESO (partes 1 a 3)
 ! ==========================================================
 enable
 configure terminal
@@ -50,5 +50,23 @@ interface ethernet 0/0
  switchport mode trunk
  switchport trunk native vlan 999
  switchport trunk allowed vlan 10,50,80,99,999
+ no shutdown
+ exit
+!
+! --- Puertos hacia DIST-CONCEPCION (traduccion 210 -> 10 y 250 -> 50) ---
+interface ethernet 0/1
+ description HACIA-DIST-CONCEPCION-e2/2-DATOS-V210
+ duplex full
+ switchport mode access
+ switchport access vlan 210
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+interface ethernet 0/2
+ description HACIA-DIST-CONCEPCION-e2/3-VOZ-V250
+ duplex full
+ switchport mode access
+ switchport access vlan 250
+ spanning-tree bpdufilter enable
  no shutdown
  exit
