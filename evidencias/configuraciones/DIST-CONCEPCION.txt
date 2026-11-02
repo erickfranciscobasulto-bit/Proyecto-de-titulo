@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-CONCEPCION - Switch de distribucion sucursal Concepcion (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 3)
+! Estado: EN PROGRESO (partes 1 a 4)
 ! ==========================================================
 enable
 configure terminal
@@ -92,3 +92,13 @@ interface ethernet 2/3
  spanning-tree bpdufilter enable
  no shutdown
  exit
+!
+! --- IP de gestion (VLAN 99) ---
+interface vlan 99
+ description GESTION-DIST-CONCEPCION
+ ip address 192.168.20.162 255.255.255.240
+ no shutdown
+ exit
+ip default-gateway 192.168.20.161
+! IOL L2 trae "ip routing" activo: se agrega ruta por defecto (ver P-01)
+ip route 0.0.0.0 0.0.0.0 192.168.20.161
