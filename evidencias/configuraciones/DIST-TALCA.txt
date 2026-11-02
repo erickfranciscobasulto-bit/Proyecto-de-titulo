@@ -1,7 +1,7 @@
 ! ==========================================================
 ! DIST-TALCA - Switch de distribucion sucursal Talca (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 2)
+! Estado: EN PROGRESO (partes 1 a 3)
 ! ==========================================================
 enable
 configure terminal
@@ -73,3 +73,13 @@ interface port-channel 1
 interface port-channel 2
  description PO2-HACIA-ACC2-TALCA
  exit
+!
+! --- IP de gestion (VLAN 99) ---
+interface vlan 99
+ description GESTION-DIST-TALCA
+ ip address 192.168.10.194 255.255.255.240
+ no shutdown
+ exit
+ip default-gateway 192.168.10.193
+! IOL L2 trae "ip routing" activo: se agrega ruta por defecto (ver P-01)
+ip route 0.0.0.0 0.0.0.0 192.168.10.193
