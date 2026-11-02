@@ -148,3 +148,12 @@ Client 192.168.40.178 finished SEP7802B142A521.cnf.xml      <- descarga exitosa
 ✅ El teléfono descargó su configuración sin firma. Los demás archivos (`ITLFile.tlv`, `CTLSEP…tlv`, `/sl-be-sip.jar`, `/g3-tones.xml`, `AppDialRules.xml`, `defaultheadsetconfig.json`) son opcionales; su *File not found* no impide el registro.
 
 **T-04 · Tras aplicar la configuración el teléfono pasa a la IP 192.168.40.130 (VLAN 10).** Después de la descarga, las siguientes solicitudes provienen de 192.168.40.130, del pool de datos (VLAN 10) y no del de voz (VLAN 50). El teléfono dejó de usar la VLAN de voz, por lo que su tráfico se mezcla con los datos y no recibe la prioridad prevista. Pendiente: forzar la VLAN de voz en el teléfono (Admin VLAN ID = 50) o verificar que mantenga CDP activo.
+
+### Paso 6 – Registro verificado ✅
+```
+asterisk -rx "pjsip show contacts"
+Contact: 2001/sip:2001@192.168.40.130:5060;transport=udp   Avail   6.393 ms
+```
+El CP-8861 quedó registrado en Issabel como extensión **2001 (Talca)**; la pantalla muestra el menú de reposo (New call, Forward all, Redial).
+
+### Paso 7 – Prueba de llamada 2001 ↔ 1001 (en curso)
