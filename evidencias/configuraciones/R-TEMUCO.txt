@@ -96,42 +96,42 @@ ip dhcp excluded-address 192.168.40.193
 ip dhcp excluded-address 192.168.40.209
 !
 ! --- DHCP: pools de datos ---
-ip dhcp pool V10-SIEMBRA-TEM
+ip dhcp pool VLAN10-SIEMBRA-TEM
  network 192.168.40.128 255.255.255.224
  default-router 192.168.40.129
  dns-server 1.1.1.1
  exit
-ip dhcp pool V20-COSECHA-TEM
+ip dhcp pool VLAN20-COSECHA-TEM
  network 192.168.40.0 255.255.255.192
  default-router 192.168.40.1
  dns-server 1.1.1.1
  exit
-ip dhcp pool V30-ENVASADO-TEM
+ip dhcp pool VLAN30-ENVASADO-TEM
  network 192.168.40.64 255.255.255.192
  default-router 192.168.40.65
  dns-server 1.1.1.1
  exit
-ip dhcp pool V40-VENTAS-TEM
+ip dhcp pool VLAN40-VENTAS-TEM
  network 192.168.40.160 255.255.255.240
  default-router 192.168.40.161
  dns-server 1.1.1.1
  exit
 !
 ! --- DHCP: pools de voz, invitados e IoT ---
-ip dhcp pool V50-VOZ-TEM
+ip dhcp pool VLAN50-VOZ-TEM
  network 192.168.40.176 255.255.255.240
  default-router 192.168.40.177
  dns-server 1.1.1.1
  ! option 150: servidor TFTP (Issabel) para aprovisionar telefonos Cisco Enterprise (CP-8861)
  option 150 ip 192.168.40.226
  exit
-ip dhcp pool V60-INVITADOS-TEM
+ip dhcp pool VLAN60-INVITADOS-TEM
  network 192.168.40.192 255.255.255.240
  default-router 192.168.40.193
  dns-server 1.1.1.1
  lease 0 2
  exit
-ip dhcp pool V70-IOT-TEM
+ip dhcp pool VLAN70-IOT-TEM
  network 192.168.40.208 255.255.255.240
  default-router 192.168.40.209
  dns-server 1.1.1.1

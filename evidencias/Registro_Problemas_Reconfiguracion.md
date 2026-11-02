@@ -45,13 +45,14 @@ Cada entrada indica el equipo, el síntoma, la causa técnica, la solución apli
 
 ---
 
-## P-04 · Pool DHCP de voz de Temuco vacío
+## P-04 · option 150 aplicada en un pool DHCP nuevo y vacío
 
 | Campo | Detalle |
 |---|---|
 | **Equipo** | R-TEMUCO |
-| **Síntoma** | Al agregar `option 150`, `show running-config \| section V50-VOZ-TEM` muestra solo esa línea. `show ip dhcp pool V50-VOZ-TEM` indica *Total addresses 0* y *0 subnet is currently in the pool*. |
-| **Causa** | Las líneas `network`, `default-router` y `dns-server` del pool V50-VOZ-TEM no quedaron aplicadas en la Parte 4c (el pool existía solo con su nombre). Los teléfonos de la VLAN 50 no podían recibir IP por DHCP. |
-| **Solución** | Completar el pool: `network 192.168.40.176 255.255.255.240`, `default-router 192.168.40.177`, `dns-server 1.1.1.1`, `option 150 ip 192.168.40.226` y `write memory`. |
-| **Verificación** | `show ip dhcp pool V50-VOZ-TEM` → subred 192.168.40.176, 14 direcciones totales. Revisión de los demás pools con `show ip dhcp pool \| include Pool\|Total`. |
-| **Aprendizaje** | Verificar cada pool con `show ip dhcp pool` (no solo `show running-config`) inmediatamente después de crearlo. |
+| **Síntoma** | Tras agregar `option 150`, `show ip dhcp pool V50-VOZ-TEM` indica *Total addresses 0* y *0 subnet is currently in the pool*. |
+| **Diagnóstico** | `show running-config \| section dhcp` muestra que los pools reales del router se llaman **VLAN10-SIEMBRA-TEM … VLAN70-IOT-TEM** (el de voz es **VLAN50-VOZ-TEM**, con su red y gateway correctos). El comando `ip dhcp pool V50-VOZ-TEM` no editó ese pool: **creó uno nuevo**, vacío, que solo contenía la option 150. |
+| **Causa** | Diferencia entre el nombre de pool de la guía (V50-…) y el usado al configurar el equipo (VLAN50-…). En IOS, `ip dhcp pool <nombre>` crea el pool si el nombre no existe, sin advertencia. |
+| **Solución** | `no ip dhcp pool V50-VOZ-TEM` y agregar `option 150 ip 192.168.40.226` dentro de `ip dhcp pool VLAN50-VOZ-TEM`. |
+| **Verificación** | `show running-config \| section VLAN50-VOZ-TEM` incluye network, default-router, dns-server y option 150. |
+| **Aprendizaje** | Antes de modificar un pool, confirmar su nombre exacto con `show ip dhcp pool` o `show running-config \| section dhcp`. La documentación del equipo se actualizó con los nombres reales. |
