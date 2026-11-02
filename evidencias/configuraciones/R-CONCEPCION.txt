@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-CONCEPCION - Router sucursal Concepcion / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 4c)
+! Estado: EN PROGRESO (partes 1 a 5)
 ! ==========================================================
 enable
 configure terminal
@@ -127,4 +127,22 @@ ip dhcp pool V70-IOT-CON
  network 192.168.20.144 255.255.255.240
  default-router 192.168.20.145
  dns-server 1.1.1.1
+ exit
+!
+! --- PAT: salida a Internet ---
+ip access-list standard NAT-CONCEPCION
+ permit 192.168.20.0 0.0.0.255
+ exit
+ip nat inside source list NAT-CONCEPCION interface ethernet 0/0 overload
+!
+! --- ACL de invitados: solo Internet ---
+ip access-list extended INVITADOS-IN
+ permit udp any any eq bootps
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ permit ip any any
+ exit
+interface ethernet 0/1.60
+ ip access-group INVITADOS-IN in
  exit
