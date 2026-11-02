@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TEMUCO - Router casa matriz / hub de tuneles (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 6a)
+! Estado: EN PROGRESO (partes 1 a 6b)
 ! ==========================================================
 enable
 configure terminal
@@ -164,3 +164,11 @@ crypto isakmp policy 10
 crypto isakmp key AgroTunel2026 address 203.0.113.6
 crypto isakmp key AgroTunel2026 address 203.0.113.10
 crypto isakmp key AgroTunel2026 address 203.0.113.14
+!
+! --- IPsec fase 2 (transform-set y perfil) ---
+crypto ipsec transform-set TS-AGRO esp-aes 256 esp-sha256-hmac
+ mode transport
+ exit
+crypto ipsec profile PROF-AGRO
+ set transform-set TS-AGRO
+ exit
