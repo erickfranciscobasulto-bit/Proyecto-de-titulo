@@ -1,7 +1,7 @@
 ! ==========================================================
 ! ACC2-CONCEPCION - Switch de acceso 2 sucursal Concepcion (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 2)
+! Estado: EN PROGRESO (partes 1 a 3)
 ! ==========================================================
 enable
 configure terminal
@@ -61,4 +61,41 @@ interface port-channel 2
  exit
 interface port-channel 3
  description PO3-HACIA-ACC1-CONCEPCION
+ exit
+!
+! --- Puertos de acceso (datos + voz) y AP sala de ventas ---
+interface ethernet 1/0
+ description PC-V30-CON-ENVASADO
+ switchport mode access
+ switchport access vlan 30
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface ethernet 1/1
+ description PC-V40-CON-VENTAS
+ switchport mode access
+ switchport access vlan 40
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface ethernet 1/2
+ description PC-V10B-CON-SIEMBRA
+ switchport mode access
+ switchport access vlan 10
+ switchport voice vlan 50
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface ethernet 1/3
+ description AP-CBW150AX-CON-SALA-VENTAS
+ switchport mode access
+ switchport access vlan 60
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
  exit
