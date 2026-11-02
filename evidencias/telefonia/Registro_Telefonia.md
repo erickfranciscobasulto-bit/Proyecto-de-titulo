@@ -56,3 +56,5 @@ systemctl enable xinetd
 systemctl restart xinetd
 systemctl status xinetd      # active (running)
 ```
+
+`cat /etc/xinetd.d/tftp` → `server = /usr/sbin/in.tftpd`, `server_args = -s -vv /tftpboot`, `disable = no`: el TFTP de Issabel ya viene habilitado y sirve la carpeta /tftpboot.
