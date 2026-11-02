@@ -1,0 +1,33 @@
+! ==========================================================
+! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
+! Estado: EN PROGRESO (parte 1)
+! ==========================================================
+enable
+configure terminal
+hostname SW-FISICO-TEM
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
+!
+! --- VTP y VLANs ---
+vtp mode transparent
+vlan 10
+ name TEM-SIEMBRA-RIEGO
+vlan 50
+ name TEM-VOZ
+vlan 80
+ name TEM-SERVIDORES
+vlan 99
+ name TEM-ADMINISTRACION
+vlan 210
+ name CON-DATOS
+vlan 250
+ name CON-VOZ
+vlan 999
+ name NATIVA
+ exit
+spanning-tree mode rapid-pvst
