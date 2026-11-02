@@ -2,7 +2,7 @@
 ! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
-! Estado: EN PROGRESO (partes 1 a 3) - Gi0/1 trunking nativa 999 verificado
+! Estado: EN PROGRESO (partes 1 a 4) - Gi0/1 trunking nativa 999 y VLAN de acceso verificados
 ! ==========================================================
 enable
 configure terminal
@@ -78,3 +78,12 @@ interface fastEthernet 0/5
  spanning-tree bpduguard enable
  no shutdown
  exit
+!
+! --- IP de gestion (VLAN 99) y LLDP para telefonos de otras marcas ---
+interface vlan 99
+ description GESTION-SW-FISICO-TEM
+ ip address 192.168.40.245 255.255.255.240
+ no shutdown
+ exit
+ip default-gateway 192.168.40.241
+lldp run
