@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-LOS-ANGELES - Router sucursal Los Angeles / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 6)
+! Estado: EN PROGRESO (partes 1 a 7)
 ! ==========================================================
 enable
 configure terminal
@@ -163,4 +163,15 @@ crypto ipsec transform-set TS-AGRO esp-aes 256 esp-sha256-hmac
  exit
 crypto ipsec profile PROF-AGRO
  set transform-set TS-AGRO
+ exit
+!
+! --- Tunel GRE + IPsec hacia R-TEMUCO ---
+interface tunnel 3
+ description TUNEL-HACIA-R-TEMUCO
+ ip address 172.16.0.10 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.2
+ tunnel protection ipsec profile PROF-AGRO
  exit
