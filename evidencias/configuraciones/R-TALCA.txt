@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TALCA - Router sucursal Talca / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (parte 1)
+! Estado: EN PROGRESO (partes 1 a 2)
 ! ==========================================================
 enable
 configure terminal
@@ -11,3 +11,12 @@ line console 0
  logging synchronous
  exec-timeout 0 0
  exit
+!
+! --- WAN hacia ISP e0/1 ---
+interface ethernet 0/0
+ description HACIA-ISP-e0/1
+ ip address 203.0.113.6 255.255.255.252
+ ip nat outside
+ no shutdown
+ exit
+ip route 0.0.0.0 0.0.0.0 203.0.113.5
