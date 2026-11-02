@@ -2,7 +2,7 @@
 ! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
-! Estado: EN PROGRESO (parte 1)
+! Estado: EN PROGRESO (partes 1 a 2)
 ! ==========================================================
 enable
 configure terminal
@@ -31,3 +31,13 @@ vlan 999
  name NATIVA
  exit
 spanning-tree mode rapid-pvst
+!
+! --- Troncal Gi0/1 hacia el laboratorio (notebook / SW-PUENTE e1/0) ---
+! El 2960 solo soporta 802.1Q: no requiere "switchport trunk encapsulation"
+interface gigabitEthernet 0/1
+ description TRONCAL-HACIA-NOTEBOOK-SW-PUENTE-e1/0
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,50,80,99,210,250,999
+ no shutdown
+ exit
