@@ -118,3 +118,16 @@ cat > /tftpboot/SEP7802B142A521.cnf.xml <<'XML'
 XML
 chmod 644 /tftpboot/SEP7802B142A521.cnf.xml
 ```
+
+Acceso al servidor para pegar el archivo: `ssh root@192.168.40.226` desde el PC anfitrión (el usuario "issabel" no existe → *Permission denied*; no era el firewall).
+Verificación: `grep authPassword /tftpboot/SEP7802B142A521.cnf.xml` coincide con el secret de la extensión 2001 en Issabel. ✅ Paso 3 completado.
+
+### Paso 4 – Opción DHCP 150 en R-TEMUCO (servidor TFTP para teléfonos Cisco)
+```
+configure terminal
+ip dhcp pool V50-VOZ-TEM
+ option 150 ip 192.168.40.226
+ exit
+end
+write memory
+```

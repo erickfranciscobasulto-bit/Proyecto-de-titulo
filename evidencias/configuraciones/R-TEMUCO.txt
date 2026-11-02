@@ -122,6 +122,8 @@ ip dhcp pool V50-VOZ-TEM
  network 192.168.40.176 255.255.255.240
  default-router 192.168.40.177
  dns-server 1.1.1.1
+ ! option 150: servidor TFTP (Issabel) para aprovisionar telefonos Cisco Enterprise (CP-8861)
+ option 150 ip 192.168.40.226
  exit
 ip dhcp pool V60-INVITADOS-TEM
  network 192.168.40.192 255.255.255.240
