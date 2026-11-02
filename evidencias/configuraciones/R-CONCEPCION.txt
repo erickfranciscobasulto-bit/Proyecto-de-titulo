@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-CONCEPCION - Router sucursal Concepcion / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: EN PROGRESO (partes 1 a 4b)
+! Estado: EN PROGRESO (partes 1 a 4c)
 ! ==========================================================
 enable
 configure terminal
@@ -108,5 +108,23 @@ ip dhcp pool V30-ENVASADO-CON
 ip dhcp pool V40-VENTAS-CON
  network 192.168.20.96 255.255.255.240
  default-router 192.168.20.97
+ dns-server 1.1.1.1
+ exit
+!
+! --- DHCP: pools de voz, invitados e IoT ---
+ip dhcp pool V50-VOZ-CON
+ network 192.168.20.112 255.255.255.240
+ default-router 192.168.20.113
+ dns-server 1.1.1.1
+ exit
+ip dhcp pool V60-INVITADOS-CON
+ network 192.168.20.128 255.255.255.240
+ default-router 192.168.20.129
+ dns-server 1.1.1.1
+ lease 0 2
+ exit
+ip dhcp pool V70-IOT-CON
+ network 192.168.20.144 255.255.255.240
+ default-router 192.168.20.145
  dns-server 1.1.1.1
  exit
