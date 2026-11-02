@@ -58,3 +58,63 @@ systemctl status xinetd      # active (running)
 ```
 
 `cat /etc/xinetd.d/tftp` → `server = /usr/sbin/in.tftpd`, `server_args = -s -vv /tftpboot`, `disable = no`: el TFTP de Issabel ya viene habilitado y sirve la carpeta /tftpboot.
+
+```
+systemctl enable --now xinetd
+ss -ulnp | grep :69          # UNCONN 0.0.0.0:69 users:(("xinetd",pid=775,fd=5))
+```
+✅ Paso 2 completado: TFTP escuchando en UDP 69.
+
+### Paso 3 – Archivo de configuración del teléfono (SEP7802B142A521.cnf.xml)
+Extensión 2001 (Talca) · servidor de registro 192.168.40.226 · DSCP de audio 184 (EF) · la clave se reemplaza por el secret de la extensión (no se documenta).
+```
+cat > /tftpboot/SEP7802B142A521.cnf.xml <<'XML'
+<device>
+<fullConfig>true</fullConfig>
+<deviceProtocol>SIP</deviceProtocol>
+<devicePool>
+<dateTimeSetting>
+<dateTemplate>D/M/Ya</dateTemplate>
+<timeZone>Pacific SA Standard/Daylight Time</timeZone>
+</dateTimeSetting>
+<callManagerGroup>
+<members>
+<member priority="0">
+<callManager>
+<ports>
+<ethernetPhonePort>2000</ethernetPhonePort>
+<sipPort>5060</sipPort>
+</ports>
+<processNodeName>192.168.40.226</processNodeName>
+</callManager>
+</member>
+</members>
+</callManagerGroup>
+</devicePool>
+<sipProfile>
+<sipProxies>
+<registerWithProxy>true</registerWithProxy>
+</sipProxies>
+<preferredCodec>g711ulaw</preferredCodec>
+<phoneLabel>TALCA</phoneLabel>
+<sipLines>
+<line button="1">
+<featureID>9</featureID>
+<featureLabel>2001</featureLabel>
+<proxy>USECALLMANAGER</proxy>
+<port>5060</port>
+<name>2001</name>
+<displayName>Asistente Talca</displayName>
+<authName>2001</authName>
+<authPassword>********</authPassword>
+<contact>2001</contact>
+</line>
+</sipLines>
+<voipControlPort>5060</voipControlPort>
+<dscpForAudio>184</dscpForAudio>
+</sipProfile>
+<transportLayerProtocol>2</transportLayerProtocol>
+</device>
+XML
+chmod 644 /tftpboot/SEP7802B142A521.cnf.xml
+```
