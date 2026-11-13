@@ -40,7 +40,21 @@ h2{font-size:30px;margin:0 0 8px;color:var(--verde)}
 .tag{display:inline-block;background:#eef5ef;color:var(--verde);font-size:13px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:12px}
 .ico{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--trigo),#f0c66b);display:flex;align-items:center;justify-content:center;font-weight:800;color:#3b2c08;margin-bottom:14px}
 .alt{background:#fff}
-.sede{border-top-color:var(--verde2);text-align:center}
+.sede{border-top-color:var(--verde2);text-align:center;font:inherit;color:inherit;cursor:pointer;width:100%;border-left:0;border-right:0;border-bottom:0}
+.sede .ver{display:inline-block;margin-top:12px;font-size:14px;font-weight:600;color:var(--verde2)}
+.modal{position:fixed;inset:0;background:rgba(15,30,20,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal.on{display:flex}
+.mbox{background:#fff;border-radius:16px;max-width:440px;width:100%;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.3);animation:up .25s ease}
+@keyframes up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.mhead{background:var(--verde);color:#fff;padding:20px 24px;position:relative}
+.mhead small{opacity:.85;font-weight:600;letter-spacing:.5px}
+.mhead h3{margin:4px 0 0;font-size:24px}
+.cerrar{position:absolute;top:14px;right:16px;background:transparent;border:0;color:#fff;font-size:26px;cursor:pointer;padding:0;width:auto}
+.mbody{padding:22px 24px}
+.fila{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #eee;font-size:15px}
+.fila span{color:var(--gris)}
+.llamar{display:block;text-align:center;background:var(--trigo);color:#2b2108;font-weight:700;padding:13px;border-radius:10px;margin-top:18px}
+.nota{font-size:12px;color:var(--gris);margin-top:12px;text-align:center}
 .sede .op{font-size:34px;font-weight:800;color:var(--trigo)}
 .ivr{background:var(--verde);color:#fff;border-radius:14px;padding:22px 26px;margin-top:26px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .svc{border-top-color:var(--verde)}
@@ -100,10 +114,10 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
  <h2>Nuestras sedes</h2>
  <p class="sub">Llámanos a la mesa central y elige la sede con la que quieres comunicarte.</p>
  <div class="grid g4">
-  <div class="card sede"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>1</div><h3>Temuco</h3><p>Casa matriz</p></div>
-  <div class="card sede"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>2</div><h3>Talca</h3><p>Sucursal</p></div>
-  <div class="card sede"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>3</div><h3>Concepción</h3><p>Sucursal</p></div>
-  <div class="card sede"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>4</div><h3>Los Ángeles</h3><p>Sucursal</p></div>
+  <button class="card sede" type="button" onclick="abrirSede(1)"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>1</div><h3>Temuco</h3><p>Casa matriz</p><span class="ver">Ver contacto →</span></button>
+  <button class="card sede" type="button" onclick="abrirSede(2)"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>2</div><h3>Talca</h3><p>Sucursal</p><span class="ver">Ver contacto →</span></button>
+  <button class="card sede" type="button" onclick="abrirSede(3)"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>3</div><h3>Concepción</h3><p>Sucursal</p><span class="ver">Ver contacto →</span></button>
+  <button class="card sede" type="button" onclick="abrirSede(4)"><div class="op"><small style="display:block;font-size:13px;color:#6b7280;font-weight:600">OPCIÓN IVR</small>4</div><h3>Los Ángeles</h3><p>Sucursal</p><span class="ver">Ver contacto →</span></button>
  </div>
  <div class="ivr"><b>Mesa central con atención automática (IVR)</b><span>Marca la opción de la sede y te comunicamos con su asistente</span></div>
 </div></section>
@@ -137,7 +151,35 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
 <footer><div class="wrap">
  <span>© 2026 Agroprodel Ltda. · Proyecto de título Duoc UC</span>
- <span>Servicio WEB en la nube (AWS) · srv-agroprodel</span>
+ <span>Servicio WEB en la nube (AWS) · srv-agroprodel · Números telefónicos de demostración</span>
 </div></footer>
+<div class="modal" id="modal" onclick="if(event.target===this)cerrarSede()">
+ <div class="mbox">
+  <div class="mhead"><small id="m-op"></small><h3 id="m-sede"></h3><button class="cerrar" type="button" onclick="cerrarSede()" aria-label="Cerrar">×</button></div>
+  <div class="mbody">
+   <div class="fila"><span>Teléfono directo</span><b id="m-tel"></b></div>
+   <div class="fila"><span>Anexo asistente</span><b id="m-anexo"></b></div>
+   <div class="fila"><span>Desde la mesa central</span><b id="m-ivr"></b></div>
+   <div class="fila"><span>Región</span><b id="m-reg"></b></div>
+   <div class="fila"><span>Horario</span><b>Lun a vie, 08:30 a 18:00</b></div>
+   <a class="llamar" id="m-link" href="#">Llamar a la sede</a>
+   <p class="nota">Números de demostración del proyecto académico.</p>
+  </div>
+ </div>
+</div>
+<script>
+const SEDES={1:{s:'Temuco',t:'Casa matriz',tel:'+56 45 2 990 100',a:'100',r:'Región de La Araucanía'},2:{s:'Talca',t:'Sucursal',tel:'+56 71 2 990 200',a:'200',r:'Región del Maule'},3:{s:'Concepción',t:'Sucursal',tel:'+56 41 2 990 300',a:'300',r:'Región del Biobío'},4:{s:'Los Ángeles',t:'Sucursal',tel:'+56 43 2 990 400',a:'400',r:'Región del Biobío'}};
+function abrirSede(o){const d=SEDES[o];
+ document.getElementById('m-op').textContent='OPCIÓN IVR '+o+' · '+d.t.toUpperCase();
+ document.getElementById('m-sede').textContent=d.s;
+ document.getElementById('m-tel').textContent=d.tel;
+ document.getElementById('m-anexo').textContent=d.a;
+ document.getElementById('m-ivr').textContent='Marque '+o;
+ document.getElementById('m-reg').textContent=d.r;
+ document.getElementById('m-link').href='tel:'+d.tel.replace(/\s/g,'');
+ document.getElementById('modal').classList.add('on');}
+function cerrarSede(){document.getElementById('modal').classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarSede();});
+</script>
 </body>
 </html>
