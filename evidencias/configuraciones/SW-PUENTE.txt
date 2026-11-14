@@ -26,6 +26,8 @@ vlan 99
  name TEM-ADMINISTRACION
 vlan 210
  name CON-DATOS
+vlan 220
+ name TAL-DATOS
 vlan 250
  name CON-VOZ
 vlan 999
@@ -39,7 +41,7 @@ interface ethernet 1/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 999
- switchport trunk allowed vlan 10,50,80,99,210,250,999
+ switchport trunk allowed vlan 10,50,80,99,210,220,250,999
  no shutdown
  exit
 !
@@ -67,6 +69,16 @@ interface ethernet 0/2
  duplex full
  switchport mode access
  switchport access vlan 250
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
+! --- Puerto hacia DIST-TALCA (traduccion 220 -> 10 de Talca) ---
+interface ethernet 0/3
+ description HACIA-DIST-TALCA-e2/2-DATOS-V220
+ duplex full
+ switchport mode access
+ switchport access vlan 220
  spanning-tree bpdufilter enable
  no shutdown
  exit
