@@ -99,22 +99,22 @@ ip dhcp excluded-address 192.168.40.209
 ip dhcp pool VLAN10-SIEMBRA-TEM
  network 192.168.40.128 255.255.255.224
  default-router 192.168.40.129
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 ip dhcp pool VLAN20-COSECHA-TEM
  network 192.168.40.0 255.255.255.192
  default-router 192.168.40.1
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 ip dhcp pool VLAN30-ENVASADO-TEM
  network 192.168.40.64 255.255.255.192
  default-router 192.168.40.65
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 ip dhcp pool VLAN40-VENTAS-TEM
  network 192.168.40.160 255.255.255.240
  default-router 192.168.40.161
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 !
 ! --- DHCP: pools de voz, invitados e IoT ---
@@ -134,7 +134,7 @@ ip dhcp pool VLAN60-INVITADOS-TEM
 ip dhcp pool VLAN70-IOT-TEM
  network 192.168.40.208 255.255.255.240
  default-router 192.168.40.209
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 !
 ! --- PAT: salida a Internet ---
