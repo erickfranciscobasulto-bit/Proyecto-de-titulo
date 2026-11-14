@@ -48,6 +48,7 @@ interface range ethernet 0/0 - 1
  exit
 interface range ethernet 0/2 - 3
  description PO3-HACIA-ACC1-CONCEPCION
+ load-interval 30
  duplex full
  switchport trunk encapsulation dot1q
  switchport mode trunk

@@ -56,3 +56,30 @@ Cada entrada indica el equipo, el síntoma, la causa técnica, la solución apli
 | **Solución** | `no ip dhcp pool V50-VOZ-TEM` y agregar `option 150 ip 192.168.40.226` dentro de `ip dhcp pool VLAN50-VOZ-TEM`. |
 | **Verificación** | `show running-config \| section VLAN50-VOZ-TEM` incluye network, default-router, dns-server y option 150. |
 | **Aprendizaje** | Antes de modificar un pool, confirmar su nombre exacto con `show ip dhcp pool` o `show running-config \| section dhcp`. La documentación del equipo se actualizó con los nombres reales. |
+
+---
+
+## P-05 · SSH sin cifrado en común con los switches de acceso de Concepción
+
+| Campo | Detalle |
+|---|---|
+| **Equipos** | ACC1-CONCEPCION y ACC2-CONCEPCION |
+| **Síntoma** | Desde R-CONCEPCION, `ssh -l admin 192.168.20.163` termina con *Connection aborted* y el log muestra `%SSH-3-NO_MATCH: No matching cipher found: client aes128-ctr,... server aes128-cbc,3des-cbc,...`. |
+| **Diagnóstico** | `show running-config` indica `version 15.1`: estos dos nodos usan una imagen IOL más antigua que el resto (15.2). Esa versión solo ofrece cifrados CBC y no acepta `ip ssh server algorithm encryption`. |
+| **Solución** | Conectar indicando un cifrado CBC desde el cliente: `ssh -c aes256-cbc -l admin 192.168.20.163` (y .164). |
+| **Recomendación** | Actualizar ambos nodos a IOS 15.2 o superior para usar AES-CTR, igual que el resto de la red. 3DES-CBC se considera obsoleto. |
+
+---
+
+## P-06 · Bucle de capa 2 en ACC2-CONCEPCION tras reiniciar el EtherChannel
+
+| Campo | Detalle |
+|---|---|
+| **Equipos** | ACC2-CONCEPCION (IOS 15.1), ACC1-CONCEPCION, DIST-CONCEPCION |
+| **Origen** | Se corrigió un `%CDP-4-DUPLEX_MISMATCH` aplicando `duplex full` en e0/0-3 de ACC1 y ACC2 (la imagen 15.1 había quedado en `duplex auto`). Los EtherChannel se reiniciaron. |
+| **Síntoma** | Los PC de ACC2 (VLAN 10, 30 y 40) no obtienen IP. `debug ip dhcp server packet` en R-CONCEPCION muestra DISCOVER recibido y OFFER enviado, pero el cliente sigue enviando DISCOVER. |
+| **Diagnóstico** | DIST aprende la MAC del PC en Po2 (correcto), pero ACC2 la aprende en **Et0/3** (miembro de Po3). `show interfaces` en ACC2: Et0/2 y Et0/3 reciben ~30 000 pps y Po2 transmite ~15 000 pps hacia DIST. `show spanning-tree vlan 30` indica Po3 *Altn BLK* y Po2 *Root FWD*: el plano de control está bien, pero los miembros de Po3 seguían reenviando tráfico como puertos sueltos. |
+| **Causa** | Falla de la imagen IOL 15.1 al reconstruir el Port-channel: el bloqueo de spanning tree no se aplicó a los puertos miembros, formando el bucle DIST → Po1 → ACC1 → Po3 → ACC2 → Po2 → DIST. |
+| **Solución** | `shutdown` en e0/2-3 de ACC2 (corta el bucle: Po2 baja de 15 135 a 347 pps y los tres PC obtienen IP); luego `no shutdown` con `load-interval 30`. Po3 vuelve como *Altn BLK* con ~127 pps de entrada (tráfico normal descartado). |
+| **Verificación** | `show etherchannel summary` Po2(SU) y Po3(SU); `show spanning-tree vlan 30` Po3 Altn BLK; tasas de entrada/salida normales; DHCP funcionando en los tres PC. |
+| **Aprendizaje** | Un enlace bloqueado por STP que muestra miles de pps de entrada y MAC aprendidas en un puerto miembro indica un bucle en el plano de datos. Cortar primero el enlace redundante, verificar, y reactivarlo vigilando las tasas. Si la falla se repite, `reload` del equipo. |
