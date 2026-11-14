@@ -71,12 +71,16 @@ Durante el diagnóstico se agregaron temporalmente `log_ftp_protocol=YES`, `dual
 | Solución | Cambiar a **FTPS implícito en el puerto 990** (`listen_port=990`, `implicit_ssl=YES`): el canal va cifrado desde el primer byte y el ALG no puede intervenir. Reglas del grupo de seguridad 21 → 990. |
 | Beneficio adicional | Funcionará igual en redes que no se controlan (por ejemplo, la de Duoc el día de la demostración). |
 
-### P-08 · Subidas de 0 bytes con TLS 1.3 (vsftpd 3.0.5)
+### P-08 · Archivos subidos con 0 bytes (OneDrive "solo en la nube")
 | Campo | Detalle |
 |---|---|
-| Síntoma | El archivo aparece en `/archivos` con **0 KB**. El listado de directorios funciona. |
-| Diagnóstico | Registro: `STOR ...` → `FAIL UPLOAD ... 0.00Kbyte/sec` y luego `OK UPLOAD ... 0.00Kbyte/sec`. El canal pasivo conecta (el `LIST` responde 226), pero el contenido no llega. |
-| Causa (hipótesis) | Incompatibilidad conocida de vsftpd 3.0.5 con TLS 1.3 en el canal de datos cuando el cliente envía (mensajes posteriores al handshake / *session tickets*). |
-| Prueba | Limitar la versión máxima de TLS del cliente a **TLS 1.2** (WinSCP → Avanzado → Conexión → TLS/SSL). *Resultado: pendiente de registrar.* |
-| Seguridad | TLS 1.2 con AES-256-GCM cumple PCI-DSS y NIST; SSLv2, SSLv3 y TLS 1.0/1.1 quedan deshabilitados. |
-| Mejora futura | Migrar a un servidor con soporte completo de TLS 1.3 en FTPS (ProFTPD o Pure-FTPd) o usar SFTP. |
+| Síntoma | Los archivos subidos desde `C:\Users\<usuario>\OneDrive\Documentos` aparecen en `/archivos` con **0 KB**. El listado de directorios funciona. |
+| Diagnóstico | Registro de vsftpd: `STOR ...` → `FAIL UPLOAD ... 0.00Kbyte/sec` y luego `OK UPLOAD ... 0.00Kbyte/sec`: la sesión TLS y el canal pasivo funcionan, pero no llegan datos. |
+| Hipótesis descartada | Incompatibilidad de vsftpd 3.0.5 con TLS 1.3: limitar el cliente a TLS 1.2 no cambió el resultado mientras el origen seguía en OneDrive. |
+| Prueba concluyente | El mismo procedimiento con archivos de `C:\Users\<usuario>\Downloads` (almacenamiento local) sube con su **tamaño completo** (`index.html`, 36 KB). |
+| Causa | **OneDrive Archivos a petición**: los archivos marcados "solo en la nube" muestran su tamaño en el explorador, pero el contenido no está en el disco; el cliente FTP lee 0 bytes. No es una falla del servidor ni de TLS. |
+| Solución | Subir desde una carpeta local, o en OneDrive marcar la carpeta como **"Mantener siempre en este dispositivo"** antes de transferir. El cliente puede volver a TLS 1.3 (máxima versión) sin problemas. |
+| Aprendizaje | Ante un síntoma en la red, comprobar también el origen de los datos: el registro del servidor (OK UPLOAD con 0 KB/s) indicaba que la sesión era correcta y que el cliente no entregaba contenido. |
+
+## Pendiente
+- Retirar el registro detallado de comandos (`log_ftp_protocol`, `dual_log_enable`, `vsftpd_log_file`) una vez terminadas las pruebas.
