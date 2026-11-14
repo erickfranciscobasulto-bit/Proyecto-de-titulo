@@ -45,6 +45,17 @@ h2{font-size:30px;margin:0 0 8px;color:var(--verde)}
 .tag{display:inline-block;background:#eef5ef;color:var(--verde);font-size:13px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:12px}
 .ico{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--trigo),#f0c66b);display:flex;align-items:center;justify-content:center;font-weight:800;color:#3b2c08;margin-bottom:14px}
 .alt{background:#fff}
+.prod{padding:0;overflow:hidden;position:relative;border-top:0}
+.prod .img{position:relative;height:200px;overflow:hidden}
+.prod svg{display:block;width:100%;height:100%;transition:transform .4s}
+.prod:hover svg{transform:scale(1.06)}
+.prod .pc{padding:22px 24px 24px}
+.prod h3{font-size:21px}
+.badge{position:absolute;top:14px;left:14px;background:var(--verde);color:#fff;font-size:12px;font-weight:700;letter-spacing:.5px;padding:5px 12px;border-radius:20px;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.badge.dorado{background:var(--trigo);color:#3b2c08}
+.usos{margin:10px 0 0;padding:0;list-style:none;font-size:14px;color:#4b5563}
+.usos li{padding-left:18px;position:relative;margin:3px 0}
+.usos li:before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--trigo)}
 .sede{border-top-color:var(--verde2);text-align:center;font:inherit;color:inherit;cursor:pointer;width:100%;border-left:0;border-right:0;border-bottom:0}
 .sede .ver{display:inline-block;margin-top:12px;font-size:14px;font-weight:600;color:var(--verde2)}
 .modal{position:fixed;inset:0;background:rgba(15,30,20,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
@@ -151,9 +162,37 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
  <h2>Nuestros productos</h2>
  <p class="sub">Harinas y trigo elaborados con grano de producción propia.</p>
  <div class="grid g3">
-  <div class="card"><h3>Harina panadera</h3><p>Ideal para pan amasado, marraqueta y hallulla. Alto rendimiento en masa.</p><span class="tag">25 kg · 50 kg</span></div>
-  <div class="card"><h3>Harina especial</h3><p>Molienda fina para repostería, pastelería y uso doméstico.</p><span class="tag">1 kg · 25 kg</span></div>
-  <div class="card"><h3>Trigo en grano</h3><p>Grano seleccionado para molinos e industria alimentaria.</p><span class="tag">A granel</span></div>
+  <div class="card prod"><span class="badge">MÁS VENDIDA</span><div class="img"><svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="pf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7e3c3"/><stop offset="1" stop-color="#e9c99a"/></linearGradient><radialGradient id="pa" cx=".45" cy=".35" r=".7"><stop offset="0" stop-color="#e9b26a"/><stop offset=".7" stop-color="#c8833c"/><stop offset="1" stop-color="#9c5f24"/></radialGradient><radialGradient id="tr" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#e2c08a"/><stop offset="1" stop-color="#b9884c"/></radialGradient></defs>
+<rect width="400" height="220" fill="url(#pf)"/><rect y="150" width="400" height="70" fill="#8a5a2b"/><path d="M0 150H400" stroke="#6f4620" stroke-width="3"/><path d="M0 175H400M0 200H400" stroke="#7a4f25" stroke-width="1" opacity=".5"/>
+<ellipse cx="200" cy="168" rx="150" ry="26" fill="#000" opacity=".15"/>
+<ellipse cx="300" cy="140" rx="82" ry="40" fill="url(#tr)"/><circle cx="280" cy="128" r="5" fill="#7d5326" opacity=".6"/><circle cx="318" cy="146" r="4" fill="#7d5326" opacity=".6"/><circle cx="300" cy="120" r="3" fill="#7d5326" opacity=".5"/><circle cx="336" cy="130" r="4" fill="#6b4520" opacity=".5"/>
+<path d="M60 150 Q70 100 130 95 Q200 92 225 140 Q230 156 215 160 L75 160 Q58 158 60 150Z" fill="#b97a3a"/><path d="M68 140 Q120 125 222 138" stroke="#8d5a28" stroke-width="3" fill="none"/>
+<ellipse cx="110" cy="118" rx="34" ry="26" fill="url(#pa)"/><path d="M92 112 Q110 104 128 112" stroke="#f1d29a" stroke-width="3" fill="none"/>
+<ellipse cx="165" cy="112" rx="32" ry="25" fill="url(#pa)"/><path d="M150 106 Q166 99 182 106" stroke="#f1d29a" stroke-width="3" fill="none"/>
+<path d="M120 140 L150 118 L178 140 Z" fill="#dda15e"/><path d="M128 140 L150 124 L170 140" stroke="#b9772f" stroke-width="2" fill="none"/>
+<path d="M175 142 L200 122 L222 142 Z" fill="#e3ac69"/><path d="M182 142 L200 128 L215 142" stroke="#b9772f" stroke-width="2" fill="none"/>
+<path d="M340 60 q12 -18 24 0 q-12 10 -24 0z M352 46 v-14" stroke="#7f8f4a" stroke-width="2" fill="#c9d48a"/>
+</svg></div><div class="pc"><h3>Harina panadera</h3><p>Rinde y sabor para el pan de cada día en panaderías y amasanderías.</p><ul class="usos"><li>Pan amasado y marraqueta</li><li>Dobladitas y hallullas</li><li>Tortilla de rescoldo</li></ul><span class="tag">25 kg · 50 kg</span></div></div>
+  <div class="card prod"><span class="badge dorado">REPOSTERÍA</span><div class="img"><svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="tf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe7ea"/><stop offset="1" stop-color="#f6d6dc"/></linearGradient><linearGradient id="me" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e7b46e"/><stop offset=".4" stop-color="#fff6e6"/><stop offset="1" stop-color="#fffaf0"/></linearGradient></defs>
+<rect width="400" height="220" fill="url(#tf)"/><rect y="168" width="400" height="52" fill="#f1e6da"/><path d="M0 168H400" stroke="#e2d2c2" stroke-width="2"/>
+<ellipse cx="130" cy="176" rx="80" ry="10" fill="#000" opacity=".1"/><rect x="122" y="150" width="16" height="24" fill="#d9d9e0"/><ellipse cx="130" cy="150" rx="78" ry="9" fill="#e9e9ef"/>
+<rect x="68" y="92" width="124" height="56" rx="8" fill="#fff5f0"/><rect x="68" y="108" width="124" height="10" fill="#c76b4a"/><rect x="68" y="128" width="124" height="10" fill="#c76b4a"/>
+<path d="M68 96 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q10 12 20 0 q4 6 4 0" fill="#fff" stroke="#f3d6d0" stroke-width="2"/>
+<ellipse cx="130" cy="92" rx="62" ry="10" fill="#fff"/><circle cx="102" cy="86" r="7" fill="#c8102e"/><circle cx="124" cy="83" r="7" fill="#d1203c"/><circle cx="146" cy="84" r="7" fill="#c8102e"/><circle cx="164" cy="88" r="6" fill="#4a3aa8"/><circle cx="112" cy="90" r="5" fill="#4a3aa8"/><path d="M124 76 q6 -8 12 -2" stroke="#3f7d3a" stroke-width="3" fill="none"/>
+<ellipse cx="292" cy="172" rx="76" ry="9" fill="#000" opacity=".1"/><path d="M220 150 L364 150 L352 170 L232 170Z" fill="#d9a65a"/><path d="M226 150 L358 150" stroke="#c38d40" stroke-width="4"/>
+<path d="M226 150 Q232 120 250 128 Q256 104 274 120 Q284 96 300 116 Q314 98 324 120 Q340 106 346 130 Q360 126 358 150Z" fill="url(#me)"/>
+<circle cx="250" cy="160" r="0" fill="none"/><g transform="translate(372 176)"><circle r="16" fill="#f5d33f"/><circle r="12" fill="#fbe98a"/><path d="M0 -12V12M-12 0H12M-8 -8L8 8M8 -8L-8 8" stroke="#f5d33f" stroke-width="1.5"/></g><path d="M372 96 q-10 -20 6 -26" stroke="#3f7d3a" stroke-width="3" fill="none"/><ellipse cx="368" cy="100" rx="9" ry="14" fill="#f5d33f" transform="rotate(25 368 100)"/>
+</svg></div><div class="pc"><h3>Harina especial</h3><p>Molienda extrafina para masas suaves, livianas y esponjosas.</p><ul class="usos"><li>Tortas y bizcochos</li><li>Pie de limón y kuchen</li><li>Galletas y masas dulces</li></ul><span class="tag">1 kg · 25 kg</span></div></div>
+  <div class="card prod"><span class="badge">DEL SUR DE CHILE</span><div class="img"><svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="cs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fbde0"/><stop offset="1" stop-color="#dcecf5"/></linearGradient><pattern id="gr" width="10" height="8" patternUnits="userSpaceOnUse"><ellipse cx="3" cy="3" rx="2.6" ry="1.5" fill="#c8913a" transform="rotate(30 3 3)"/><ellipse cx="8" cy="6" rx="2.6" ry="1.5" fill="#e0b25a" transform="rotate(-25 8 6)"/></pattern><linearGradient id="mt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8b85c"/><stop offset="1" stop-color="#b98232"/></linearGradient></defs>
+<rect width="400" height="220" fill="url(#cs)"/>
+<path d="M210 120 L262 46 Q270 38 278 46 L330 120Z" fill="#8a96a8"/><path d="M247 68 L262 46 Q270 38 278 46 L293 68 Q284 62 276 70 Q270 60 262 70 Q254 62 247 68Z" fill="#fff"/>
+<path d="M0 132 Q100 100 200 122 T400 116 V220 H0Z" fill="#6f9a52"/><path d="M0 150 Q120 128 240 146 T400 140 V220 H0Z" fill="#5c8a43"/>
+<g transform="translate(70 70)"><rect x="-2" y="0" width="4" height="70" fill="#4a3a28"/><path d="M-26 10 Q0 -2 26 10 M-30 26 Q0 12 30 26 M-32 42 Q0 28 32 42" stroke="#2f5a2a" stroke-width="6" fill="none" stroke-linecap="round"/></g>
+<g transform="translate(300 104)"><path d="M0 20 L30 0 L60 20 Z" fill="#7a2e22"/><rect x="4" y="20" width="52" height="30" fill="#a63c2c"/><rect x="24" y="30" width="12" height="20" fill="#5a2018"/><path d="M4 26H56" stroke="#8a3024" stroke-width="2"/></g>
+<path d="M60 220 Q120 132 200 128 Q290 132 340 220Z" fill="url(#mt)"/><path d="M60 220 Q120 132 200 128 Q290 132 340 220Z" fill="url(#gr)" opacity=".85"/>
+<g transform="translate(316 160)"><path d="M0 60 Q-6 20 6 4 Q24 -6 44 4 Q56 20 50 60Z" fill="#c9a77a"/><path d="M4 8 Q24 -2 46 8" stroke="#8c6a40" stroke-width="3" fill="none"/><path d="M6 24 H48 M4 40 H50" stroke="#b08f62" stroke-width="1.5"/><text x="25" y="36" font-family="Arial" font-size="9" font-weight="700" fill="#5a3f1e" text-anchor="middle">TRIGO</text></g>
+<ellipse cx="300" cy="214" rx="40" ry="8" fill="url(#gr)"/>
+</svg></div><div class="pc"><h3>Trigo a granel</h3><p>Grano seleccionado de nuestros campos de La Araucanía y el Biobío.</p><ul class="usos"><li>Molinos e industria alimentaria</li><li>Despacho a granel o en sacos</li><li>Trazabilidad por lote de cosecha</li></ul><span class="tag">A granel · sacos de 50 kg</span></div></div>
  </div>
 </div></section>
 
