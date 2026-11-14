@@ -95,5 +95,12 @@ interface ethernet 1/1
  no shutdown
  exit
 !
+! --- CDP desactivado en los puertos de traduccion ---
+! La diferencia de VLAN entre extremos (210/10, 250/50, 220/10, 230/10) es intencional;
+! sin esto CDP genera %CDP-4-NATIVE_VLAN_MISMATCH de forma continua
+interface range ethernet 0/1 - 3 , ethernet 1/1
+ no cdp enable
+ exit
+!
 end
 write memory
