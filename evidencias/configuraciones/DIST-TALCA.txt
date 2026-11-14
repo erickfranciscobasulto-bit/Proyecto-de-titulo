@@ -75,6 +75,17 @@ interface port-channel 2
  exit
 !
 ! --- IP de gestion (VLAN 99) ---
+! --- Puerto hacia SW-PUENTE (rack fisico: PC softphone de Talca) ---
+! SW-PUENTE traduce VLAN 220 -> 10 (datos) mediante puertos de acceso
+interface ethernet 2/2
+ description DESDE-SW-PUENTE-e0/3-DATOS-V220-A-V10
+ duplex full
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
 interface vlan 99
  description GESTION-DIST-TALCA
  ip address 192.168.10.194 255.255.255.240
