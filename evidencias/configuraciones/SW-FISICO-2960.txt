@@ -37,6 +37,7 @@ mls qos
 ! Buffers y umbrales de la cola de datos (queue 2) para evitar descartes en rafagas 1G -> 100M
 mls qos queue-set output 1 buffers 15 30 35 20
 mls qos queue-set output 1 threshold 2 3200 3200 100 3200
+mls qos queue-set output 1 threshold 4 3200 3200 100 3200
 !
 ! --- Clasificacion de voz por puertos (Issabel en VirtualBox + softphones MicroSIP/Zoiper en el mismo PC) ---
 ! El switch no confia en las marcas de un PC; se marca segun puertos de Issabel/Asterisk
