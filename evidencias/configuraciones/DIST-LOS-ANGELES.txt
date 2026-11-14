@@ -75,6 +75,17 @@ interface port-channel 2
  exit
 !
 ! --- IP de gestion (VLAN 99) ---
+! --- Puerto hacia SW-PUENTE (rack fisico: PC softphone de Los Angeles) ---
+! SW-PUENTE traduce VLAN 230 -> 10 (datos) mediante puertos de acceso
+interface ethernet 2/2
+ description DESDE-SW-PUENTE-e1/1-DATOS-V230-A-V10
+ duplex full
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
 interface vlan 99
  description GESTION-DIST-LOS-ANGELES
  ip address 192.168.30.130 255.255.255.240
