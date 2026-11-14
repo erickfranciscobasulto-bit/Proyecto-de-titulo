@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-CONCEPCION - Router sucursal Concepcion / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: COMPLETA (partes 1 a 9) - QoS de voz en la WAN (LLQ + shaper 10 Mbps)
+! Estado: COMPLETA (partes 1 a 9) - QoS de voz en la WAN (LLQ + shaper 10 Mbps) - Seguridad de gestion: SSH v2, enable secret, ACL GESTION-SSH
 ! ==========================================================
 enable
 configure terminal
@@ -217,6 +217,41 @@ interface tunnel 2
  qos pre-classify
 interface ethernet 0/0
  service-policy output PM-WAN-PADRE
+ exit
+!
+! --- Seguridad basica de gestion (endurecimiento) ---
+! La clave real NO se documenta: cumple politica de 12+ caracteres (may/min/num/simbolo)
+service password-encryption
+enable secret <clave no documentada>
+username admin privilege 15 secret <clave no documentada>
+ip domain-name agroprodel.cl
+crypto key generate rsa general-keys modulus 2048
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+login block-for 120 attempts 3 within 60
+no ip http server
+no ip http secure-server
+banner motd ^
+ACCESO RESTRINGIDO - Agroprodel Ltda.
+Solo personal autorizado. Toda actividad es registrada.
+^
+ip access-list standard GESTION-SSH
+ remark Redes de administracion (VLAN 99) de las 4 sedes
+ permit 192.168.40.240 0.0.0.15
+ permit 192.168.10.192 0.0.0.15
+ permit 192.168.20.160 0.0.0.15
+ permit 192.168.30.128 0.0.0.15
+ remark Estacion de gestion del laboratorio (PC Temuco)
+ permit host 192.168.40.232
+ deny any log
+line console 0
+ login local
+line vty 0 4
+ login local
+ transport input ssh
+ exec-timeout 10 0
+ access-class GESTION-SSH in
  exit
 !
 end
