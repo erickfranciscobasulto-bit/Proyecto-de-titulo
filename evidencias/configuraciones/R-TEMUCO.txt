@@ -277,7 +277,7 @@ ip access-list standard GESTION-SSH
  permit 192.168.20.160 0.0.0.15
  permit 192.168.30.128 0.0.0.15
  remark Estacion de gestion del laboratorio (PC Temuco)
- permit host 192.168.40.230
+ permit host 192.168.40.232
  deny any log
 line console 0
  login local
