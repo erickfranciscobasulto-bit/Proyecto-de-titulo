@@ -27,6 +27,8 @@ vlan 210
  name CON-DATOS
 vlan 220
  name TAL-DATOS
+vlan 230
+ name LAN-DATOS
 vlan 250
  name CON-VOZ
 vlan 999
@@ -66,7 +68,7 @@ interface gigabitEthernet 0/1
  description TRONCAL-HACIA-NOTEBOOK-SW-PUENTE-e1/0
  switchport mode trunk
  switchport trunk native vlan 999
- switchport trunk allowed vlan 10,50,80,99,210,220,250,999
+ switchport trunk allowed vlan 10,50,80,99,210,220,230,250,999
  mls qos trust dscp
  priority-queue out
  no shutdown
@@ -121,6 +123,16 @@ interface fastEthernet 0/6
  description PC-SOFTPHONE-TALCA-V220
  switchport mode access
  switchport access vlan 220
+ service-policy input PM-SOFTPHONE
+ priority-queue out
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+ no shutdown
+ exit
+interface fastEthernet 0/7
+ description PC-SOFTPHONE-LOS-ANGELES-V230
+ switchport mode access
+ switchport access vlan 230
  service-policy input PM-SOFTPHONE
  priority-queue out
  spanning-tree portfast
