@@ -2,7 +2,7 @@
 ! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
-! Estado: COMPLETA (partes 1 a 6) - QoS: mls qos, trust cisco-phone/cos en Fa0/4-5, trust dscp en Fa0/3 y Gi0/1 - Gi0/1 trunking nativa 999 y VLAN de acceso verificados
+! Estado: COMPLETA (partes 1 a 6) - QoS: mls qos, trust cisco-phone/cos en Fa0/4-5, trust dscp en Gi0/1, PM-SOFTPHONE (marcado por puertos) en Fa0/3 - Gi0/1 trunking nativa 999 y VLAN de acceso verificados
 ! ==========================================================
 enable
 configure terminal
@@ -35,6 +35,25 @@ spanning-tree mode rapid-pvst
 ! --- QoS para voz: activacion global ---
 mls qos
 !
+! --- Clasificacion de voz por puertos (Issabel en VirtualBox + softphones MicroSIP/Zoiper en el mismo PC) ---
+! El switch no confia en las marcas de un PC; se marca segun puertos de Issabel/Asterisk
+ip access-list extended VOZ-RTP
+ permit udp any any range 10000 20000
+ permit udp any range 10000 20000 any
+ip access-list extended VOZ-SIP
+ permit udp any any eq 5060
+ permit udp any eq 5060 any
+class-map match-all CM-VOZ-RTP
+ match access-group name VOZ-RTP
+class-map match-all CM-VOZ-SIP
+ match access-group name VOZ-SIP
+policy-map PM-SOFTPHONE
+ class CM-VOZ-RTP
+  set dscp ef
+ class CM-VOZ-SIP
+  set dscp cs3
+ exit
+!
 ! --- Troncal Gi0/1 hacia el laboratorio (notebook / SW-PUENTE e1/0) ---
 ! El 2960 solo soporta 802.1Q: no requiere "switchport trunk encapsulation"
 interface gigabitEthernet 0/1
@@ -60,7 +79,7 @@ interface fastEthernet 0/3
  description SRV-ISSABEL-VLAN80
  switchport mode access
  switchport access vlan 80
- mls qos trust dscp
+ service-policy input PM-SOFTPHONE
  spanning-tree portfast
  spanning-tree bpduguard enable
  no shutdown
