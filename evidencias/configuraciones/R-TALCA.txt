@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-TALCA - Router sucursal Talca / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: COMPLETA (partes 1 a 9) - Tunnel1 QM_IDLE, OSPF FULL con 1.1.1.1, 9 rutas de Temuco, ping 192.168.40.241 OK
+! Estado: COMPLETA (partes 1 a 9) - Tunnel1 QM_IDLE, OSPF FULL con 1.1.1.1, 9 rutas de Temuco, ping 192.168.40.241 OK - QoS de voz en la WAN (LLQ + shaper 10 Mbps)
 ! ==========================================================
 enable
 configure terminal
@@ -183,6 +183,40 @@ router ospf 1
  no passive-interface tunnel 1
  network 192.168.10.0 0.0.0.255 area 0
  network 172.16.0.0 0.0.0.3 area 0
+ exit
+!
+! --- QoS de voz en la WAN ---
+! Clasifica por marca (EF/CS3) o por puertos de voz (equipos que no marcan)
+ip access-list extended VOZ-RTP
+ permit udp any any range 10000 20000
+ permit udp any range 10000 20000 any
+ip access-list extended VOZ-SIP
+ permit udp any any eq 5060
+ permit udp any eq 5060 any
+class-map match-any CM-VOZ
+ match dscp ef
+ match access-group name VOZ-RTP
+class-map match-any CM-SENAL
+ match dscp cs3
+ match access-group name VOZ-SIP
+! Politica hija: LLQ 1 Mbps para voz, 256 kbps para senalizacion, WFQ para el resto
+policy-map PM-WAN-HIJA
+ class CM-VOZ
+  priority 1000
+ class CM-SENAL
+  bandwidth 256
+ class class-default
+  fair-queue
+! Politica padre: shaper a 10 Mbps (velocidad contratada simulada del enlace WAN)
+policy-map PM-WAN-PADRE
+ class class-default
+  shape average 10000000
+  service-policy PM-WAN-HIJA
+! qos pre-classify: clasifica por puertos antes del cifrado IPsec
+interface tunnel 1
+ qos pre-classify
+interface ethernet 0/0
+ service-policy output PM-WAN-PADRE
  exit
 !
 end
