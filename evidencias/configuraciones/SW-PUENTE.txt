@@ -28,6 +28,8 @@ vlan 210
  name CON-DATOS
 vlan 220
  name TAL-DATOS
+vlan 230
+ name LAN-DATOS
 vlan 250
  name CON-VOZ
 vlan 999
@@ -41,7 +43,7 @@ interface ethernet 1/0
  switchport trunk encapsulation dot1q
  switchport mode trunk
  switchport trunk native vlan 999
- switchport trunk allowed vlan 10,50,80,99,210,220,250,999
+ switchport trunk allowed vlan 10,50,80,99,210,220,230,250,999
  no shutdown
  exit
 !
@@ -79,6 +81,16 @@ interface ethernet 0/3
  duplex full
  switchport mode access
  switchport access vlan 220
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
+! --- Puerto hacia DIST-LOS-ANGELES (traduccion 230 -> 10 de Los Angeles) ---
+interface ethernet 1/1
+ description HACIA-DIST-LOS-ANGELES-e2/2-DATOS-V230
+ duplex full
+ switchport mode access
+ switchport access vlan 230
  spanning-tree bpdufilter enable
  no shutdown
  exit
