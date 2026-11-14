@@ -1,7 +1,7 @@
 ! ==========================================================
 ! R-CONCEPCION - Router sucursal Concepcion / spoke (IOL L3)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
-! Estado: COMPLETA (partes 1 a 9) - QoS de voz en la WAN (LLQ + shaper 10 Mbps) - Seguridad de gestion: SSH v2, enable secret, ACL GESTION-SSH
+! Estado: COMPLETA (partes 1 a 9) - QoS de voz en la WAN (LLQ + shaper 10 Mbps) - Seguridad de gestion: SSH v2, enable secret, ACL GESTION-SSH - ACL entre VLAN (DEPTOS-IN, VOZ-IN, IOT-IN)
 ! ==========================================================
 enable
 configure terminal
@@ -252,6 +252,47 @@ line vty 0 4
  transport input ssh
  exec-timeout 10 0
  access-class GESTION-SSH in
+ exit
+!
+! --- ACL entre VLAN (minimo privilegio, segun documento de direccionamiento) ---
+ip access-list extended DEPTOS-IN
+ remark DHCP hacia el router
+ permit udp any any eq bootps
+ remark Servidores de la casa matriz (Issabel, VLAN 80)
+ permit ip any 192.168.40.224 0.0.0.15
+ remark Bloqueo de redes internas (otros deptos, voz, IoT, gestion)
+ deny ip any 192.168.0.0 0.0.255.255 log
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 10.0.0.0 0.255.255.255
+ remark Internet y servicios en la nube
+ permit ip any any
+ip access-list extended VOZ-IN
+ permit udp any any eq bootps
+ permit ip any 192.168.40.224 0.0.0.15
+ remark Voz de las 4 sedes
+ permit ip any 192.168.40.176 0.0.0.15
+ permit ip any 192.168.10.144 0.0.0.15
+ permit ip any 192.168.20.112 0.0.0.15
+ permit ip any 192.168.30.80 0.0.0.15
+ deny ip any any log
+ip access-list extended IOT-IN
+ permit udp any any eq bootps
+ deny ip any 192.168.0.0 0.0.255.255 log
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 10.0.0.0 0.255.255.255
+ permit ip any any
+interface ethernet 0/1.10
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.20
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.30
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.40
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.50
+ ip access-group VOZ-IN in
+interface ethernet 0/1.70
+ ip access-group IOT-IN in
  exit
 !
 end
