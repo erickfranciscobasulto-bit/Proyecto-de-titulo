@@ -93,22 +93,22 @@ ip dhcp excluded-address 192.168.20.145
 ip dhcp pool V10-SIEMBRA-CON
  network 192.168.20.0 255.255.255.224
  default-router 192.168.20.1
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 ip dhcp pool V20-COSECHA-CON
  network 192.168.20.32 255.255.255.224
  default-router 192.168.20.33
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 ip dhcp pool V30-ENVASADO-CON
  network 192.168.20.64 255.255.255.224
  default-router 192.168.20.65
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 ip dhcp pool V40-VENTAS-CON
  network 192.168.20.96 255.255.255.240
  default-router 192.168.20.97
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 !
 ! --- DHCP: pools de voz, invitados e IoT ---
@@ -126,7 +126,7 @@ ip dhcp pool V60-INVITADOS-CON
 ip dhcp pool V70-IOT-CON
  network 192.168.20.144 255.255.255.240
  default-router 192.168.20.145
- dns-server 1.1.1.1
+ dns-server 54.236.126.16 1.1.1.1
  exit
 !
 ! --- PAT: salida a Internet ---
