@@ -16,6 +16,7 @@ Proyecto Agroprodel Ltda. · Fase 2 (implementación)
 | 1001 | Temuco | MicroSIP (PC con Issabel) | PJSIP | 192.168.40.230 (VLAN 80) |
 | 2001 | Talca | Teléfono físico Cisco CP-8861 (MAC 7802.B142.A521, SEP7802B142A521) | PJSIP | SW-FISICO-TEM Fa0/5, VLAN de voz 50 (192.168.40.178–.190) |
 | 3001 | Concepción | MicroSIP (segundo PC) | PJSIP | SW-FISICO-TEM Fa0/2, VLAN 210 → VLAN 10 de Concepción (DHCP R-CONCEPCION, 192.168.20.2). Registra en Issabel a través del túnel GRE/IPsec; llamadas Temuco ↔ Concepción verificadas |
+| 2002 | Talca | MicroSIP (tercer PC) | PJSIP | SW-FISICO-TEM Fa0/6, VLAN 220 → VLAN 10 de Talca por SW-PUENTE e0/3 ↔ DIST-TALCA e2/2 (DHCP R-TALCA, 192.168.10.66). Llamada Talca ↔ Concepción verificada (pasa por Temuco) |
 
 ## Conexión física del teléfono CP-8861
 
