@@ -2,7 +2,7 @@
 ! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
-! Estado: COMPLETA (partes 1 a 6) - QoS: mls qos, trust cisco-phone/cos en Fa0/4-5, trust dscp en Gi0/1, PM-SOFTPHONE (marcado por puertos) en Fa0/3 - Gi0/1 trunking nativa 999 y VLAN de acceso verificados
+! Estado: COMPLETA (partes 1 a 6) - QoS: mls qos, trust cisco-phone/cos en Fa0/4-5, trust dscp en Gi0/1, PM-SOFTPHONE (marcado por puertos) en Fa0/2 (PC MicroSIP Concepcion, V210) y Fa0/3 - Gi0/1 trunking nativa 999 y VLAN de acceso verificados
 ! ==========================================================
 enable
 configure terminal
@@ -67,10 +67,10 @@ interface gigabitEthernet 0/1
 !
 ! --- Puertos de acceso ---
 interface fastEthernet 0/2
- description PC-FISICO-TEMUCO
+ description PC-SOFTPHONE-CONCEPCION-V210
  switchport mode access
- switchport access vlan 10
- switchport voice vlan 50
+ switchport access vlan 210
+ service-policy input PM-SOFTPHONE
  spanning-tree portfast
  spanning-tree bpduguard enable
  no shutdown
