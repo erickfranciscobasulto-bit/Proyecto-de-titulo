@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOC Agroprodel – Grafana v2</title>
+<style>
+:root{--bg:#0f1115;--panel:#16191e;--panel2:#1c2027;--border:#262b33;--text:#d8d9e3;--muted:#8b8fa3;--green:#4cc38a;--yellow:#f5c04a;--red:#f2495c;--blue:#5b9cf5;--orange:#ff9a4a;--brand:#c8a24a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:13px}
+.top{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);background:#0a0b0e;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:30px;height:30px;border-radius:6px;background:linear-gradient(135deg,#c8a24a,#8a6a1f);display:grid;place-items:center;font-weight:700;color:#111;font-size:14px}
+.brand b{font-size:15px;letter-spacing:.3px}.brand small{display:block;color:var(--muted);font-size:11px}
+.sp{flex:1}.pill{border:1px solid var(--border);border-radius:4px;padding:4px 10px;background:var(--panel);white-space:nowrap;font-size:12px}
+.live{color:var(--green)}.live:before{content:"● ";animation:b 1.6s infinite}@keyframes b{50%{opacity:.25}}
+.tabs{display:flex;gap:2px;padding:8px 18px 0;flex-wrap:wrap}
+.tabs span{padding:6px 12px;border-radius:4px 4px 0 0;color:var(--muted);font-size:12px}.tabs .on{background:var(--panel);color:var(--text);border:1px solid var(--border);border-bottom:none}
+.row{padding:12px 18px 4px;color:var(--muted);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.row:after{content:"";flex:1;height:1px;background:var(--border)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;padding:0 18px}
+.p{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:10px 12px;min-width:0}
+.p h3{margin:0 0 8px;font-size:12.5px;font-weight:500;display:flex;justify-content:space-between;gap:6px}
+.p h3 em{font-style:normal;color:var(--muted);font-size:11px;font-weight:400}
+.c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+.kpi .v{font-size:30px;font-weight:600;line-height:1.1}.kpi .s{color:var(--muted);font-size:11px;margin-top:4px}
+.up{color:var(--green)}.dn{color:var(--red)}
+svg{display:block;width:100%}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:3px;margin-right:4px;vertical-align:middle;border-radius:2px}
+.tl{display:grid;grid-template-columns:110px 1fr 48px;gap:6px;align-items:center;margin:5px 0;font-size:12px}
+.bar{height:16px;border-radius:3px;display:flex;overflow:hidden}
+.bar i{display:block;height:100%}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;color:var(--muted);font-weight:500;padding:6px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+td{padding:6px;border-bottom:1px solid #1f232a}
+.sev{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.st{padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600}
+.ok{background:rgba(76,195,138,.15);color:var(--green)}
+.foot{padding:14px 18px 22px;color:var(--muted);font-size:11.5px}
+@media (max-width:1000px){.c2,.c3{grid-column:span 6}.c4,.c5,.c7,.c8{grid-column:span 12}}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand"><div class="mark">A</div><div><b>Agroprodel · Centro de Operaciones</b><small>NOC/SOC · Red corporativa 4 sedes + nube AWS</small></div></div>
+  <div class="sp"></div>
+  <span class="pill live">En vivo</span><span class="pill">Últimas 24 h</span><span class="pill">Sede: Todas ▾</span><span class="pill">⟳ 30 s</span>
+</div>
+<div class="tabs"><span class="on">Resumen ejecutivo</span><span>Red WAN</span><span>Sedes</span><span>Seguridad (Wazuh)</span><span>IDS (Suricata)</span></div>
+
+<div class="row">Indicadores de servicio</div>
+<div class="grid">
+  <div class="p c2 kpi"><h3>Disponibilidad red <em>30 d</em></h3><div class="v up">99,94 %</div><div class="s">Objetivo SLA 99,5 % ✓</div></div>
+  <div class="p c2 kpi"><h3>Sedes operativas</h3><div class="v">4 / 4</div><div class="s">Temuco · Talca · Concepción · L. Ángeles</div></div>
+  <div class="p c2 kpi"><h3>VPN a la nube</h3><div class="v up">Activa</div><div class="s">IKEv2 AES-256 · 5 h 12 min</div></div>
+  <div class="p c2 kpi"><h3>Latencia media</h3><div class="v">198 ms</div><div class="s">Umbral 400 ms · ▼ 4 % vs ayer</div></div>
+  <div class="p c2 kpi"><h3>Problemas abiertos</h3><div class="v up">0</div><div class="s">5 resueltos en 24 h</div></div>
+  <div class="p c2 kpi"><h3>MTTR</h3><div class="v">14 min</div><div class="s">Tiempo medio de resolución</div></div>
+</div>
+
+<div class="row">Topología y ubicación</div>
+<div class="grid">
+  <div class="p c7"><h3>Topología lógica en vivo <em>enlaces coloreados por estado</em></h3><svg id="topo" viewBox="0 0 700 300"></svg></div>
+  <div class="p c5"><h3>Sedes <em>coordenadas reales</em></h3><svg id="map" viewBox="0 0 420 300"></svg></div>
+</div>
+
+<div class="row">Disponibilidad</div>
+<div class="grid">
+  <div class="p c12"><h3>Línea de tiempo de estado <em>00:00 – 24:00 · gris = sin datos</em></h3><div id="tl"></div>
+    <div class="legend"><span><i style="background:var(--green)"></i>Disponible</span><span><i style="background:var(--yellow)"></i>Degradado</span><span><i style="background:var(--red)"></i>Caído</span><span><i style="background:#3a3f48"></i>Sin datos</span></div></div>
+</div>
+
+<div class="row">Rendimiento</div>
+<div class="grid">
+  <div class="p c8"><h3>Latencia SOC → sedes (ms) <em>ICMP vía VPN</em></h3><svg id="lat" viewBox="0 0 800 190" preserveAspectRatio="none" height="190"></svg>
+    <div class="legend"><span><i style="background:var(--green)"></i>Temuco</span><span><i style="background:var(--yellow)"></i>Talca</span><span><i style="background:var(--blue)"></i>Concepción</span><span><i style="background:var(--orange)"></i>Los Ángeles</span><span><i style="background:var(--red)"></i>Umbral</span></div></div>
+  <div class="p c4"><h3>Uso de enlaces <em>% de 10 Mbps</em></h3><div id="bars"></div></div>
+  <div class="p c4"><h3>Tráfico de voz (EF) <em>cola prioritaria</em></h3><svg id="voz" viewBox="0 0 400 130" preserveAspectRatio="none" height="130"></svg><div class="legend"><span><i style="background:var(--blue)"></i>kbps EF</span><span>Descartes: <b class="up">0</b></span></div></div>
+  <div class="p c4"><h3>CPU / memoria routers</h3><div id="cpu"></div></div>
+  <div class="p c4"><h3>Servidores en la nube</h3>
+    <table><tr><th>Servidor</th><th>CPU</th><th>RAM</th><th>Estado</th></tr>
+    <tr><td>SRV-AGROPRODEL</td><td>3 %</td><td>41 %</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>SRV-NOC</td><td>9 %</td><td>63 %</td><td><span class="st ok">OK</span></td></tr>
+    <tr><td>SRV-SIEM</td><td>—</td><td>—</td><td><span class="st" style="background:#2a2e36;color:var(--muted)">Próximo</span></td></tr></table></div>
+</div>
+
+<div class="row">Eventos</div>
+<div class="grid">
+  <div class="p c12"><h3>Registro de eventos <em>Zabbix · reconocimientos del operador</em></h3>
+  <table><tr><th>Hora</th><th>Severidad</th><th>Equipo</th><th>Evento</th><th>Estado</th><th>Duración</th><th>Operador</th></tr>
+  <tr><td>16:06</td><td><span class="sev" style="background:var(--yellow)"></span>Advertencia</td><td>R-LOS-ANGELES</td><td>Latencia ICMP sobre umbral</td><td><span class="st ok">Resuelto</span></td><td>1 min</td><td>—</td></tr>
+  <tr><td>15:56</td><td><span class="sev" style="background:var(--yellow)"></span>Advertencia</td><td>R-CONCEPCION</td><td>Latencia ICMP sobre umbral</td><td><span class="st ok">Resuelto</span></td><td>8 min</td><td>—</td></tr>
+  <tr><td>15:43</td><td><span class="sev" style="background:var(--blue)"></span>Informativo</td><td>SRV-NOC</td><td>Cambio de paquetes instalados</td><td><span class="st ok">Cerrado</span></td><td>27 min</td><td>Admin · "Cambio esperado"</td></tr>
+  <tr><td>15:20</td><td><span class="sev" style="background:var(--orange)"></span>Promedio</td><td>R-TEMUCO</td><td>Adyacencias OSPF reiniciadas (3 túneles)</td><td><span class="st ok">Resuelto</span></td><td>&lt;1 s</td><td>Analizado · P-09</td></tr>
+  </table></div>
+</div>
+<div class="foot">Vista previa ilustrativa con valores simulados a partir de las mediciones del laboratorio. En Grafana: fuente de datos Zabbix (plugin oficial), paneles Stat, Canvas, Geomap, State timeline, Time series, Bar gauge y Table; pestañas = dashboards enlazados.</div>
+
+<script>
+const C={g:'#4cc38a',y:'#f5c04a',r:'#f2495c',b:'#5b9cf5',o:'#ff9a4a',m:'#8b8fa3',t:'#d8d9e3',bd:'#262b33',p2:'#1c2027'};
+function rnd(s){return()=>{s=(s*9301+49297)%233280;return s/233280}}
+function gen(s,n,b,a){const r=rnd(s);return Array.from({length:n},()=>b+(r()-.5)*a)}
+// topology
+(function(){const n={aws:[350,40,'AWS us-east-1','SRV-NOC · SRV-SIEM · SRV-AGROPRODEL'],tem:[350,150,'R-TEMUCO','Casa matriz · hub'],tal:[110,255,'R-TALCA','Sucursal'],con:[350,255,'R-CONCEPCION','Sucursal'],los:[590,255,'R-LOS-ANGELES','Sucursal']};
+let s='';const link=(a,b,lbl,dash)=>{const[x1,y1]=n[a],[x2,y2]=n[b];s+=`<line x1="${x1}" y1="${y1+22}" x2="${x2}" y2="${y2-22}" stroke="${C.g}" stroke-width="3" ${dash?'stroke-dasharray="8 5"':''}><animate attributeName="stroke-dashoffset" from="26" to="0" dur="1.2s" repeatCount="indefinite"/></line><text x="${(x1+x2)/2+8}" y="${(y1+y2)/2+4}" fill="${C.m}" font-size="11">${lbl}</text>`};
+link('aws','tem','VPN IKEv2 · 197 ms',1);link('tem','tal','Tunnel1 · 2 ms');link('tem','con','Tunnel2 · 3 ms');link('tem','los','Tunnel3 · 2 ms');
+for(const k in n){const[x,y,a,b]=n[k];const w=k==='aws'?240:150;s+=`<rect x="${x-w/2}" y="${y-22}" width="${w}" height="44" rx="7" fill="${C.p2}" stroke="${C.g}" stroke-width="1.5"/><circle cx="${x-w/2+14}" cy="${y}" r="5" fill="${C.g}"/><text x="${x-w/2+26}" y="${y-3}" fill="${C.t}" font-size="12.5" font-weight="600">${a}</text><text x="${x-w/2+26}" y="${y+12}" fill="${C.m}" font-size="10.5">${b}</text>`}
+document.getElementById('topo').innerHTML=s})();
+// map (lat/lon projection)
+(function(){const pts=[['Talca',-35.43,-71.66],['Concepción',-36.83,-73.05],['Los Ángeles',-37.47,-72.35],['Temuco',-38.74,-72.60]];
+const X=lo=>(lo+74)*170+20,Y=la=>(-34.8-la)*70+20;let s='';
+for(let la=-35;la>=-39;la--){s+=`<line x1="0" x2="420" y1="${Y(la)}" y2="${Y(la)}" stroke="${C.bd}"/><text x="4" y="${Y(la)-3}" fill="${C.m}" font-size="10">${la}°</text>`}
+for(let lo=-74;lo<=-72;lo++){s+=`<line y1="0" y2="300" x1="${X(lo)}" x2="${X(lo)}" stroke="${C.bd}"/><text y="296" x="${X(lo)+3}" fill="${C.m}" font-size="10">${lo}°</text>`}
+s+=`<path d="M${X(-72.2)},0 C${X(-72.7)},${Y(-36)} ${X(-73.3)},${Y(-36.9)} ${X(-73.5)},${Y(-37.6)} S${X(-73.4)},${Y(-38.8)} ${X(-73.5)},300" stroke="#2f4a63" stroke-width="2" fill="none"/><text x="${X(-73.9)}" y="${Y(-38.2)}" fill="#3e5f80" font-size="10">Océano Pacífico</text>`;
+const tem=[X(-72.6),Y(-38.74)];pts.forEach(([n,la,lo])=>{if(n!=='Temuco')s+=`<line x1="${tem[0]}" y1="${tem[1]}" x2="${X(lo)}" y2="${Y(la)}" stroke="${C.g}" stroke-opacity=".45" stroke-dasharray="4 4"/>`});
+pts.forEach(([n,la,lo])=>{const x=X(lo),y=Y(la),hub=n==='Temuco';s+=`<circle cx="${x}" cy="${y}" r="${hub?13:9}" fill="${C.g}" opacity=".18"/><circle cx="${x}" cy="${y}" r="${hub?6:4.5}" fill="${C.g}"/><text x="${x+11}" y="${y+4}" fill="${C.t}" font-size="11.5" font-weight="${hub?600:400}">${n}${hub?' (matriz)':''}</text>`});
+document.getElementById('map').innerHTML=s})();
+// timeline
+(function(){const rows=[['R-TEMUCO',[[0,58.9,'g'],[58.9,.6,'#3a3f48'],[59.5,4.9,'g'],[64.4,.6,'#3a3f48'],[65,35,'g']],'99,9 %'],['R-TALCA',[[0,62,'g'],[62,1.5,'y'],[63.5,36.5,'g']],'100 %'],['R-CONCEPCION',[[0,63,'g'],[63,1,'y'],[64,36,'g']],'100 %'],['R-LOS-ANGELES',[[0,66,'g'],[66,.8,'y'],[66.8,33.2,'g']],'100 %'],['VPN AWS',[[0,57,'g'],[57,1.2,'r'],[58.2,41.8,'g']],'99,6 %']];
+document.getElementById('tl').innerHTML=rows.map(([n,seg,p])=>`<div class="tl"><span>${n}</span><div class="bar">${seg.map(([a,w,c])=>`<i style="width:${w}%;background:${C[c]||c}"></i>`).join('')}</div><span style="text-align:right;color:${C.m}">${p}</span></div>`).join('')})();
+// latency
+(function(){const w=800,h=190,max=500;let s='';for(let i=1;i<5;i++)s+=`<line x1="0" x2="${w}" y1="${h*i/5}" y2="${h*i/5}" stroke="${C.bd}"/>`;
+s+=`<line x1="0" x2="${w}" y1="${h-400/max*h}" y2="${h-400/max*h}" stroke="${C.r}" stroke-dasharray="6 4"/>`;
+[[C.g,3,195],[C.y,7,205],[C.b,11,210],[C.o,17,220]].forEach(([c,sd,b])=>{const v=gen(sd,96,b,90);s+=`<polyline fill="none" stroke="${c}" stroke-width="1.5" points="${v.map((y,i)=>`${(i/95*w).toFixed(1)},${(h-y/max*h).toFixed(1)}`).join(' ')}"/>`});
+document.getElementById('lat').innerHTML=s})();
+// bars
+document.getElementById('bars').innerHTML=[['WAN Temuco',34],['Tunnel1 Talca',12],['Tunnel2 Concepción',15],['Tunnel3 L. Ángeles',9],['VPN AWS',6]].map(([n,v])=>`<div style="margin:7px 0"><div style="display:flex;justify-content:space-between;font-size:11.5px"><span>${n}</span><span style="color:${C.m}">${v} %</span></div><div style="height:9px;background:#22262e;border-radius:5px;margin-top:3px"><div style="width:${v}%;height:100%;border-radius:5px;background:linear-gradient(90deg,${C.g},${v>70?C.r:v>50?C.y:C.g})"></div></div></div>`).join('');
+// voice
+(function(){const w=400,h=130,v=gen(29,60,90,60).map((x,i)=>i>20&&i<38?x+140:x);const p=v.map((y,i)=>`${(i/59*w).toFixed(1)},${(h-y/300*h).toFixed(1)}`).join(' ');document.getElementById('voz').innerHTML=`<polygon points="0,${h} ${p} ${w},${h}" fill="${C.b}" opacity=".18"/><polyline points="${p}" fill="none" stroke="${C.b}" stroke-width="1.6"/><text x="${w*.38}" y="18" fill="${C.m}" font-size="11">llamadas entre sedes</text>`})();
+// cpu
+document.getElementById('cpu').innerHTML=[['Temuco',9,38],['Talca',4,31],['Concepción',5,33],['Los Ángeles',4,30]].map(([n,c,m])=>`<div class="tl" style="grid-template-columns:90px 1fr 1fr"><span>${n}</span><div style="font-size:11px;color:${C.m}">CPU ${c}%<div style="height:6px;background:#22262e;border-radius:3px"><div style="width:${c}%;height:100%;background:${C.g};border-radius:3px"></div></div></div><div style="font-size:11px;color:${C.m}">RAM ${m}%<div style="height:6px;background:#22262e;border-radius:3px"><div style="width:${m}%;height:100%;background:${C.b};border-radius:3px"></div></div></div></div>`).join('');
+</script>
+</body>
+</html>

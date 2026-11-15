@@ -134,3 +134,10 @@ solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN
 |---|---|---|
 | *Cisco IOS: High ICMP ping response time* (4 routers) | La plantilla alerta sobre 150 ms (`{$ICMP_RESPONSE_TIME_WARN}` = 0.15), valor pensado para una LAN. El SOC está en us-east-1 y consulta por la VPN: la línea base medida es ~140–290 ms (ping, IP SLA). Generaba falsos positivos permanentes | Macro a nivel de equipo `{$ICMP_RESPONSE_TIME_WARN}` = `0.4` en los 4 routers (modificación masiva). Se calibra sobre la línea base, sin desactivar la alerta, que sigue detectando degradación real de la VPN o de los túneles. Las 4 alertas pasaron a RESUELTO (16:04–16:07) |
 | *Linux: Number of installed packages has been changed* (SRV-NOC) | Aviso informativo por la instalación del paquete `snmp` | Cambio esperado; se cierra manualmente |
+
+## Diseño del dashboard (Grafana)
+Maqueta aprobada: `Diseno_Dashboard_SOC.html` (valores simulados a partir de las mediciones del laboratorio).
+Secciones: indicadores de servicio (disponibilidad 30 d vs SLA 99,5 %, sedes operativas, VPN, latencia media,
+problemas abiertos, MTTR) · topología lógica en vivo (AWS → VPN → Temuco → túneles) · mapa de sedes ·
+línea de tiempo de estado · latencia, uso de enlaces, voz EF, CPU/RAM, servidores en la nube · registro de eventos.
+Pestañas previstas: Resumen ejecutivo, Red WAN, Sedes, Seguridad (Wazuh), IDS (Suricata).
