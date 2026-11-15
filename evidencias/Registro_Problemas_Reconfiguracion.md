@@ -108,3 +108,19 @@ las 6 adyacencias (OSPFv2 y OSPFv3 con 2.2.2.2, 3.3.3.3 y 4.4.4.4 por Tunnel1-3)
 
 **Acción.** Desactivar la suspensión y el ahorro de energía del notebook que ejecuta EVE-NG durante las pruebas.
 Este tipo de evento queda visible en Zabbix como una pérdida de datos simultánea en los 4 routers.
+
+**Recurrencia detectada por el SOC (20:28:36 UTC / 17:28 Chile).** Grafana (fuente Zabbix) mostró para R-TEMUCO la
+latencia ICMP en 0 ms entre las 17:19 y las 17:27 (sin respuesta desde AWS). El log del router registra a las 20:28:36 UTC
+la misma firma de P-09: las 6 adyacencias OSPFv2/OSPFv3 caen por *Dead timer expired* y vuelven a FULL en ~100 ms.
+Conclusión: el router estuvo detenido unos 9 minutos y, al reanudarse, vencieron todos los temporizadores. Además,
+`show ip sla statistics 10` indica 43 ejecuciones (40 OK, 3 fallos) desde su creación a las 18:02 UTC, cuando a una
+frecuencia de 30 s correspondían cerca de 300: el proceso del router pasó gran parte de ese tiempo sin ejecutarse.
+El hueco sin datos entre 16:48 y 16:54 no coincide con eventos en el router y queda pendiente de revisar en el log de
+Zabbix server.
+
+**Acción correctiva propuesta.** En el notebook Arch que ejecuta EVE-NG, impedir la suspensión durante las pruebas:
+`sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target` (reversible con `unmask`),
+y desactivar el bloqueo y el ahorro de energía de la pantalla.
+
+**Valor para el proyecto.** El evento fue detectado desde el SOC en la nube (Zabbix + Grafana) y su causa se confirmó
+correlacionando la métrica con el log del equipo, sin intervención en la sede.
