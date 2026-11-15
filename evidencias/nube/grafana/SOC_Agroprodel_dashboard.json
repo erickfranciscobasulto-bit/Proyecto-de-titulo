@@ -45,7 +45,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 8,
+  "version": 9,
   "panels": [
     {
       "id": 900,
@@ -635,6 +635,34 @@
             "showDisabledItems": false,
             "skipEmptyValues": false
           }
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "/Servidores Agroprodel|Zabbix servers/"
+          },
+          "host": {
+            "filter": "/.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/agent availability/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
         }
       ],
       "transformations": [
@@ -666,7 +694,64 @@
           },
           "mappings": []
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Zabbix"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#4a505c",
+                      "value": null
+                    },
+                    {
+                      "color": "#2f8f5b",
+                      "value": 1
+                    },
+                    {
+                      "color": "#c0392b",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SRV-AGROPRODEL"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#4a505c",
+                      "value": null
+                    },
+                    {
+                      "color": "#2f8f5b",
+                      "value": 1
+                    },
+                    {
+                      "color": "#c0392b",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "inlineEditing": false,
@@ -683,7 +768,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "☁ AWS us-east-1 · SRV-NOC (Zabbix · Grafana) · SRV-AGROPRODEL"
+                  "fixed": "☁ AWS us-east-1 · VPC 10.40.0.0/16"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -709,10 +794,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 5.45,
+                "top": 4.55,
                 "left": 70.83,
                 "right": 1.67,
-                "bottom": 77.73,
+                "bottom": 84.55,
                 "rotation": 0
               }
             },
@@ -1815,6 +1900,86 @@
                 "bottom": 95.45,
                 "rotation": 0
               }
+            },
+            {
+              "type": "rectangle",
+              "name": "SRV-NOC",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● SRV-NOC · Zabbix · Grafana"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "Zabbix",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 6
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 16.82,
+                "left": 70.83,
+                "right": 15.67,
+                "bottom": 77.27,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "SRV-AGROPRODEL",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● SRV-AGROPRODEL · Web/DNS/FTPS"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "SRV-AGROPRODEL",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 6
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 16.82,
+                "left": 84.83,
+                "right": 1.67,
+                "bottom": 77.27,
+                "rotation": 0
+              }
             }
           ],
           "background": {
@@ -1839,7 +2004,8 @@
             "rotation": 0
           }
         }
-      }
+      },
+      "description": "Routers y switches: ICMP desde el SOC (1 en línea, 0 caído). Servidores: disponibilidad del agente Zabbix (1 disponible, 2 no disponible, 0 desconocido)."
     },
     {
       "id": 9,
