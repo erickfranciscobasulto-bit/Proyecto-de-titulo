@@ -157,3 +157,8 @@ El resto de los IOL arranca con normalidad (incluido ACC1-CONCEPCION, con la mis
 **Resultado.** ACC2-CONCEPCION con IOS 15.2: SSH con AES-CTR (resuelve P-05 en este equipo), RA Guard aplicado en
 Et1/0-3 (7 de 8 switches de acceso), SNMPv3 activo y configuración guardada. Po3 se mantiene apagado hasta migrar
 ACC1-CONCEPCION (aún 15.1).
+
+**Acción aplicada (15-11-2026, 20:40).** En el notebook Arch con EVE-NG:
+`sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target` → `Loaded: masked`, más la
+suspensión y el apagado de pantalla del escritorio en "Nunca". Al terminar el proyecto se revierte con
+`systemctl unmask` sobre las mismas unidades.
