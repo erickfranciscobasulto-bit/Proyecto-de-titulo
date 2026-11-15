@@ -177,3 +177,22 @@ Resultado tras la corrección:
 iso.3.6.1.2.1.1.5.0 = STRING: "R-TEMUCO.agroprodel.cl"
 iso.3.6.1.2.1.1.6.0 = STRING: "Temuco - Casa Matriz"
 ```
+
+## 13. Grafana (repositorio oficial) y plugin de Zabbix
+```bash
+sudo apt-get install -y apt-transport-https wget gnupg
+sudo mkdir -p /etc/apt/keyrings
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+sudo apt-get update
+sudo apt-get install -y grafana
+sudo systemctl enable --now grafana-server
+# el comando antiguo grafana-cli falla (ver S-08); se usa "grafana cli" con --homepath
+sudo grafana cli --homepath /usr/share/grafana plugins install alexanderzobnin-zabbix-app
+sudo systemctl restart grafana-server
+systemctl is-active grafana-server
+sudo ss -tlnp | grep 3000
+sudo ls /var/lib/grafana/plugins
+```
+Resultado: Grafana 13.3.1 · plugin `alexanderzobnin-zabbix-app` v6.10.3 · servicio `active` · escucha en `*:3000`.
+Memoria tras la instalación: 928 MiB disponibles, swap en uso (328 MiB) como respaldo.

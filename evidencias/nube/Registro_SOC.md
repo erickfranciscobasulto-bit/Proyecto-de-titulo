@@ -141,3 +141,4 @@ Secciones: indicadores de servicio (disponibilidad 30 d vs SLA 99,5 %, sedes ope
 problemas abiertos, MTTR) · topología lógica en vivo (AWS → VPN → Temuco → túneles) · mapa de sedes ·
 línea de tiempo de estado · latencia, uso de enlaces, voz EF, CPU/RAM, servidores en la nube · registro de eventos.
 Pestañas previstas: Resumen ejecutivo, Red WAN, Sedes, Seguridad (Wazuh), IDS (Suricata).
+| S-08 | `grafana-cli plugins install ...`: *Grafana-server Init Failed: Could not find config defaults, make sure homepath ... is set* | En Grafana 13 `grafana-cli` está obsoleto y no encuentra la carpeta de instalación por sí solo | `sudo grafana cli --homepath /usr/share/grafana plugins install alexanderzobnin-zabbix-app` y reinicio del servicio: plugin v6.10.3 instalado |
