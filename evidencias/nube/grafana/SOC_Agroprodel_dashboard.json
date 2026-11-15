@@ -45,7 +45,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 6,
+  "version": 7,
   "panels": [
     {
       "id": 900,
@@ -772,12 +772,13 @@
                     "fixed": "#5b9cf5"
                   },
                   "size": {
-                    "fixed": 2,
+                    "fixed": 3,
                     "min": 1,
                     "max": 10
                   },
                   "lineStyle": {
-                    "style": "dashed"
+                    "style": "dashed",
+                    "animate": true
                   }
                 }
               ]
@@ -839,6 +840,10 @@
                     "fixed": 2,
                     "min": 1,
                     "max": 10
+                  },
+                  "lineStyle": {
+                    "style": "dashed",
+                    "animate": true
                   }
                 }
               ]
@@ -899,9 +904,13 @@
                     "fixed": "#4cc38a"
                   },
                   "size": {
-                    "fixed": 2,
+                    "fixed": 3,
                     "min": 1,
                     "max": 10
+                  },
+                  "lineStyle": {
+                    "style": "dashed",
+                    "animate": true
                   }
                 }
               ]
@@ -965,6 +974,10 @@
                     "fixed": 2,
                     "min": 1,
                     "max": 10
+                  },
+                  "lineStyle": {
+                    "style": "dashed",
+                    "animate": true
                   }
                 }
               ]
@@ -1028,6 +1041,10 @@
                     "fixed": 2,
                     "min": 1,
                     "max": 10
+                  },
+                  "lineStyle": {
+                    "style": "dashed",
+                    "animate": true
                   }
                 }
               ]
@@ -1091,6 +1108,10 @@
                     "fixed": 2,
                     "min": 1,
                     "max": 10
+                  },
+                  "lineStyle": {
+                    "style": "dashed",
+                    "animate": true
                   }
                 }
               ]
