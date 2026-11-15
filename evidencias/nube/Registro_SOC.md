@@ -101,6 +101,8 @@ y gestión llegan al SOC).
 | Origen | Prueba | Resultado |
 |---|---|---|
 | R-TALCA (VLAN 99, 192.168.10.193) | ping 10.40.1.30 ×100 | 100/100, RTT 138/197/229 ms |
+| R-CONCEPCION (VLAN 99, 192.168.20.161) | ping 10.40.1.30 ×10 | Exitoso |
+| R-LOS-ANGELES (VLAN 99, 192.168.30.129) | ping 10.40.1.30 ×10 | Exitoso |
 
 ### Errores encontrados
 | N° | Síntoma | Causa | Solución |
