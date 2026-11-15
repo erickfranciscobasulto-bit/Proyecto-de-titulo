@@ -70,3 +70,26 @@ sudo swanctl --load-all
 sudo swanctl --list-conns
 ```
 Resultado: `loaded ike secret 'ike-temuco'`, `loaded connection 'temuco'`; sedes 10.40.0.0/16 === 192.168.0.0/16.
+
+## 5. Memoria swap (2 GB)
+La instancia t3.small tiene 2 GB de RAM para Zabbix, MySQL y Grafana; el swap evita que el kernel termine
+procesos por falta de memoria.
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h
+```
+Resultado: `Mem: 1.9Gi` · `Swap: 2.0Gi`.
+
+## 6. Zabbix 7.0 LTS – repositorio oficial
+```bash
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo apt update
+```
+Resultado: paquete `zabbix-release 1:7.0-5+ubuntu24.04`; `apt update` lee `repo.zabbix.com/zabbix/7.0/ubuntu noble`.
+El aviso *New release '26.04.1 LTS' available* se ignora: el servidor se mantiene en 24.04 LTS, versión soportada
+por Zabbix 7.0.
