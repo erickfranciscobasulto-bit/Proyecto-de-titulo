@@ -164,3 +164,16 @@ La clave de fábrica del usuario `Admin` se cambió al primer ingreso (no docume
 | Zona horaria por defecto | (UTC-03:00) America/Santiago | El tablero mostraba UTC ("Reykjavik"); se alinean alertas y gráficos con la hora de las sedes |
 | Idioma | Español (es_ES) | — |
 | Jornada laboral | `1-5,08:00-17:00` | Lunes a viernes, 8 h + 1 h de colación = 40 h semanales (bajo el máximo de 42 h de la Ley 21.561). Los gráficos sombrean el horario laboral para distinguir eventos con impacto en usuarios de los que ocurren fuera de horario |
+
+## 12. Prueba SNMPv3 hacia los equipos de red (por la VPN)
+```bash
+sudo apt -y install snmp
+# con un espacio inicial para que la línea (con claves) no quede en el historial
+ snmpget -v3 -l authPriv -u zabbix -a SHA -A '<clave no documentada>' -x AES -X '<clave no documentada>' 192.168.40.241 1.3.6.1.2.1.1.5.0 1.3.6.1.2.1.1.6.0
+```
+Primer intento: *Timeout* (error S-06, túnel cerrado por inactividad; corregido con IP SLA en R-TEMUCO).
+Resultado tras la corrección:
+```
+iso.3.6.1.2.1.1.5.0 = STRING: "R-TEMUCO.agroprodel.cl"
+iso.3.6.1.2.1.1.6.0 = STRING: "Temuco - Casa Matriz"
+```
