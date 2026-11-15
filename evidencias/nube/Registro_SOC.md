@@ -65,6 +65,7 @@ El SIEM no expone ningún puerto a Internet.
 | 10.40.0.0/16 | local | Tráfico interno de la VPC |
 | 0.0.0.0/0 | igw-0038a87052752e964 | Internet |
 | 192.168.0.0/16 | eni-0d88fe11da28b32a8 (SRV-NOC) | Redes de las 4 sedes, a través de la VPN |
+| 203.0.113.0/30 | eni-0d88fe11da28b32a8 (SRV-NOC) | Red de tránsito R-TEMUCO ↔ FW-TEMUCO (monitoreo del firewall por la VPN) |
 
 ## VPN sitio a sitio R-TEMUCO ↔ SRV-NOC
 | Parámetro | Valor |
