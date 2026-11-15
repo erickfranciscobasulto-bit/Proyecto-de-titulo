@@ -119,3 +119,22 @@ sudo mysql -e "SELECT COUNT(*) AS tablas FROM information_schema.tables WHERE ta
 ```
 Resultado: 203 tablas. `log_bin_trust_function_creators` se activa solo durante la carga del esquema (crea
 triggers con el binlog habilitado) y se desactiva enseguida.
+
+## 9. Conexión de Zabbix a la base de datos y panel web
+```bash
+sudo nano /etc/zabbix/zabbix_server.conf
+#   bajo "# DBPassword=" se agrega:  DBPassword=<clave no documentada>   (DBUser=zabbix ya viene definido)
+sudo sed -i 's/^#\s*listen\s*8080;/        listen          80;/; s/^#\s*server_name\s*example.com;/        server_name     _;/' /etc/zabbix/nginx.conf
+sudo rm /etc/nginx/sites-enabled/default
+grep -E "^\s*(listen|server_name)" /etc/zabbix/nginx.conf
+sudo nginx -t
+sudo systemctl restart zabbix-server zabbix-agent2 nginx php8.3-fpm
+sudo systemctl enable zabbix-server zabbix-agent2 nginx php8.3-fpm
+systemctl is-active zabbix-server zabbix-agent2 nginx php8.3-fpm
+sudo tail -5 /var/log/zabbix/zabbix_server.log
+```
+La clave se edita con nano (no con `sed`) para que no quede en el historial de la shell.
+Se elimina el sitio por defecto de Nginx para que el puerto 80 sirva directamente el panel de Zabbix.
+
+Resultado: `listen 80;` · `server_name _;` · `syntax is ok` · 4 servicios `active` · log sin errores de acceso a la
+base (`server #47 started [snmp poller #1]`, `configuration syncer`, `internal poller`, `proxy group manager`).
