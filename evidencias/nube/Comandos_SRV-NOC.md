@@ -28,3 +28,45 @@ sudo sysctl -p /etc/sysctl.d/99-vpn-soc.conf
 sudo reboot
 ```
 Verificación: `uname -r` → 7.0.0-1017-aws · `net.ipv4.ip_forward = 1` · strongswan **active** · strongswan-starter **disabled**.
+
+## 3. Túnel IKEv2 hacia R-TEMUCO (`/etc/swanctl/conf.d/agroprodel.conf`, permiso 600)
+La clave compartida se genera aleatoriamente en el servidor (32 caracteres) y no se documenta.
+```
+connections {
+  temuco {
+    version = 2
+    local_addrs = 10.40.1.30
+    remote_addrs = %any
+    proposals = aes256-sha256-modp2048
+    dpd_delay = 30s
+    local {
+      auth = psk
+      id = 98.83.92.138
+    }
+    remote {
+      auth = psk
+      id = r-temuco.agroprodel.cl
+    }
+    children {
+      sedes {
+        local_ts = 10.40.0.0/16
+        remote_ts = 192.168.0.0/16
+        esp_proposals = aes256-sha256-modp2048
+        dpd_action = clear
+      }
+    }
+  }
+}
+secrets {
+  ike-temuco {
+    id = r-temuco.agroprodel.cl
+    secret = "<clave no documentada>"
+  }
+}
+```
+```bash
+sudo chmod 600 /etc/swanctl/conf.d/agroprodel.conf
+sudo swanctl --load-all
+sudo swanctl --list-conns
+```
+Resultado: `loaded ike secret 'ike-temuco'`, `loaded connection 'temuco'`; sedes 10.40.0.0/16 === 192.168.0.0/16.
