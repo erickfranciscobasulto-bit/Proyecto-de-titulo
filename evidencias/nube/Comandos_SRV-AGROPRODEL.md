@@ -247,3 +247,20 @@ sudo systemctl restart vsftpd
 sudo systemctl is-active vsftpd
 tail -4 /etc/vsftpd.conf
 ```
+
+## Agente Zabbix 2 (monitoreo desde el SOC, modo activo)
+El agente inicia la conexión hacia SRV-NOC (10.40.1.30:10051) dentro de la VPC: no se abre ningún puerto de entrada
+en el grupo de seguridad de este servidor.
+```bash
+lsb_release -d
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo apt update
+sudo apt -y install zabbix-agent2
+sudo sed -i 's/^Server=.*/Server=10.40.1.30/; s/^ServerActive=.*/ServerActive=10.40.1.30/; s/^Hostname=.*/Hostname=SRV-AGROPRODEL/' /etc/zabbix/zabbix_agent2.conf
+sudo grep -E "^(Server|ServerActive|Hostname)=" /etc/zabbix/zabbix_agent2.conf   # el archivo solo es legible por root
+sudo systemctl restart zabbix-agent2
+sudo systemctl enable zabbix-agent2
+systemctl is-active zabbix-agent2
+```
+Resultado: `Server=10.40.1.30` · `ServerActive=10.40.1.30` · `Hostname=SRV-AGROPRODEL` · `active`.
