@@ -464,7 +464,13 @@ crypto ipsec transform-set TS-AWS esp-aes 256 esp-sha256-hmac
  mode tunnel
  exit
 ip access-list extended VPN-AWS
- permit ip 192.168.0.0 0.0.255.255 10.40.0.0 0.0.255.255
+ 10 permit ip 192.168.0.0 0.0.255.255 10.40.0.0 0.0.255.255
+ ! Red de transito R-TEMUCO <-> FW-TEMUCO: permite al SOC monitorear el firewall por la VPN
+ 20 permit ip 203.0.113.0 0.0.0.3 10.40.0.0 0.0.255.255
+ exit
+interface ethernet 0/0
+ ! el trafico del FW hacia el SOC entra y sale por e0/0 antes de cifrarse
+ no ip redirects
  exit
 crypto map CM-AWS 10 ipsec-isakmp
  set peer 98.83.92.138

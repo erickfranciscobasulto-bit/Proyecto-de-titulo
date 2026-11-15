@@ -196,3 +196,14 @@ sudo ls /var/lib/grafana/plugins
 ```
 Resultado: Grafana 13.3.1 · plugin `alexanderzobnin-zabbix-app` v6.10.3 · servicio `active` · escucha en `*:3000`.
 Memoria tras la instalación: 928 MiB disponibles, swap en uso (328 MiB) como respaldo.
+
+## 14. VPN: red de tránsito del firewall (203.0.113.0/30)
+Permite que el SOC alcance FW-TEMUCO (203.0.113.1) por el túnel.
+```bash
+sudo sed -i 's|remote_ts = 192.168.0.0/16$|remote_ts = 192.168.0.0/16,203.0.113.0/30|' /etc/swanctl/conf.d/agroprodel.conf
+sudo grep remote_ts /etc/swanctl/conf.d/agroprodel.conf
+sudo swanctl --load-all
+sudo swanctl --terminate --ike temuco
+```
+Resultado: `remote_ts = 192.168.0.0/16,203.0.113.0/30` · `loaded connection 'temuco'`.
+En R-TEMUCO: línea 20 en `VPN-AWS` y `clear crypto session`; túnel restablecido (ping 9/10).
