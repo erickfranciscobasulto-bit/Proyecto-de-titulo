@@ -93,3 +93,29 @@ sudo apt update
 Resultado: paquete `zabbix-release 1:7.0-5+ubuntu24.04`; `apt update` lee `repo.zabbix.com/zabbix/7.0/ubuntu noble`.
 El aviso *New release '26.04.1 LTS' available* se ignora: el servidor se mantiene en 24.04 LTS, versión soportada
 por Zabbix 7.0.
+
+## 7. Zabbix 7.0 – paquetes
+```bash
+sudo apt -y install mysql-server zabbix-server-mysql zabbix-frontend-php zabbix-nginx-conf zabbix-sql-scripts zabbix-agent2
+systemctl is-active mysql
+zabbix_server --version | head -1
+```
+Resultado: `active` · `zabbix_server (Zabbix) 7.0.32` · MySQL 8.0.46.
+
+## 8. Base de datos de Zabbix
+Usuario `zabbix` exclusivo con permisos solo sobre la base `zabbix` (mínimo privilegio). Clave no documentada.
+```sql
+-- sudo mysql
+CREATE DATABASE zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE USER 'zabbix'@'localhost' IDENTIFIED BY '<clave no documentada>';
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';
+SET GLOBAL log_bin_trust_function_creators = 1;
+QUIT;
+```
+```bash
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p zabbix
+sudo mysql -e "SET GLOBAL log_bin_trust_function_creators = 0;"
+sudo mysql -e "SELECT COUNT(*) AS tablas FROM information_schema.tables WHERE table_schema='zabbix';"
+```
+Resultado: 203 tablas. `log_bin_trust_function_creators` se activa solo durante la carga del esquema (crea
+triggers con el binlog habilitado) y se desactiva enseguida.
