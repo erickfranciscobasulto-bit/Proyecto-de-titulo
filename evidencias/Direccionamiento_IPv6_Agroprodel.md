@@ -11,11 +11,10 @@ Plan verificado: 25 redes /64 sin solapamientos, cada sede contenida en su /56 y
 | Sede Concepción | `2001:db8:a9:300::/56` | 256 subredes /64 |
 | Sede Los Ángeles | `2001:db8:a9:400::/56` | 256 subredes /64 |
 | Infraestructura (túneles y loopbacks) | `2001:db8:a9:f00::/56` | 256 subredes /64 |
-| Reserva regiones internacionales | `2001:db8:a9:1000::/52` … `2001:db8:a9:e000::/52` | 14 regiones × 16 sedes |
 
 **Por qué no hay VLSM en IPv6:** toda LAN usa /64. Es obligatorio para SLAAC (RFC 4862) y recomendado por RFC 7421; el ahorro de direcciones no aplica porque un /64 ofrece 18 trillones de direcciones. La jerarquía (/48 → /56 → /64) cumple el rol que en IPv4 cumple el VLSM: orden, crecimiento y resumen de rutas.
 
-**Regla de lectura del 4.º bloque (RSVV):** R = región (0 = Chile), S = sede, VV = VLAN. Ej.: `2001:db8:a9:0230::/64` → Chile, Talca, VLAN 30.
+**Regla de lectura del 4.º bloque (S VV):** S = sede, VV = VLAN. Ej.: `2001:db8:a9:230::/64` → Talca, VLAN 30.
 
 **Convención de hosts estáticos:** el identificador de interfaz repite el último octeto IPv4 (Issabel 192.168.40.226 → `::226`), lo que facilita la operación en doble pila.
 
