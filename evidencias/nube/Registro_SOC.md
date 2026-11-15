@@ -54,3 +54,4 @@ El SIEM no expone ningún puerto a Internet.
 | Disco | 20 GiB gp3 |
 | Perfil IAM / créditos | LabInstanceProfile · standard |
 | Llave | LLAVE-NOC (exclusiva del servidor; no se documenta) |
+| IP elástica | 98.83.92.138 (eipalloc-0a80a0ba5323a9f9a): extremo fijo de la VPN para R-TEMUCO |
