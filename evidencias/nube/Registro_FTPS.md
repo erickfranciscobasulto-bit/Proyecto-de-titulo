@@ -82,5 +82,6 @@ Durante el diagnóstico se agregaron temporalmente `log_ftp_protocol=YES`, `dual
 | Solución | Subir desde una carpeta local, o en OneDrive marcar la carpeta como **"Mantener siempre en este dispositivo"** antes de transferir. El cliente puede volver a TLS 1.3 (máxima versión) sin problemas. |
 | Aprendizaje | Ante un síntoma en la red, comprobar también el origen de los datos: el registro del servidor (OK UPLOAD con 0 KB/s) indicaba que la sesión era correcta y que el cliente no entregaba contenido. |
 
-## Pendiente
-- Retirar el registro detallado de comandos (`log_ftp_protocol`, `dual_log_enable`, `vsftpd_log_file`) una vez terminadas las pruebas.
+## Cierre
+- Registro detallado de comandos retirado (`log_ftp_protocol`, `dual_log_enable`, `vsftpd_log_file`); `systemctl is-active vsftpd` → **active**.
+- Prueba final con TLS 1.3 (cliente: mínima 1.2, máxima 1.3): `Informe_Implementacion_Red_Agroprodel.docx` subido desde almacenamiento local con su tamaño completo (1 571 KB).
