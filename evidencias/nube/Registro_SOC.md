@@ -120,6 +120,7 @@ y gestión llegan al SOC).
 | Zabbix server (SRV-NOC) | Agente 127.0.0.1:10050 | Linux by Zabbix agent, Zabbix server health | Zabbix servers | ZBX verde |
 | R-TEMUCO (Casa Matriz) | SNMPv3 authPriv (SHA1/AES128, usuario `zabbix`) 192.168.40.241:161 por la VPN | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde · 180 métricas · 78 iniciadores · 19 gráficos (descubrimiento de interfaces y túneles) |
 | R-TALCA (Sucursal) | SNMPv3 authPriv 192.168.10.193:161 (túnel Talca–Temuco + VPN AWS) | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde · 153 métricas · 66 iniciadores · 16 gráficos. Creado clonando R-TEMUCO |
+| R-CONCEPCION (Sucursal) | SNMPv3 authPriv 192.168.20.161:161 (túnel Concepción–Temuco + VPN AWS) | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde. Creado clonando R-TALCA |
 
 Se monitorea por la IP de la VLAN 99 (gestión): pertenece a 192.168.0.0/16, por lo que el tráfico viaja cifrado
 en la VPN, y la ACL `SNMP-NOC` del router solo acepta consultas de 10.40.1.30. Se mantiene marcada la opción de
