@@ -18,3 +18,13 @@ sudo sysctl -p /etc/sysctl.d/99-vpn-soc.conf
 systemctl is-active strongswan
 swanctl --version
 ```
+
+Se instaló también `strongswan-starter` (servicio heredado `ipsec`) como dependencia; se deshabilita para que un
+solo demonio (charon-systemd, administrado con `swanctl`) use los puertos UDP 500/4500. Se reinicia para cargar el
+kernel actualizado (7.0.0-1017-aws):
+```bash
+sudo systemctl disable --now strongswan-starter
+sudo sysctl -p /etc/sysctl.d/99-vpn-soc.conf
+sudo reboot
+```
+Verificación: `uname -r` → 7.0.0-1017-aws · `net.ipv4.ip_forward = 1` · strongswan **active** · strongswan-starter **disabled**.
