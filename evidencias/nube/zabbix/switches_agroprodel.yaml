@@ -1,0 +1,294 @@
+zabbix_export:
+  version: '7.0'
+  host_groups:
+    - uuid: 69f4351756c24e13891edfc401079276
+      name: 'Switches Agroprodel'
+  hosts:
+    - host: DIST-TEMUCO
+      name: 'DIST-TEMUCO (Temuco)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.40.242
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Temuco - Distribucion. Gestion VLAN 99 192.168.40.242. SNMPv3 por la VPN.'
+    - host: ACC1-TEMUCO
+      name: 'ACC1-TEMUCO (Temuco)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.40.243
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Temuco - Acceso 1. Gestion VLAN 99 192.168.40.243. SNMPv3 por la VPN.'
+    - host: ACC2-TEMUCO
+      name: 'ACC2-TEMUCO (Temuco)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.40.244
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Temuco - Acceso 2. Gestion VLAN 99 192.168.40.244. SNMPv3 por la VPN.'
+    - host: DIST-TALCA
+      name: 'DIST-TALCA (Talca)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.10.194
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Talca - Distribucion. Gestion VLAN 99 192.168.10.194. SNMPv3 por la VPN.'
+    - host: ACC1-TALCA
+      name: 'ACC1-TALCA (Talca)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.10.195
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Talca - Acceso 1. Gestion VLAN 99 192.168.10.195. SNMPv3 por la VPN.'
+    - host: ACC2-TALCA
+      name: 'ACC2-TALCA (Talca)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.10.196
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Talca - Acceso 2. Gestion VLAN 99 192.168.10.196. SNMPv3 por la VPN.'
+    - host: DIST-CONCEPCION
+      name: 'DIST-CONCEPCION (Concepcion)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.20.162
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Concepcion - Distribucion. Gestion VLAN 99 192.168.20.162. SNMPv3 por la VPN.'
+    - host: ACC1-CONCEPCION
+      name: 'ACC1-CONCEPCION (Concepcion)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.20.163
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Concepcion - Acceso 1. Gestion VLAN 99 192.168.20.163. SNMPv3 por la VPN.'
+    - host: ACC2-CONCEPCION
+      name: 'ACC2-CONCEPCION (Concepcion)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.20.164
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Concepcion - Acceso 2. Gestion VLAN 99 192.168.20.164. SNMPv3 por la VPN.'
+    - host: DIST-LOS-ANGELES
+      name: 'DIST-LOS-ANGELES (Los Angeles)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.30.130
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Los Angeles - Distribucion. Gestion VLAN 99 192.168.30.130. SNMPv3 por la VPN.'
+    - host: ACC1-LOS-ANGELES
+      name: 'ACC1-LOS-ANGELES (Los Angeles)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.30.131
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Los Angeles - Acceso 1. Gestion VLAN 99 192.168.30.131. SNMPv3 por la VPN.'
+    - host: ACC2-LOS-ANGELES
+      name: 'ACC2-LOS-ANGELES (Los Angeles)'
+      templates:
+        - name: 'Cisco IOS by SNMP'
+      groups:
+        - name: 'Switches Agroprodel'
+      interfaces:
+        - type: SNMP
+          ip: 192.168.30.132
+          port: '161'
+          details:
+            version: SNMPV3
+            securityname: '{$SNMPV3_USER}'
+            securitylevel: AUTHPRIV
+            authprotocol: SHA1
+            authpassphrase: '{$SNMPV3_AUTH}'
+            privprotocol: AES128
+            privpassphrase: '{$SNMPV3_PRIV}'
+          interface_ref: if1
+      macros:
+        - macro: '{$ICMP_RESPONSE_TIME_WARN}'
+          value: '0.4'
+          description: 'Linea base VPN AWS ~140-290 ms'
+      description: 'Switch Los Angeles - Acceso 2. Gestion VLAN 99 192.168.30.132. SNMPv3 por la VPN.'
