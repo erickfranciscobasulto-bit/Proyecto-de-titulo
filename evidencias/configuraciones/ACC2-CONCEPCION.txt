@@ -2,6 +2,7 @@
 ! ACC2-CONCEPCION - Switch de acceso 2 sucursal Concepcion (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Estado: COMPLETA (partes 1 a 5) - Seguridad de gestion: SSH v2, enable secret, ACL GESTION-SSH
+! Imagen: i86bi_Linux-L2-AdvEnterpriseK9-M_152_May_2018.bin (IOS 15.2) desde el 15-11-2026 (antes 15.1a, ver P-10)
 ! ==========================================================
 enable
 configure terminal
@@ -113,8 +114,7 @@ ip default-gateway 192.168.20.161
 ip route 0.0.0.0 0.0.0.0 192.168.20.161
 !
 ! --- Seguridad basica de gestion (endurecimiento) ---
-! NOTA: este equipo corre IOS 15.1 (imagen IOL antigua): SSH solo ofrece cifrados CBC
-! Acceso: ssh -c aes256-cbc -l admin 192.168.20.164 - Recomendacion: actualizar a IOS 15.2+ (AES-CTR)
+! Migrado a IOS 15.2: SSH negocia AES-CTR (se resuelve la limitacion CBC de P-05)
 ! La clave real NO se documenta: cumple politica de 12+ caracteres (may/min/num/simbolo)
 service password-encryption
 enable secret <clave no documentada>
@@ -148,8 +148,21 @@ line vty 0 4
  access-class GESTION-SSH in
  exit
 !
-! --- RA Guard (IPv6 First Hop Security): NO SOPORTADO por la imagen IOL 15.1 ---
-! 'ipv6 nd raguard policy' -> % Invalid input. Se resuelve con la migracion a IOS 15.2 (ver P-05 y P-06).
+! --- IPv6 First Hop Security: RA Guard en puertos de usuario (habilitado tras migrar a 15.2) ---
+ipv6 nd raguard policy RA-GUARD-USUARIOS
+ device-role host
+ exit
+interface range ethernet 1/0 - 3
+ ipv6 nd raguard attach-policy RA-GUARD-USUARIOS
+ exit
+!
+! --- Puertos sin uso: apagados (seguridad; ademas elimina avisos EXCESSCOLL del emulador) ---
+interface range ethernet 2/0 - 3
+ description NO-USADO
+ shutdown
+ exit
+! Et1/3 (AP sala de ventas) sin equipo conectado en EVE-NG: genera %AMDP2_FE-6-EXCESSCOLL (informativo,
+! artefacto del emulador); se mantiene habilitado segun el diseno real.
 !
 !
 ! --- SNMPv3 authPriv para Zabbix (solo SRV-NOC 10.40.1.30, por la VPN) ---

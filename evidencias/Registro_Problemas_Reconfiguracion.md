@@ -124,3 +124,36 @@ y desactivar el bloqueo y el ahorro de energía de la pantalla.
 
 **Valor para el proyecto.** El evento fue detectado desde el SOC en la nube (Zabbix + Grafana) y su causa se confirmó
 correlacionando la métrica con el log del equipo, sin intervención en la sede.
+
+
+## P-10 – ACC2-CONCEPCION se apaga al encenderlo (NVRAM dañada) y migración a IOS 15.2
+
+**Síntoma.** Tras reiniciar el host EVE-NG, el nodo ACC2-CONCEPCION (IOL 15.1a) se detiene a los 3 s de encenderlo.
+El resto de los IOL arranca con normalidad (incluido ACC1-CONCEPCION, con la misma imagen).
+
+**Diagnóstico.**
+1. `unl_wrapper -a fixpermissions`: sin cambios.
+2. `/opt/unetlab/tmp/0/<lab>/17/wrapper.txt`: `Error while connecting local AF_UNIX: Connection refused` y
+   `Cannot listen at AF_UNIX (272)`; el envoltorio de EVE no logra conectarse porque el proceso IOL ya terminó.
+3. Se descartan memoria (10 GiB libres), permisos, procesos o sockets residuales (`pgrep` y `ps`: ninguno) e imagen
+   (ACC1-CONCEPCION arranca con la misma).
+4. La diferencia es el archivo de configuración guardada `nvram_00272` (fecha 14-11 19:31). Se respaldó en
+   `/root/nvram_00272_ACC2-CONCEPCION.bak` y se apartó (`nvram_00272.old`): el nodo arranca y permanece encendido.
+   **Causa: NVRAM dañada.**
+
+**Solución.** Se aprovechó la reconstrucción para migrar el nodo a `i86bi_Linux-L2-AdvEnterpriseK9-M_152_May_2018.bin`
+(IOS 15.2), pendiente desde P-05/P-06, y se restauró la configuración desde `ACC2-CONCEPCION.txt` en 4 bloques
+(VLAN y STP · enlaces, puertos y gestión · seguridad y RA Guard · SNMPv3).
+
+**Incidencias durante la restauración.**
+- Po2 quedó *suspended* en ambos extremos y `show lacp neighbor` vacío: los puertos se configuraron con
+  DIST-CONCEPCION apagado. Con dúplex verificado (Full en los 4 puertos), un `shutdown`/`no shutdown` en ambos
+  extremos formó el canal: LACP con DIST (`aabb.cc80.e000`) por Et0/0 y Et0/1 y ping al gateway 5/5.
+- Error en el archivo de configuración: el `shutdown` temporal del Po3 (P-06) estaba antes de un `no shutdown` en el
+  mismo bloque, por lo que al restaurar se habría reactivado el bucle. Se corrigió el orden.
+- `%AMDP2_FE-6-EXCESSCOLL` en puertos sin equipo conectado (artefacto del emulador con 15.2): Et2/0-3 se apagaron
+  como puertos sin uso; Et1/3 (AP) se mantiene habilitado según el diseño.
+
+**Resultado.** ACC2-CONCEPCION con IOS 15.2: SSH con AES-CTR (resuelve P-05 en este equipo), RA Guard aplicado en
+Et1/0-3 (7 de 8 switches de acceso), SNMPv3 activo y configuración guardada. Po3 se mantiene apagado hasta migrar
+ACC1-CONCEPCION (aún 15.1).
