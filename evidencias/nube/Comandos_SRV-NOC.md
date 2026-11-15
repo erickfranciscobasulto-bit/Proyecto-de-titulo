@@ -157,3 +157,10 @@ Asistente en `http://98.83.92.138/` (puerto 80 permitido solo desde la IP del ad
 Resultado: tablero *Global view* operativo; "El servidor Zabbix se está ejecutando: Sí (localhost:10051)", versión 7.0.32,
 1 equipo (Zabbix server) monitoreado por el agente 2.
 La clave de fábrica del usuario `Admin` se cambió al primer ingreso (no documentada).
+
+## 11. Ajustes del panel (Administración → General → Interfaz de usuario)
+| Parámetro | Valor | Motivo |
+|---|---|---|
+| Zona horaria por defecto | (UTC-03:00) America/Santiago | El tablero mostraba UTC ("Reykjavik"); se alinean alertas y gráficos con la hora de las sedes |
+| Idioma | Español (es_ES) | — |
+| Jornada laboral | `1-5,08:00-17:00` | Lunes a viernes, 8 h + 1 h de colación = 40 h semanales (bajo el máximo de 42 h de la Ley 21.561). Los gráficos sombrean el horario laboral para distinguir eventos con impacto en usuarios de los que ocurren fuera de horario |
