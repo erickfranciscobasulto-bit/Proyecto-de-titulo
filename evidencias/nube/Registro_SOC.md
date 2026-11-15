@@ -135,6 +135,27 @@ solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN
 | *Cisco IOS: High ICMP ping response time* (4 routers) | La plantilla alerta sobre 150 ms (`{$ICMP_RESPONSE_TIME_WARN}` = 0.15), valor pensado para una LAN. El SOC está en us-east-1 y consulta por la VPN: la línea base medida es ~140–290 ms (ping, IP SLA). Generaba falsos positivos permanentes | Macro a nivel de equipo `{$ICMP_RESPONSE_TIME_WARN}` = `0.4` en los 4 routers (modificación masiva). Se calibra sobre la línea base, sin desactivar la alerta, que sigue detectando degradación real de la VPN o de los túneles. Las 4 alertas pasaron a RESUELTO (16:04–16:07) |
 | *Linux: Number of installed packages has been changed* (SRV-NOC) | Aviso informativo por la instalación del paquete `snmp` | Cambio esperado; se cierra manualmente |
 
+## Switches monitoreados (importación masiva)
+Credenciales SNMPv3 centralizadas en macros globales de Zabbix (Administración → Macros): `{$SNMPV3_USER}` (texto),
+`{$SNMPV3_AUTH}` y `{$SNMPV3_PRIV}` (texto secreto: no se pueden leer desde la interfaz). Las interfaces SNMP de los
+equipos referencian las macros, por lo que el archivo de importación no contiene claves y la rotación de credenciales
+se hace en un solo lugar.
+
+Archivo: `zabbix/switches_agroprodel.yaml` (Recopilación de datos → Equipos → Importar; reglas: crear nuevo y
+modificar existentes, sin *eliminar faltante*). Grupo `Switches Agroprodel`, plantilla *Cisco IOS by SNMP*,
+macro `{$ICMP_RESPONSE_TIME_WARN}` = 0.4.
+
+| Sede | Distribución | Acceso 1 | Acceso 2 |
+|---|---|---|---|
+| Temuco | DIST-TEMUCO 192.168.40.242 | ACC1-TEMUCO .243 | ACC2-TEMUCO .244 |
+| Talca | DIST-TALCA 192.168.10.194 | ACC1-TALCA .195 | ACC2-TALCA .196 |
+| Concepción | DIST-CONCEPCION 192.168.20.162 | ACC1-CONCEPCION .163 | ACC2-CONCEPCION .164 |
+| Los Ángeles | DIST-LOS-ANGELES 192.168.30.130 | ACC1-LOS-ANGELES .131 | ACC2-LOS-ANGELES .132 |
+
+Resultado: 12 switches con SNMP verde (158 métricas y 68 iniciadores cada uno tras el descubrimiento de interfaces).
+Total monitoreado: 17 equipos (4 routers, 12 switches, SRV-NOC). Pendientes: SW-FISICO-TEM (192.168.40.245, cuando
+esté encendido), servidores, FW-TEMUCO e ISP (requieren ampliar el dominio de la VPN).
+
 ## Acceso de Grafana a Zabbix (mínimo privilegio)
 | Elemento | Configuración |
 |---|---|
@@ -198,3 +219,4 @@ Pestañas previstas: Resumen ejecutivo, Red WAN, Sedes, Seguridad (Wazuh), IDS (
 | S-08 | `grafana-cli plugins install ...`: *Grafana-server Init Failed: Could not find config defaults, make sure homepath ... is set* | En Grafana 13 `grafana-cli` está obsoleto y no encuentra la carpeta de instalación por sí solo | `sudo grafana cli --homepath /usr/share/grafana plugins install alexanderzobnin-zabbix-app` y reinicio del servicio: plugin v6.10.3 instalado |
 | S-09 | Zabbix: *No se pudo agregar el usuario – no debe contener el nombre, apellido o código de usuario* | La política de contraseñas de Zabbix rechaza claves que incluyan el usuario o el nombre (`grafana`, `soc`) | Se eligió una clave sin esas palabras; usuario creado |
 | S-10 | Dashboard importado: paneles con triángulo rojo y *No data* (salvo los que no usaban funciones de alias) | Las funciones de alias del plugin Zabbix (`setAliasByRegex`, `setAlias`) agregadas a las consultas fallan en la versión 6.10.3 del plugin con Grafana 13 | Se eliminaron las funciones de alias de las consultas y los nombres cortos (Temuco, Talca, Concepción, Los Ángeles, Tunnel1 · Talca…) se aplican con *overrides* de Grafana por expresión regular sobre el nombre de la serie. Dashboard v4 operativo |
+| S-11 | Tras importar los switches, ACC2-CONCEPCION en rojo: *Authentication failure (incorrect password, community or key)*; los otros 11 en verde | La clave del usuario SNMPv3 quedó mal escrita al reconstruir el switch (P-10). Se confirmó con `snmpget` desde SRV-NOC: mismo error con las claves que funcionan en el resto | `no snmp-server user zabbix GRP-NOC v3` y nueva línea `snmp-server user` con las claves correctas; SNMP verde |
