@@ -168,6 +168,27 @@ revisa y se cierra con su justificación (trazabilidad del operador).
 Nota: la página del plugin muestra dos tarjetas "Zabbix" (aplicación y fuente de datos); la fuente de datos se crea desde
 Connections → Add new connection → Data Sources → Zabbix → *Add new data source*.
 
+## Dashboard del SOC en Grafana (implementado)
+Archivo importable: `grafana/SOC_Agroprodel_dashboard.json` (UID `agroprodel-soc`, versión 4). Se importa en
+Dashboards → New → Import, seleccionando la fuente *Zabbix SOC-AGROPRODEL*.
+
+| Sección | Panel | Consulta Zabbix |
+|---|---|---|
+| Indicadores | Sedes operativas (x / 4) | `ICMP ping` de los 4 routers con `sumSeries()` |
+| Indicadores | VPN Temuco ↔ AWS (ACTIVA / CAÍDA) | `ICMP ping` de R-TEMUCO (si el SOC alcanza la VLAN 99 de Temuco, el túnel está arriba) |
+| Indicadores | Disponibilidad por sede (periodo) | Promedio de `ICMP ping` (1/0) en el rango seleccionado |
+| Disponibilidad | Línea de tiempo de estado | `ICMP ping` de los 4 routers |
+| Rendimiento | Latencia SOC → sedes (umbral 400 ms) | `ICMP response time` |
+| Rendimiento | CPU de los routers | `CPU utilization` (descubrimiento) |
+| Rendimiento | Tráfico WAN R-TEMUCO | `Interface Et0/0: Bits received/sent` |
+| Rendimiento | Tráfico por túnel | `Interface Tu1-3: Bits received` en R-TEMUCO |
+| Eventos | Problemas actuales | Panel *Zabbix Problems* |
+
+Primera lectura (últimas 6 h): 4/4 sedes, VPN activa, latencia media 132–170 ms (máx. 389 ms, bajo el umbral),
+disponibilidad 89,8–92,5 %. La disponibilidad refleja las pausas del host EVE-NG (P-09): la línea de tiempo muestra
+en rojo, en las 4 sedes a la vez, la detención de R-TEMUCO de 17:19 a 17:27 (las sucursales se monitorean a través
+del hub de Temuco, por lo que su caída deja sin visibilidad al resto). CPU de los routers IOL ≈ 0 %.
+
 ## Diseño del dashboard (Grafana)
 Maqueta aprobada: `Diseno_Dashboard_SOC.html` (valores simulados a partir de las mediciones del laboratorio).
 Secciones: indicadores de servicio (disponibilidad 30 d vs SLA 99,5 %, sedes operativas, VPN, latencia media,
@@ -176,3 +197,4 @@ línea de tiempo de estado · latencia, uso de enlaces, voz EF, CPU/RAM, servido
 Pestañas previstas: Resumen ejecutivo, Red WAN, Sedes, Seguridad (Wazuh), IDS (Suricata).
 | S-08 | `grafana-cli plugins install ...`: *Grafana-server Init Failed: Could not find config defaults, make sure homepath ... is set* | En Grafana 13 `grafana-cli` está obsoleto y no encuentra la carpeta de instalación por sí solo | `sudo grafana cli --homepath /usr/share/grafana plugins install alexanderzobnin-zabbix-app` y reinicio del servicio: plugin v6.10.3 instalado |
 | S-09 | Zabbix: *No se pudo agregar el usuario – no debe contener el nombre, apellido o código de usuario* | La política de contraseñas de Zabbix rechaza claves que incluyan el usuario o el nombre (`grafana`, `soc`) | Se eligió una clave sin esas palabras; usuario creado |
+| S-10 | Dashboard importado: paneles con triángulo rojo y *No data* (salvo los que no usaban funciones de alias) | Las funciones de alias del plugin Zabbix (`setAliasByRegex`, `setAlias`) agregadas a las consultas fallan en la versión 6.10.3 del plugin con Grafana 13 | Se eliminaron las funciones de alias de las consultas y los nombres cortos (Temuco, Talca, Concepción, Los Ángeles, Tunnel1 · Talca…) se aplican con *overrides* de Grafana por expresión regular sobre el nombre de la serie. Dashboard v4 operativo |
