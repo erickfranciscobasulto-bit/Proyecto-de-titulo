@@ -67,3 +67,15 @@ Los `class-map` con `match dscp` clasifican IPv4 e IPv6 por igual; la voz se man
 - `show ipv6 route ospf`: prefijos de la otra sede.
 - PC (SLAAC): dirección `2001:db8:a9:SVV:...` y gateway `fe80::1`.
 - Ping IPv6 permitido (hacia servidores) y denegado (hacia otro departamento), con registro en el router.
+
+## 7. Resultado de la fase 1 (piloto Temuco – Talca) – 15-11-2026
+| Prueba | Resultado |
+|---|---|
+| `show ipv6 ospf neighbor` (R-TALCA) | 1.1.1.1 **FULL** por Tunnel1 |
+| `show ipv6 route ospf` (R-TALCA) | 7 rutas O de Temuco (VLAN 10, 20, 30, 40, 80, 99 y Loopback0) vía link-local de R-TEMUCO |
+| Ping Loopback0 Talca → Temuco | 100 % (5/5), 5 ms, a través del túnel GRE/IPsec |
+| SLAAC en PC de Talca VLAN 10 | `2001:db8:a9:210:2050:79ff:fe66:6823/64` (identificador derivado de la MAC, EUI-64); router `fe80::1` |
+| Ping PC Talca → servidores Temuco `2001:db8:a9:180::1` | **Permitido** (5/5) |
+| Ping PC Talca → Siembra Temuco `2001:db8:a9:110::1` | **Bloqueado**: ICMPv6 tipo 1 código 1 *administratively prohibited*; registro `%IPV6_ACL-6-ACCESSLOGDP: list DEPTOS-IN-V6/80 denied icmpv6 ... -> 2001:DB8:A9:110::1` |
+
+Conclusión: IPv6 enruta entre sedes por el túnel cifrado y aplica la misma política de mínimo privilegio que IPv4.
