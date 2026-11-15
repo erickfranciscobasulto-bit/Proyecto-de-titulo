@@ -155,6 +155,19 @@ agregando los dos grupos en Lectura.
 La misma alerta de `/etc/passwd` se generaría si un atacante creara una cuenta en el servidor; por eso cada evento se
 revisa y se cierra con su justificación (trazabilidad del operador).
 
+### Fuente de datos en Grafana
+| Parámetro | Valor |
+|---|---|
+| Plugin | Zabbix (alexanderzobnin) 6.10.3 – aplicación habilitada; la fuente de datos viene incluida |
+| Nombre | Zabbix SOC-AGROPRODEL |
+| URL | `http://localhost/api_jsonrpc.php` (Grafana y Zabbix en el mismo servidor: la consulta no sale a la red; Zabbix se publica en la raíz del sitio Nginx, sin `/zabbix/`) |
+| Autenticación | Tipo API token (usuario `grafana`, solo lectura) · HTTP: sin autenticación |
+| Conexión directa a la BD | Desactivada (solo API) |
+| Prueba | *Save & test*: **Zabbix API version 7.0.32** |
+
+Nota: la página del plugin muestra dos tarjetas "Zabbix" (aplicación y fuente de datos); la fuente de datos se crea desde
+Connections → Add new connection → Data Sources → Zabbix → *Add new data source*.
+
 ## Diseño del dashboard (Grafana)
 Maqueta aprobada: `Diseno_Dashboard_SOC.html` (valores simulados a partir de las mediciones del laboratorio).
 Secciones: indicadores de servicio (disponibilidad 30 d vs SLA 99,5 %, sedes operativas, VPN, latencia media,
