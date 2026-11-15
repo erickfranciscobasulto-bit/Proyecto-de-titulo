@@ -138,6 +138,7 @@ ip dhcp pool VLAN70-IOT-TEM
  exit
 !
 ! --- PAT: salida a Internet ---
+! (Reemplazada por NAT-TEMUCO-EXT en el bloque VPN-AWS; se mantiene como registro)
 ip access-list standard NAT-TEMUCO
  permit 192.168.40.0 0.0.0.255
  exit
@@ -431,6 +432,58 @@ interface tunnel 3
 ipv6 router ospf 1
  no passive-interface Tunnel3
  exit
+!
+! ============================================================
+! VPN SITIO A SITIO HACIA AWS (SOC) - IKEv2 / IPsec
+! R-TEMUCO (detras de NAT) <-> SRV-NOC strongSwan (EIP 98.83.92.138)
+! Trafico protegido: 192.168.0.0/16 (sedes) <-> 10.40.0.0/16 (VPC)
+! ============================================================
+crypto ikev2 proposal PROP-AWS
+ encryption aes-cbc-256
+ integrity sha256
+ group 14
+ exit
+crypto ikev2 policy POL-AWS
+ proposal PROP-AWS
+ exit
+crypto ikev2 keyring KR-AWS
+ peer SRV-NOC
+  address 98.83.92.138
+  pre-shared-key <clave no documentada>
+  exit
+ exit
+crypto ikev2 profile PROF-AWS
+ match identity remote address 98.83.92.138 255.255.255.255
+ identity local fqdn r-temuco.agroprodel.cl
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local KR-AWS
+ dpd 30 5 on-demand
+ exit
+crypto ipsec transform-set TS-AWS esp-aes 256 esp-sha256-hmac
+ mode tunnel
+ exit
+ip access-list extended VPN-AWS
+ permit ip 192.168.0.0 0.0.255.255 10.40.0.0 0.0.255.255
+ exit
+crypto map CM-AWS 10 ipsec-isakmp
+ set peer 98.83.92.138
+ set transform-set TS-AWS
+ set pfs group14
+ set ikev2-profile PROF-AWS
+ match address VPN-AWS
+ exit
+interface ethernet 0/0
+ crypto map CM-AWS
+ exit
+!
+! --- NAT: excluye el trafico hacia la VPC (va cifrado por la VPN) ---
+ip access-list extended NAT-TEMUCO-EXT
+ deny ip 192.168.0.0 0.0.255.255 10.40.0.0 0.0.255.255
+ permit ip 192.168.40.0 0.0.0.255 any
+ exit
+no ip nat inside source list NAT-TEMUCO interface ethernet 0/0 overload
+ip nat inside source list NAT-TEMUCO-EXT interface ethernet 0/0 overload
 !
 end
 write memory

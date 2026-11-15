@@ -65,3 +65,32 @@ El SIEM no expone ningún puerto a Internet.
 | 10.40.0.0/16 | local | Tráfico interno de la VPC |
 | 0.0.0.0/0 | igw-0038a87052752e964 | Internet |
 | 192.168.0.0/16 | eni-0d88fe11da28b32a8 (SRV-NOC) | Redes de las 4 sedes, a través de la VPN |
+
+## VPN sitio a sitio R-TEMUCO ↔ SRV-NOC
+| Parámetro | Valor |
+|---|---|
+| Protocolo | IKEv2 + IPsec ESP modo túnel, NAT-T (UDP 4500) |
+| IKE | AES-CBC-256 / SHA-256 / DH grupo 14 (MODP 2048) |
+| ESP | AES-256 / SHA-256, PFS grupo 14 |
+| Autenticación | Clave compartida (no se documenta) |
+| Identidades | R-TEMUCO: FQDN `r-temuco.agroprodel.cl` · SRV-NOC: `98.83.92.138` |
+| Extremo AWS | strongSwan (swanctl) en SRV-NOC, acepta el par desde `%any` (IP del laboratorio dinámica) |
+| Extremo sede | Crypto map `CM-AWS` en Ethernet0/0 de R-TEMUCO, ACL `VPN-AWS` |
+| Tráfico protegido | 192.168.0.0/16 (sedes) ↔ 10.40.0.0/16 (VPC) |
+| Exención de NAT | ACL `NAT-TEMUCO-EXT` (deny hacia 10.40.0.0/16 antes del permit) |
+| DPD | 30 s (ambos extremos) |
+
+Ambos extremos están detrás de NAT (R-TEMUCO tras el router del laboratorio, SRV-NOC tras el NAT 1:1 de la
+IP elástica), por lo que la negociación pasa automáticamente a UDP 4500.
+
+### Prueba
+`ping 10.40.1.30 source 192.168.40.241 repeat 10` desde R-TEMUCO: 9/10 (el primer paquete se pierde mientras
+se negocia el túnel), RTT 138/190/207 ms.
+
+### Errores encontrados
+| N° | Síntoma | Causa | Solución |
+|---|---|---|---|
+| S-01 | Al instalar strongSwan quedaron activos `strongswan-starter` y `charon-systemd` | El paquete habilita los dos servicios; compiten por UDP 500/4500 | `systemctl disable --now strongswan-starter`; se verificó con `ss -ulnp` que solo charon escucha |
+| S-02 | `swanctl` sin sudo muestra *Permission denied* y avisos `plugin ... failed to load` | El socket VICI requiere root; los plugins listados no están instalados y no se usan | Ejecutar con `sudo`; los avisos de plugins son informativos |
+| S-03 | Clave compartida expuesta durante la configuración | Se mostró en pantalla al revisar el archivo | Se generó una clave nueva, se cargó con `swanctl --load-creds` y se guardó fuera del repositorio |
+| S-04 | Ping 0/10, `show crypto ikev2 sa` vacío; en SRV-NOC: `tried 1 shared key ... but MAC mismatched` → `AUTH_FAILED` | IKE_SA_INIT correcto (propuesta y NAT-T aceptados) pero la clave del keyring `KR-AWS` en R-TEMUCO no coincidía con la de strongSwan tras la rotación | Se reingresó la clave en `crypto ikev2 keyring KR-AWS / peer SRV-NOC`; túnel arriba, ping 9/10 |
