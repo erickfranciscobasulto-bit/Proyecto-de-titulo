@@ -45,7 +45,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 5,
+  "version": 6,
   "panels": [
     {
       "id": 900,
@@ -1125,10 +1125,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 4,
-                "left": 46,
-                "right": 40,
-                "bottom": 90,
+                "top": 16,
+                "left": 44,
+                "right": 42,
+                "bottom": 76,
                 "rotation": 0
               }
             },
@@ -1422,8 +1422,8 @@
               },
               "placement": {
                 "top": 2,
-                "left": 2,
-                "right": 74,
+                "left": 1,
+                "right": 72,
                 "bottom": 90,
                 "rotation": 0
               }
@@ -1549,8 +1549,12 @@
         "graphMode": "none",
         "textMode": "value_and_name",
         "justifyMode": "center",
-        "orientation": "horizontal",
-        "wideLayout": true
+        "orientation": "vertical",
+        "wideLayout": false,
+        "text": {
+          "titleSize": 12,
+          "valueSize": 13
+        }
       },
       "description": "Cada recuadro es un equipo (routers y switches DIST/ACC). Verde = responde desde el SOC.",
       "transformations": [
