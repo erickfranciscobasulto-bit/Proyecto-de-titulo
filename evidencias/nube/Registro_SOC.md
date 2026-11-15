@@ -87,6 +87,21 @@ IP elástica), por lo que la negociación pasa automáticamente a UDP 4500.
 `ping 10.40.1.30 source 192.168.40.241 repeat 10` desde R-TEMUCO: 9/10 (el primer paquete se pierde mientras
 se negocia el túnel), RTT 138/190/207 ms.
 
+Captura en SRV-NOC (`tcpdump -ni any 'udp port 500 or udp port 4500'`): los ICMP viajan como
+`UDP-encap: ESP` con un SPI por sentido; se observan `isakmp-nat-keep-alive` (~20 s) e intercambios
+INFORMATIONAL de DPD (30 s). No aparece tráfico ICMP en claro.
+
+### Acceso de las otras sedes
+R-TEMUCO tiene una ruta estática 10.40.0.0/16 hacia su salida a Internet y la redistribuye en OSPF
+(route-map `RM-AWS` con prefix-list `PL-AWS`, solo esa red). Las sedes la reciben como `O E2` por su túnel
+GRE/IPsec hacia Temuco, y desde ahí el tráfico entra a la VPN de AWS (la ACL `VPN-AWS` cubre 192.168.0.0/16).
+Las redes de usuarios no alcanzan la VPC: `DEPTOS-IN` e `IOT-IN` bloquean 10.0.0.0/8 (solo equipos de red
+y gestión llegan al SOC).
+
+| Origen | Prueba | Resultado |
+|---|---|---|
+| R-TALCA (VLAN 99, 192.168.10.193) | ping 10.40.1.30 ×100 | 100/100, RTT 138/197/229 ms |
+
 ### Errores encontrados
 | N° | Síntoma | Causa | Solución |
 |---|---|---|---|

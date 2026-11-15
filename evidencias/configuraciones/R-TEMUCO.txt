@@ -485,5 +485,15 @@ ip access-list extended NAT-TEMUCO-EXT
 no ip nat inside source list NAT-TEMUCO interface ethernet 0/0 overload
 ip nat inside source list NAT-TEMUCO-EXT interface ethernet 0/0 overload
 !
+! --- Anuncio de la VPC a las sedes por OSPF (solo 10.40.0.0/16) ---
+ip route 10.40.0.0 255.255.0.0 203.0.113.1 name AWS-SOC
+ip prefix-list PL-AWS seq 10 permit 10.40.0.0/16
+route-map RM-AWS permit 10
+ match ip address prefix-list PL-AWS
+ exit
+router ospf 1
+ redistribute static subnets route-map RM-AWS
+ exit
+!
 end
 write memory
