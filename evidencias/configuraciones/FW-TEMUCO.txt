@@ -19,3 +19,12 @@ Reglas
   WAN  : UDP desde SUCURSALES -> 203.0.113.2 puerto 4500 (NAT-T)
   WAN  : ESP desde SUCURSALES -> 203.0.113.2            (trafico IPsec)
   WAN  : ICMP desde any -> LAN net                       (pruebas de ping)
+
+Monitoreo desde el SOC (AWS) - agregado 15-11-2026
+  Gateway  GW_RTEMUCO: interfaz LAN, IP 203.0.113.2, sin marcar "Upstream Gateway"
+           (no reemplaza a WAN_GW como salida por defecto), monitoreo deshabilitado
+  Ruta     10.40.0.0/16 via GW_RTEMUCO - VPC AWS (SOC) via R-TEMUCO y VPN IPsec
+  Motivo   la red de transito 203.0.113.0/30 se agrego al dominio de cifrado de la VPN
+           (ACL VPN-AWS linea 20 en R-TEMUCO, remote_ts en strongSwan, ruta VPC hacia SRV-NOC)
+  Prueba   Interfaces > Diagnostics > Ping 10.40.1.30 origen 203.0.113.1: 26/27 (3,7 % perdida:
+           primer paquete durante la negociacion de la nueva SA), RTT ~130-530 ms, promedio ~150 ms
