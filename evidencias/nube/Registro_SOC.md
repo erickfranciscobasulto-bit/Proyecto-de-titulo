@@ -123,3 +123,4 @@ y gestión llegan al SOC).
 Se monitorea por la IP de la VLAN 99 (gestión): pertenece a 192.168.0.0/16, por lo que el tráfico viaja cifrado
 en la VPN, y la ACL `SNMP-NOC` del router solo acepta consultas de 10.40.1.30. Se mantiene marcada la opción de
 solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN.
+| S-07 | R-TALCA: `% Invalid input detected` en `snmp-server user ...` y `show snmp user` vacío | Al reemplazar las claves en la plantilla del comando se borró el espacio entre la clave de autenticación y la palabra `priv`; IOS no reconoce la línea y el usuario no se crea (el resto del bloque sí se aplica) | Se reingresó la línea con los espacios correctos; `show snmp user` muestra `zabbix` (SHA/AES128, GRP-NOC) |
