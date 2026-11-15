@@ -156,6 +156,16 @@ Resultado: 12 switches con SNMP verde (158 métricas y 68 iniciadores cada uno t
 Total monitoreado: 17 equipos (4 routers, 12 switches, SRV-NOC). Pendientes: SW-FISICO-TEM (192.168.40.245, cuando
 esté encendido), servidores, FW-TEMUCO e ISP (requieren ampliar el dominio de la VPN).
 
+## Servidores monitoreados
+| Equipo | Interfaz | Plantilla | Grupo | Resultado |
+|---|---|---|---|---|
+| SRV-AGROPRODEL (Web · DNS · FTPS) | Agente 2 en modo activo (`ServerActive=10.40.1.30`); interfaz de agente 10.40.1.10:10050 registrada | Linux by Zabbix agent active | Servidores Agroprodel | ZBX verde · 43 métricas · 15 iniciadores |
+
+En modo activo el agente abre la conexión hacia SRV-NOC dentro de la VPC, por lo que no se agregan reglas de entrada en
+el grupo de seguridad del servidor. Error de alta: el equipo se creó primero sin plantilla (sin métricas); se corrigió
+editándolo y vinculando *Linux by Zabbix agent active*. El grupo `Servidores Agroprodel` se agregó con permiso de lectura
+a `Grafana Lectura`.
+
 ## Acceso de Grafana a Zabbix (mínimo privilegio)
 | Elemento | Configuración |
 |---|---|
