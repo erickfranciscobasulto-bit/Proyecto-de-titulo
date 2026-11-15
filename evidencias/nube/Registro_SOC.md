@@ -121,8 +121,10 @@ y gestión llegan al SOC).
 | R-TEMUCO (Casa Matriz) | SNMPv3 authPriv (SHA1/AES128, usuario `zabbix`) 192.168.40.241:161 por la VPN | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde · 180 métricas · 78 iniciadores · 19 gráficos (descubrimiento de interfaces y túneles) |
 | R-TALCA (Sucursal) | SNMPv3 authPriv 192.168.10.193:161 (túnel Talca–Temuco + VPN AWS) | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde · 153 métricas · 66 iniciadores · 16 gráficos. Creado clonando R-TEMUCO |
 | R-CONCEPCION (Sucursal) | SNMPv3 authPriv 192.168.20.161:161 (túnel Concepción–Temuco + VPN AWS) | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde. Creado clonando R-TALCA |
+| R-LOS-ANGELES (Sucursal) | SNMPv3 authPriv 192.168.30.129:161 (túnel Los Ángeles–Temuco + VPN AWS) | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde. Creado clonando R-TALCA |
 
 Se monitorea por la IP de la VLAN 99 (gestión): pertenece a 192.168.0.0/16, por lo que el tráfico viaja cifrado
-en la VPN, y la ACL `SNMP-NOC` del router solo acepta consultas de 10.40.1.30. Se mantiene marcada la opción de
+en la VPN, y la ACL `SNMP-NOC` del router solo acepta consultas de 10.40.1.30. Los 4 routers quedaron en verde: todo el
+monitoreo de las sucursales recorre su túnel GRE/IPsec hasta Temuco y luego la VPN hacia AWS. Se mantiene marcada la opción de
 solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN.
 | S-07 | R-TALCA: `% Invalid input detected` en `snmp-server user ...` y `show snmp user` vacío | Al reemplazar las claves en la plantilla del comando se borró el espacio entre la clave de autenticación y la palabra `priv`; IOS no reconoce la línea y el usuario no se crea (el resto del bloque sí se aplica) | Se reingresó la línea con los espacios correctos; `show snmp user` muestra `zabbix` (SHA/AES128, GRP-NOC) |

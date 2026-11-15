@@ -370,5 +370,16 @@ interface tunnel 3
 ! VLAN 50, 60 y 70 sin IPv6 (decision de seguridad)
 ! Verificado: OSPFv3 FULL con 1.1.1.1 por Tunnel3; 21 rutas O de las otras 3 sedes; ping FFF::4 -> FFF::1 100 %
 !
+! --- SNMPv3 authPriv para Zabbix (solo SRV-NOC 10.40.1.30, via Temuco y VPN AWS) ---
+ip access-list standard SNMP-NOC
+ permit host 10.40.1.30
+ exit
+snmp-server view VISTA-NOC iso included
+snmp-server group GRP-NOC v3 priv read VISTA-NOC access SNMP-NOC
+snmp-server user zabbix GRP-NOC v3 auth sha <clave no documentada> priv aes 128 <clave no documentada>
+snmp-server location Los Angeles - Sucursal
+snmp-server contact NOC Agroprodel
+snmp-server ifindex persist
+!
 end
 write memory
