@@ -495,5 +495,16 @@ router ospf 1
  redistribute static subnets route-map RM-AWS
  exit
 !
+! --- SNMPv3 authPriv para Zabbix (solo SRV-NOC 10.40.1.30, por la VPN) ---
+ip access-list standard SNMP-NOC
+ permit host 10.40.1.30
+ exit
+snmp-server view VISTA-NOC iso included
+snmp-server group GRP-NOC v3 priv read VISTA-NOC access SNMP-NOC
+snmp-server user zabbix GRP-NOC v3 auth sha <clave no documentada> priv aes 128 <clave no documentada>
+snmp-server location Temuco - Casa Matriz
+snmp-server contact NOC Agroprodel
+snmp-server ifindex persist
+!
 end
 write memory
