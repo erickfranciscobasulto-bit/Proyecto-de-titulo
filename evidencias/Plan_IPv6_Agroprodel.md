@@ -79,3 +79,16 @@ Los `class-map` con `match dscp` clasifican IPv4 e IPv6 por igual; la voz se man
 | Ping PC Talca → Siembra Temuco `2001:db8:a9:110::1` | **Bloqueado**: ICMPv6 tipo 1 código 1 *administratively prohibited*; registro `%IPV6_ACL-6-ACCESSLOGDP: list DEPTOS-IN-V6/80 denied icmpv6 ... -> 2001:DB8:A9:110::1` |
 
 Conclusión: IPv6 enruta entre sedes por el túnel cifrado y aplica la misma política de mínimo privilegio que IPv4.
+
+## 8. Resultado de la fase 2 (Concepción y Los Ángeles) – 15-11-2026
+| Prueba | Concepción | Los Ángeles |
+|---|---|---|
+| Vecino OSPFv3 | 1.1.1.1 FULL por Tunnel2 | 1.1.1.1 FULL por Tunnel3 |
+| Rutas OSPFv3 | 14 rutas O (Temuco costo 1010; Talca costo 2010 vía Temuco) | 21 rutas O (las otras 3 sedes, túneles y loopbacks) |
+| Ping Loopback0 → R-TEMUCO | 100 % (7 ms) | 100 % (4-5 ms) |
+
+Topología hub-and-spoke confirmada: las sucursales se alcanzan entre sí a través de la casa matriz (costo 2010).
+Incidencia: la base IPv6 de Concepción se aplicó primero por error en R-LOS-ANGELES; se corrigió la Loopback0
+(::3 → ::4) y el router-ID (3.3.3.3 → 4.4.4.4) con `clear ipv6 ospf process` antes de formar vecinos, sin impacto.
+
+**IPv6 en doble pila operativo en las 4 sedes**, con la política de seguridad equivalente a IPv4.

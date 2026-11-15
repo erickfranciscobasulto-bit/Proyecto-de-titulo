@@ -295,5 +295,80 @@ interface ethernet 0/1.70
  ip access-group IOT-IN in
  exit
 !
+! --- IPv6 doble pila - ver Direccionamiento_IPv6_Agroprodel.docx ---
+ipv6 unicast-routing
+interface loopback 0
+ description IDENTIDAD-R-LOS-ANGELES
+ ipv6 address 2001:DB8:A9:FFF::4/128
+ ipv6 ospf 1 area 0
+ exit
+ipv6 router ospf 1
+ router-id 4.4.4.4
+ passive-interface default
+ no passive-interface Tunnel3
+ exit
+ipv6 access-list DEPTOS-IN-V6
+ remark Descubrimiento de vecinos (necesario para IPv6)
+ permit icmp any any nd-na
+ permit icmp any any nd-ns
+ permit icmp any any router-solicitation
+ remark Servidores de la casa matriz (VLAN 80)
+ permit ipv6 any 2001:DB8:A9:180::/64
+ remark Bloqueo de las redes internas de la empresa
+ deny ipv6 any 2001:DB8:A9::/48 log
+ permit ipv6 any any
+ipv6 access-list GESTION-SSH-V6
+ remark Solo las VLAN 99 de las 4 sedes
+ permit ipv6 2001:DB8:A9:199::/64 any
+ permit ipv6 2001:DB8:A9:299::/64 any
+ permit ipv6 2001:DB8:A9:399::/64 any
+ permit ipv6 2001:DB8:A9:499::/64 any
+ deny ipv6 any any log
+line vty 0 4
+ ipv6 access-class GESTION-SSH-V6 in
+ exit
+interface ethernet 0/1.10
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:410::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.20
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:420::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.30
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:430::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.40
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:440::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.99
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:499::1/64
+ ipv6 nd prefix 2001:DB8:A9:499::/64 2592000 604800 no-autoconfig
+ ipv6 ospf 1 area 0
+interface tunnel 3
+ ipv6 address 2001:DB8:A9:F03::2/64
+ ipv6 mtu 1400
+ ipv6 tcp adjust-mss 1340
+ ipv6 nd ra suppress all
+ ipv6 ospf 1 area 0
+ exit
+! VLAN 50, 60 y 70 sin IPv6 (decision de seguridad)
+! Verificado: OSPFv3 FULL con 1.1.1.1 por Tunnel3; 21 rutas O de las otras 3 sedes; ping FFF::4 -> FFF::1 100 %
+!
 end
 write memory

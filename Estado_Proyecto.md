@@ -35,7 +35,7 @@
 | Simulación de red y de servicios en la nube | ✅ |
 
 ## Pendientes
-1. IPv6 doble pila (plan listo en `evidencias/Plan_IPv6_Agroprodel.md`): piloto Temuco–Talca → resto.
+1. ✅ IPv6 doble pila operativo en las 4 sedes (pendiente opcional: gestión IPv6 en switches y RA Guard).
 2. Imagen IOL 15.2 en ACC1/ACC2-CONCEPCION y reactivar Po3.
 3. Seguridad de gestión en SW-FISICO-TEM (+ apagar puertos sin uso).
 4. Probar llamadas con las ACL entre VLAN activas (Issabel del compañero).
