@@ -113,3 +113,13 @@ y gestión llegan al SOC).
 | S-04 | Ping 0/10, `show crypto ikev2 sa` vacío; en SRV-NOC: `tried 1 shared key ... but MAC mismatched` → `AUTH_FAILED` | IKE_SA_INIT correcto (propuesta y NAT-T aceptados) pero la clave del keyring `KR-AWS` en R-TEMUCO no coincidía con la de strongSwan tras la rotación | Se reingresó la clave en `crypto ikev2 keyring KR-AWS / peer SRV-NOC`; túnel arriba, ping 9/10 |
 | S-05 | Conteo de tablas de la base `zabbix` = 0; `ls /usr/share/zabbix/sql-scripts/mysql/server.sql.gz`: *No such file* | Se usó la ruta del esquema de otra versión de la documentación; en el paquete instalado el archivo está en `/usr/share/zabbix-sql-scripts/mysql/` | Se ubicó con `dpkg -L zabbix-sql-scripts \| grep server.sql`, se reactivó `log_bin_trust_function_creators` y se cargó el esquema: 203 tablas |
 | S-06 | `snmpget` desde SRV-NOC a 192.168.40.241: *Timeout*; `ping` desde SRV-NOC: 100 % pérdida; `show snmp`: 0 paquetes de entrada; `swanctl --list-sas` vacío | strongSwan acepta al par desde `%any` (IP del laboratorio dinámica), por lo que AWS no puede iniciar el túnel; tras un periodo sin tráfico desde Temuco las SA se cerraron y SRV-NOC quedó sin camino hacia las sedes | Se confirmó levantando el túnel con un ping desde R-TEMUCO (luego SRV-NOC respondió 4/4). Solución permanente: sonda IP SLA en R-TEMUCO que envía un ICMP a SRV-NOC cada 30 s desde la VLAN 99 y mantiene la VPN activa |
+
+## Zabbix – equipos monitoreados
+| Equipo | Interfaz | Plantilla | Grupo | Resultado |
+|---|---|---|---|---|
+| Zabbix server (SRV-NOC) | Agente 127.0.0.1:10050 | Linux by Zabbix agent, Zabbix server health | Zabbix servers | ZBX verde |
+| R-TEMUCO (Casa Matriz) | SNMPv3 authPriv (SHA1/AES128, usuario `zabbix`) 192.168.40.241:161 por la VPN | Cisco IOS by SNMP | Routers Agroprodel | SNMP verde · 180 métricas · 78 iniciadores · 19 gráficos (descubrimiento de interfaces y túneles) |
+
+Se monitorea por la IP de la VLAN 99 (gestión): pertenece a 192.168.0.0/16, por lo que el tráfico viaja cifrado
+en la VPN, y la ACL `SNMP-NOC` del router solo acepta consultas de 10.40.1.30. Se mantiene marcada la opción de
+solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN.
