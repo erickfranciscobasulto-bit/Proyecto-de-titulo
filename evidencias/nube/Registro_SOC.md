@@ -128,3 +128,9 @@ en la VPN, y la ACL `SNMP-NOC` del router solo acepta consultas de 10.40.1.30. L
 monitoreo de las sucursales recorre su túnel GRE/IPsec hasta Temuco y luego la VPN hacia AWS. Se mantiene marcada la opción de
 solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN.
 | S-07 | R-TALCA: `% Invalid input detected` en `snmp-server user ...` y `show snmp user` vacío | Al reemplazar las claves en la plantilla del comando se borró el espacio entre la clave de autenticación y la palabra `priv`; IOS no reconoce la línea y el usuario no se crea (el resto del bloque sí se aplica) | Se reingresó la línea con los espacios correctos; `show snmp user` muestra `zabbix` (SHA/AES128, GRP-NOC) |
+
+### Calibración de alertas
+| Alerta | Situación | Ajuste |
+|---|---|---|
+| *Cisco IOS: High ICMP ping response time* (4 routers) | La plantilla alerta sobre 150 ms (`{$ICMP_RESPONSE_TIME_WARN}` = 0.15), valor pensado para una LAN. El SOC está en us-east-1 y consulta por la VPN: la línea base medida es ~140–290 ms (ping, IP SLA). Generaba falsos positivos permanentes | Macro a nivel de equipo `{$ICMP_RESPONSE_TIME_WARN}` = `0.4` en los 4 routers (modificación masiva). Se calibra sobre la línea base, sin desactivar la alerta, que sigue detectando degradación real de la VPN o de los túneles. Las 4 alertas pasaron a RESUELTO (16:04–16:07) |
+| *Linux: Number of installed packages has been changed* (SRV-NOC) | Aviso informativo por la instalación del paquete `snmp` | Cambio esperado; se cierra manualmente |
