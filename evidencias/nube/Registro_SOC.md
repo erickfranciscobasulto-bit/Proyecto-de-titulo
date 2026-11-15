@@ -135,6 +135,26 @@ solicitudes combinadas (varias OID por paquete) para reducir tráfico por la VPN
 | *Cisco IOS: High ICMP ping response time* (4 routers) | La plantilla alerta sobre 150 ms (`{$ICMP_RESPONSE_TIME_WARN}` = 0.15), valor pensado para una LAN. El SOC está en us-east-1 y consulta por la VPN: la línea base medida es ~140–290 ms (ping, IP SLA). Generaba falsos positivos permanentes | Macro a nivel de equipo `{$ICMP_RESPONSE_TIME_WARN}` = `0.4` en los 4 routers (modificación masiva). Se calibra sobre la línea base, sin desactivar la alerta, que sigue detectando degradación real de la VPN o de los túneles. Las 4 alertas pasaron a RESUELTO (16:04–16:07) |
 | *Linux: Number of installed packages has been changed* (SRV-NOC) | Aviso informativo por la instalación del paquete `snmp` | Cambio esperado; se cierra manualmente |
 
+## Acceso de Grafana a Zabbix (mínimo privilegio)
+| Elemento | Configuración |
+|---|---|
+| Grupo de usuarios | `Grafana Lectura` · acceso a la interfaz web **deshabilitado** · permisos de equipo: `Routers Agroprodel` y `Zabbix servers` en **Lectura** (el resto: Ninguno) |
+| Usuario | `grafana` (Grafana SOC) · rol **User role** (tipo Usuario, el más bajo) · acceso a la API activado · clave no documentada |
+| Autenticación de Grafana | Token de API del usuario `grafana`, con fecha de expiración; revocable sin cambiar la clave del usuario. Token no documentado |
+
+Grafana solo puede consultar métricas y problemas de los 5 equipos; no puede modificar configuración ni ver otros grupos.
+Primer intento de crear el grupo: se guardó sin permisos de equipo (Grafana no habría visto ningún equipo); se corrigió
+agregando los dos grupos en Lectura.
+
+### Alertas de seguridad generadas por la instalación de Grafana
+| Alerta (SRV-NOC) | Causa | Cierre |
+|---|---|---|
+| *Linux: /etc/passwd has been changed* | El paquete grafana crea el usuario de sistema `grafana` | Reconocida y cerrada: "Usuario de sistema creado por instalacion de Grafana" |
+| *Linux: Number of installed packages has been changed* | Instalación del paquete grafana | Reconocida y cerrada: "Cambio esperado: instalacion de Grafana" |
+
+La misma alerta de `/etc/passwd` se generaría si un atacante creara una cuenta en el servidor; por eso cada evento se
+revisa y se cierra con su justificación (trazabilidad del operador).
+
 ## Diseño del dashboard (Grafana)
 Maqueta aprobada: `Diseno_Dashboard_SOC.html` (valores simulados a partir de las mediciones del laboratorio).
 Secciones: indicadores de servicio (disponibilidad 30 d vs SLA 99,5 %, sedes operativas, VPN, latencia media,
@@ -142,3 +162,4 @@ problemas abiertos, MTTR) · topología lógica en vivo (AWS → VPN → Temuco 
 línea de tiempo de estado · latencia, uso de enlaces, voz EF, CPU/RAM, servidores en la nube · registro de eventos.
 Pestañas previstas: Resumen ejecutivo, Red WAN, Sedes, Seguridad (Wazuh), IDS (Suricata).
 | S-08 | `grafana-cli plugins install ...`: *Grafana-server Init Failed: Could not find config defaults, make sure homepath ... is set* | En Grafana 13 `grafana-cli` está obsoleto y no encuentra la carpeta de instalación por sí solo | `sudo grafana cli --homepath /usr/share/grafana plugins install alexanderzobnin-zabbix-app` y reinicio del servicio: plugin v6.10.3 instalado |
+| S-09 | Zabbix: *No se pudo agregar el usuario – no debe contener el nombre, apellido o código de usuario* | La política de contraseñas de Zabbix rechaza claves que incluyan el usuario o el nombre (`grafana`, `soc`) | Se eligió una clave sin esas palabras; usuario creado |
