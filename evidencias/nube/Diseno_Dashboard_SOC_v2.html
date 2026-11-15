@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOC Agroprodel v3</title>
+<style>
+:root{--bg:#111217;--panel:#181b1f;--p2:#1f232a;--bd:#2a2e36;--tx:#d8d9e3;--mu:#8b8fa3;--g:#3fb67a;--gd:#2f8f5b;--r:#e0475a;--y:#f2b84b;--b:#5b9cf5;--gr:#4a505c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:13px}
+.top{display:flex;align-items:center;gap:14px;padding:12px 18px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.logo{width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,#d4af5a,#8a6a1f);display:grid;place-items:center;font-weight:800;color:#141414;font-size:20px}
+.t1{font-size:18px;font-weight:600}.t2{color:var(--mu);font-size:12px;margin-top:2px}.sp{flex:1}
+.pill{border:1px solid var(--bd);border-radius:4px;padding:4px 10px;background:var(--panel);font-size:12px;white-space:nowrap}
+.live{color:var(--g)}.live:before{content:"● ";animation:bl 1.6s infinite}@keyframes bl{50%{opacity:.2}}
+.row{padding:14px 18px 6px;color:var(--mu);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;display:flex;gap:8px;align-items:center}.row:after{content:"";flex:1;height:1px;background:var(--bd)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;padding:0 18px}
+.p{background:var(--panel);border:1px solid var(--bd);border-radius:6px;padding:10px 12px;min-width:0}
+.p h3{margin:0 0 8px;font-size:12.5px;font-weight:500;display:flex;justify-content:space-between}.p h3 em{font-style:normal;color:var(--mu);font-size:11px;font-weight:400}
+.c2{grid-column:span 2}.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+.kpi{display:flex;flex-direction:column;justify-content:center;height:92px;border-radius:4px;padding:0 14px}
+.kpi .v{font-size:32px;font-weight:600;line-height:1}.kpi .s{font-size:11px;opacity:.85;margin-top:6px}
+.ok{background:linear-gradient(135deg,#2f8f5b,#3fb67a);color:#fff}.neu{background:var(--p2)}
+svg{display:block;width:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--mu);margin-top:6px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.bg{margin:9px 0}.bg .l{display:flex;justify-content:space-between;font-size:12px}.bg .t{position:relative;height:12px;background:#262a32;border-radius:3px;margin-top:4px;overflow:hidden}
+.bg .f{height:100%;border-radius:3px}.bg .sla{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;opacity:.8}
+table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;color:var(--mu);font-weight:500;padding:6px;border-bottom:1px solid var(--bd);font-size:11px;text-transform:uppercase}td{padding:6px;border-bottom:1px solid #22262d}
+.sev{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}.st{padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;background:rgba(63,182,122,.15);color:var(--g)}
+.note{padding:14px 18px 24px;color:var(--mu);font-size:11.5px}
+@media(max-width:1000px){.c2,.c3,.c4,.c5,.c7,.c8{grid-column:span 12}}
+</style></head><body>
+<div class="top"><div class="logo">A</div><div><div class="t1">Agroprodel Ltda. · Centro de Operaciones de Red y Seguridad</div><div class="t2">Temuco (matriz) · Talca · Concepción · Los Ángeles · SOC en AWS us-east-1 · SNMPv3 sobre VPN IKEv2</div></div><div class="sp"></div><span class="pill live">En vivo</span><span class="pill">Últimas 6 h</span><span class="pill">⟳ 30 s</span></div>
+
+<div class="row">Resumen ejecutivo</div>
+<div class="grid">
+ <div class="p c2"><h3>Sedes operativas</h3><div class="kpi ok"><div class="v">4 / 4</div><div class="s">Temuco · Talca · Concepción · L. Ángeles</div></div></div>
+ <div class="p c2"><h3>Equipos de red</h3><div class="kpi ok"><div class="v">16 / 16</div><div class="s">4 routers · 12 switches</div></div></div>
+ <div class="p c2"><h3>VPN Temuco ↔ AWS</h3><div class="kpi ok"><div class="v">ACTIVA</div><div class="s">IKEv2 · AES-256 · NAT-T</div></div></div>
+ <div class="p c2"><h3>Latencia VPN</h3><div class="kpi neu"><div class="v" style="color:var(--g)">166 ms</div><svg viewBox="0 0 200 26" height="26" id="spark"></svg></div></div>
+ <div class="p c2"><h3>Disponibilidad red <em>vs SLA</em></h3><div class="kpi neu" style="align-items:center"><svg viewBox="0 0 120 70" height="70" id="gauge"></svg></div></div>
+ <div class="p c2"><h3>Problemas activos</h3><div class="kpi neu"><div class="v" style="color:var(--g)">0</div><div class="s" style="color:var(--mu)">Último: 16:06 · resuelto</div></div></div>
+</div>
+
+<div class="row">Infraestructura en vivo</div>
+<div class="grid"><div class="p c12"><h3>Topología lógica · estado de cada equipo desde Zabbix <em>enlaces animados · verde en línea · rojo caído · gris no monitoreado</em></h3>
+<svg id="topo" viewBox="0 0 1200 430"></svg>
+<div class="legend"><span><i style="background:var(--gd)"></i>En línea</span><span><i style="background:var(--r)"></i>Caído</span><span><i style="background:var(--gr)"></i>No monitoreado aún</span><span>— Túnel GRE/IPsec</span><span>- - VPN IKEv2 a AWS</span></div></div></div>
+
+<div class="row">Disponibilidad</div>
+<div class="grid">
+ <div class="p c8"><h3>Línea de tiempo de estado <em>routers · ICMP desde el SOC</em></h3><div id="tl"></div></div>
+ <div class="p c4"><h3>Disponibilidad por sede <em>línea blanca = SLA 99,5 %</em></h3><div id="av"></div></div>
+</div>
+
+<div class="row">Rendimiento</div>
+<div class="grid">
+ <div class="p c8"><h3>Latencia SOC → sedes <em>umbral 400 ms</em></h3><svg id="lat" viewBox="0 0 800 180" preserveAspectRatio="none" height="180"></svg>
+  <div class="legend"><span><i style="background:#3fb67a"></i>Temuco</span><span><i style="background:#f2b84b"></i>Talca</span><span><i style="background:#5b9cf5"></i>Concepción</span><span><i style="background:#ff9a4a"></i>Los Ángeles</span></div></div>
+ <div class="p c4"><h3>Tráfico actual por enlace <em>bits/s</em></h3><div id="bw"></div></div>
+ <div class="p c12"><h3>Tráfico WAN Temuco y túneles <em>entrada/salida</em></h3><svg id="wan" viewBox="0 0 1200 150" preserveAspectRatio="none" height="150"></svg>
+  <div class="legend"><span><i style="background:#3fb67a"></i>WAN entrada</span><span><i style="background:#5b9cf5"></i>WAN salida</span><span><i style="background:#f2b84b"></i>Tunnel1 Talca</span><span><i style="background:#b877d9"></i>Tunnel2 Concepción</span><span><i style="background:#ff9a4a"></i>Tunnel3 Los Ángeles</span></div></div>
+</div>
+
+<div class="row">Eventos</div>
+<div class="grid"><div class="p c12"><h3>Problemas y eventos recientes (Zabbix)</h3>
+<table><tr><th>Hora</th><th>Severidad</th><th>Equipo</th><th>Problema</th><th>Estado</th><th>Duración</th><th>Reconocido</th></tr>
+<tr><td>16:43</td><td><span class="sev" style="background:var(--b)"></span>Informativo</td><td>SRV-NOC</td><td>Cambio de paquetes instalados (Grafana)</td><td><span class="st">Cerrado</span></td><td>3 min</td><td>Admin · "Cambio esperado"</td></tr>
+<tr><td>16:29</td><td><span class="sev" style="background:var(--b)"></span>Informativo</td><td>SRV-NOC</td><td>/etc/passwd modificado (usuario de sistema grafana)</td><td><span class="st">Cerrado</span></td><td>18 min</td><td>Admin</td></tr>
+<tr><td>16:06</td><td><span class="sev" style="background:var(--y)"></span>Advertencia</td><td>R-LOS-ANGELES</td><td>Latencia ICMP sobre umbral</td><td><span class="st">Resuelto</span></td><td>1 min</td><td>—</td></tr>
+</table></div></div>
+<div class="note">Vista previa: valores tomados del dashboard actual (16/16, 166 ms, 96,8 %). Todos los paneles se construyen con tipos nativos de Grafana (Stat, Gauge, Canvas, State timeline, Bar gauge, Time series y Zabbix Problems).</div>
+
+<script>
+const C={g:'#3fb67a',gd:'#2f8f5b',r:'#e0475a',y:'#f2b84b',b:'#5b9cf5',o:'#ff9a4a',p:'#b877d9',gr:'#4a505c',mu:'#8b8fa3',tx:'#e8e9ef',bd:'#2a2e36'};
+function rnd(s){return()=>{s=(s*9301+49297)%233280;return s/233280}}
+function gen(s,n,b,a){const r=rnd(s);return Array.from({length:n},()=>b+(r()-.5)*a)}
+// spark
+(function(){const v=gen(4,40,166,80);document.getElementById('spark').innerHTML=`<polyline fill="none" stroke="${C.g}" stroke-width="1.5" points="${v.map((y,i)=>`${i*5.1},${26-(y-90)/200*26}`).join(' ')}"/>`})();
+// gauge
+(function(){const v=.968,a0=Math.PI,a=a0-(v-0.9)/0.1*Math.PI;const pt=t=>[60+45*Math.cos(t),60-45*Math.sin(t)];const[x,y]=pt(Math.max(0,a));const sla=pt(a0-(0.995-0.9)/0.1*Math.PI);
+document.getElementById('gauge').innerHTML=`<path d="M15 60 A45 45 0 0 1 105 60" stroke="#262a32" stroke-width="10" fill="none"/><path d="M15 60 A45 45 0 0 1 ${x.toFixed(1)} ${y.toFixed(1)}" stroke="${C.y}" stroke-width="10" fill="none"/><line x1="${sla[0]}" y1="${sla[1]-7}" x2="${sla[0]}" y2="${sla[1]+7}" stroke="#fff" stroke-width="2"/><text x="60" y="56" text-anchor="middle" fill="${C.y}" font-size="17" font-weight="600">96,8 %</text><text x="60" y="69" text-anchor="middle" fill="${C.mu}" font-size="8.5">objetivo 99,5 %</text>`})();
+// topology
+(function(){let s='<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="'+C.g+'"/></marker></defs>';
+const L=(x1,y1,x2,y2,c,w,d)=>{s+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-dasharray="${d||'8 6'}"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1s" repeatCount="indefinite"/></line>`};
+const B=(x,y,w,h,t,sub,col,bd)=>{s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${col}" stroke="${bd||'rgba(255,255,255,.12)'}"/><text x="${x+w/2}" y="${y+h/2-(sub?3:-4)}" text-anchor="middle" fill="${C.tx}" font-size="13.5" font-weight="600">${t}</text>`+(sub?`<text x="${x+w/2}" y="${y+h/2+13}" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="10.5">${sub}</text>`:'')};
+const SW=(cx,y,names)=>{const w=74,g=8,tot=names.length*w+(names.length-1)*g;let x=cx-tot/2;names.forEach(n=>{s+=`<rect x="${x}" y="${y}" width="${w}" height="24" rx="5" fill="${C.gd}" stroke="rgba(255,255,255,.1)"/><circle cx="${x+10}" cy="${y+12}" r="3.5" fill="#b9f5d0"/><text x="${x+w/2+5}" y="${y+16}" text-anchor="middle" fill="${C.tx}" font-size="10.5">${n}</text>`;x+=w+g})};
+// links
+L(600,92,600,128,C.gr,3);L(600,186,600,222,C.g,3);L(735,60,850,60,C.b,3,'10 7');
+[[170,330],[600,330],[1030,330]].forEach(([x,y])=>L(x,y,600,280,C.g,2.2));
+// nodes
+B(470,34,260,58,'🌐 ISP / Internet','203.0.113.17 · no monitoreado',C.gr);
+B(850,22,330,82,'☁ AWS us-east-1','SRV-NOC (Zabbix · Grafana) · SRV-AGROPRODEL · SRV-SIEM','#1d3a5c','#5b9cf5');
+B(470,128,260,58,'🛡 FW-TEMUCO · OPNsense','Suricata IDS · no monitoreado',C.gr);
+B(470,222,260,58,'R-TEMUCO · casa matriz','hub · 192.168.40.241',C.gd);
+SW(600,288,['DIST','ACC1','ACC2']);
+B(40,330,260,52,'R-TALCA','192.168.10.193',C.gd);SW(170,390,['DIST','ACC1','ACC2']);
+B(470,330,260,52,'R-CONCEPCION','192.168.20.161',C.gd);SW(600,390,['DIST','ACC1','ACC2']);
+B(900,330,260,52,'R-LOS-ANGELES','192.168.30.129',C.gd);SW(1030,390,['DIST','ACC1','ACC2']);
+// labels
+const T=(x,y,t,c)=>s+=`<text x="${x}" y="${y}" text-anchor="middle" fill="${c||C.mu}" font-size="11">${t}</text>`;
+T(792,50,'VPN IKEv2 · 166 ms',C.b);T(325,308,'Tunnel1');T(612,315,'Tunnel2');T(875,308,'Tunnel3');
+s+=`<text x="40" y="40" fill="${C.mu}" font-size="11">Casa matriz: 3 switches + 2960 físico</text><text x="40" y="56" fill="${C.mu}" font-size="11">Sucursales: DIST + ACC1 + ACC2 c/u</text>`;
+document.getElementById('topo').innerHTML=s})();
+// timeline
+(function(){const rows=[['Temuco',[[0,42,'n'],[42,15,'g'],[57,4,'r'],[61,24,'g'],[85,7,'r'],[92,8,'g']]],['Talca',[[0,45,'n'],[45,12,'g'],[57,4,'r'],[61,24,'g'],[85,7,'r'],[92,8,'g']]],['Concepción',[[0,50,'n'],[50,7,'g'],[57,4,'r'],[61,24,'g'],[85,7,'r'],[92,8,'g']]],['Los Ángeles',[[0,51,'n'],[51,6,'g'],[57,4,'r'],[61,24,'g'],[85,7,'r'],[92,8,'g']]]];
+const col={g:C.gd,r:C.r,n:'transparent'};document.getElementById('tl').innerHTML=rows.map(([n,seg])=>`<div style="display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center;margin:8px 0;font-size:12px"><span>${n}</span><div style="display:flex;height:20px;border-radius:3px;overflow:hidden;background:#1d2026">${seg.map(([a,w,c])=>`<i style="width:${w}%;background:${col[c]}"></i>`).join('')}</div></div>`).join('')+`<div style="display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:10.5px;color:${C.mu}"><span></span><div style="display:flex;justify-content:space-between"><span>13:30</span><span>15:00</span><span>16:30</span><span>18:00</span><span>19:30</span></div></div>`})();
+// availability bar gauges
+document.getElementById('av').innerHTML=[['Temuco (matriz)',87.3],['Talca',86.3],['Concepción',84.9],['Los Ángeles',83.7]].map(([n,v])=>{const pos=(v-80)/20*100,sla=(99.5-80)/20*100;return`<div class="bg"><div class="l"><span>${n}</span><span style="color:${v>=99.5?C.g:v>=99?C.y:C.r};font-weight:600">${v.toFixed(1).replace('.',',')} %</span></div><div class="t"><div class="f" style="width:${pos}%;background:linear-gradient(90deg,${C.r},${v>=99?C.y:C.r})"></div><div class="sla" style="left:${sla}%"></div></div></div>`}).join('')+`<div style="font-size:10.5px;color:${C.mu};margin-top:10px">Escala 80–100 %. Los cortes corresponden a pausas del host EVE-NG (P-09).</div>`;
+// latency
+(function(){const w=800,h=180,max=450;let s='';for(let i=1;i<5;i++)s+=`<line x1="0" x2="${w}" y1="${h*i/5}" y2="${h*i/5}" stroke="${C.bd}"/>`;s+=`<line x1="0" x2="${w}" y1="${h-400/max*h}" y2="${h-400/max*h}" stroke="${C.r}" stroke-dasharray="6 4"/>`;
+[[C.g,3,158],[C.y,7,132],[C.b,11,126],[C.o,17,125]].forEach(([c,sd,b])=>{const v=gen(sd,120,b,70);s+=`<polyline fill="none" stroke="${c}" stroke-width="1.4" points="${v.map((y,i)=>`${(i/119*w).toFixed(1)},${(h-y/max*h).toFixed(1)}`).join(' ')}"/>`});document.getElementById('lat').innerHTML=s})();
+// bandwidth now
+document.getElementById('bw').innerHTML=[['WAN Temuco · entrada',96,120],['WAN Temuco · salida',41,120],['Tunnel1 · Talca',12,20],['Tunnel2 · Concepción',13,20],['Tunnel3 · Los Ángeles',11,20]].map(([n,v,m])=>`<div class="bg"><div class="l"><span>${n}</span><span style="color:${C.mu}">${v} kb/s</span></div><div class="t"><div class="f" style="width:${v/m*100}%;background:linear-gradient(90deg,${C.gd},${C.g})"></div></div></div>`).join('');
+// wan
+(function(){const w=1200,h=150,max=130;let s='';[[C.g,5,70,40,1],[C.b,9,30,20,1],[C.y,13,12,6,0],[C.p,19,13,6,0],[C.o,23,11,6,0]].forEach(([c,sd,b,a,f])=>{const v=gen(sd,150,b,a);const p=v.map((y,i)=>`${(i/149*w).toFixed(1)},${(h-y/max*h).toFixed(1)}`).join(' ');if(f)s+=`<polygon points="0,${h} ${p} ${w},${h}" fill="${c}" opacity=".12"/>`;s+=`<polyline points="${p}" fill="none" stroke="${c}" stroke-width="1.4"/>`});document.getElementById('wan').innerHTML=s})();
+</script></body></html>

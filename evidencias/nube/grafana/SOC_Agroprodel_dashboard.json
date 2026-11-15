@@ -45,7 +45,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 7,
+  "version": 8,
   "panels": [
     {
       "id": 900,
@@ -88,7 +88,7 @@
         "x": 0,
         "y": 4,
         "w": 5,
-        "h": 4
+        "h": 5
       },
       "targets": [
         {
@@ -188,7 +188,7 @@
         "x": 5,
         "y": 4,
         "w": 5,
-        "h": 4
+        "h": 5
       },
       "targets": [
         {
@@ -289,7 +289,7 @@
         "x": 10,
         "y": 4,
         "w": 5,
-        "h": 4
+        "h": 5
       },
       "targets": [
         {
@@ -390,7 +390,7 @@
         "x": 15,
         "y": 4,
         "w": 5,
-        "h": 4
+        "h": 5
       },
       "targets": [
         {
@@ -468,8 +468,8 @@
     },
     {
       "id": 6,
-      "type": "stat",
-      "title": "Disponibilidad de la red (periodo)",
+      "type": "gauge",
+      "title": "Disponibilidad de la red vs SLA",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
@@ -478,7 +478,7 @@
         "x": 20,
         "y": 4,
         "w": 4,
-        "h": 4
+        "h": 5
       },
       "targets": [
         {
@@ -537,11 +537,13 @@
           }
         }
       ],
+      "description": "Promedio de equipos en línea / 16 en el rango seleccionado. Verde ≥ 99,5 % (SLA), amarillo ≥ 99 %, rojo < 99 %.",
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
-          "decimals": 2,
-          "mappings": [],
+          "decimals": 1,
+          "min": 0.9,
+          "max": 1,
           "color": {
             "mode": "thresholds"
           },
@@ -553,7 +555,7 @@
                 "value": null
               },
               {
-                "color": "orange",
+                "color": "#f2b84b",
                 "value": 0.99
               },
               {
@@ -573,14 +575,10 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "wideLayout": true
-      },
-      "description": "Promedio de equipos en línea / 16 en el rango seleccionado. Objetivo SLA 99,5 %."
+        "showThresholdMarkers": true,
+        "showThresholdLabels": false,
+        "minVizHeight": 75
+      }
     },
     {
       "id": 7,
@@ -589,7 +587,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 8,
+        "y": 9,
         "w": 24,
         "h": 1
       },
@@ -598,16 +596,16 @@
     {
       "id": 8,
       "type": "canvas",
-      "title": "Topología lógica (estado en vivo desde Zabbix)",
+      "title": "Topología lógica · estado de cada equipo desde Zabbix",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
         "x": 0,
-        "y": 9,
-        "w": 15,
-        "h": 15
+        "y": 10,
+        "w": 24,
+        "h": 16
       },
       "targets": [
         {
@@ -618,7 +616,7 @@
           },
           "queryType": "0",
           "group": {
-            "filter": "Routers Agroprodel"
+            "filter": "/Routers Agroprodel|Switches Agroprodel/"
           },
           "host": {
             "filter": "/.*/"
@@ -657,7 +655,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#b8323f",
+                "color": "#c0392b",
                 "value": null
               },
               {
@@ -692,11 +690,11 @@
                 "color": {
                   "fixed": "#f2f2f2"
                 },
-                "size": 13
+                "size": 12
               },
               "background": {
                 "color": {
-                  "fixed": "#1f3b5c"
+                  "fixed": "#1d3a5c"
                 }
               },
               "border": {
@@ -711,10 +709,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 2,
-                "left": 58,
-                "right": 2,
-                "bottom": 86,
+                "top": 5.45,
+                "left": 70.83,
+                "right": 1.67,
+                "bottom": 77.73,
                 "rotation": 0
               }
             },
@@ -724,7 +722,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "🌐 ISP / Internet"
+                  "fixed": "🌐 ISP / Internet · no monitoreado"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -735,12 +733,12 @@
               },
               "background": {
                 "color": {
-                  "fixed": "#2b3340"
+                  "fixed": "#4a505c"
                 }
               },
               "border": {
                 "color": {
-                  "fixed": "#3e4757"
+                  "fixed": "rgba(255,255,255,0.12)"
                 },
                 "width": 1,
                 "radius": 8
@@ -750,10 +748,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 2,
-                "left": 30,
-                "right": 46,
-                "bottom": 86,
+                "top": 7.27,
+                "left": 39.17,
+                "right": 39.17,
+                "bottom": 79.55,
                 "rotation": 0
               },
               "connections": [
@@ -789,23 +787,23 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "🛡 FW-TEMUCO · OPNsense (Suricata)"
+                  "fixed": "🛡 FW-TEMUCO · OPNsense / Suricata · no monitoreado"
                 },
                 "align": "center",
                 "valign": "middle",
                 "color": {
                   "fixed": "#f2f2f2"
                 },
-                "size": 13
+                "size": 12
               },
               "background": {
                 "color": {
-                  "fixed": "#3a3f48"
+                  "fixed": "#4a505c"
                 }
               },
               "border": {
                 "color": {
-                  "fixed": "#3e4757"
+                  "fixed": "rgba(255,255,255,0.12)"
                 },
                 "width": 1,
                 "radius": 8
@@ -815,10 +813,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 24,
-                "left": 30,
-                "right": 46,
-                "bottom": 64,
+                "top": 28.64,
+                "left": 39.17,
+                "right": 39.17,
+                "bottom": 58.18,
                 "rotation": 0
               },
               "connections": [
@@ -834,10 +832,10 @@
                   "targetName": "ISP",
                   "path": "straight",
                   "color": {
-                    "fixed": "#8b8fa3"
+                    "fixed": "#6c7283"
                   },
                   "size": {
-                    "fixed": 2,
+                    "fixed": 3,
                     "min": 1,
                     "max": 10
                   },
@@ -854,24 +852,24 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "R-TEMUCO · Casa matriz (hub)"
+                  "fixed": "R-TEMUCO · casa matriz · 192.168.40.241"
                 },
                 "align": "center",
                 "valign": "middle",
                 "color": {
                   "fixed": "#f2f2f2"
                 },
-                "size": 14
+                "size": 13
               },
               "background": {
                 "color": {
                   "field": "R-TEMUCO",
-                  "fixed": "#2b3340"
+                  "fixed": "#4a505c"
                 }
               },
               "border": {
                 "color": {
-                  "fixed": "#3e4757"
+                  "fixed": "rgba(255,255,255,0.12)"
                 },
                 "width": 1,
                 "radius": 8
@@ -881,10 +879,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 46,
-                "left": 30,
-                "right": 46,
-                "bottom": 42,
+                "top": 50.0,
+                "left": 39.17,
+                "right": 39.17,
+                "bottom": 36.82,
                 "rotation": 0
               },
               "connections": [
@@ -901,7 +899,7 @@
                   "path": "straight",
                   "color": {
                     "field": "R-TEMUCO",
-                    "fixed": "#4cc38a"
+                    "fixed": "#3fb67a"
                   },
                   "size": {
                     "fixed": 3,
@@ -917,11 +915,131 @@
             },
             {
               "type": "rectangle",
+              "name": "DIST-TEMUCO",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● DIST"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "DIST-TEMUCO",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 53.64,
+                "left": 62.08,
+                "right": 31.42,
+                "bottom": 40.45,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC1-TEMUCO",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC1"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC1-TEMUCO",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 53.64,
+                "left": 69.25,
+                "right": 24.25,
+                "bottom": 40.45,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC2-TEMUCO",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC2"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC2-TEMUCO",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 53.64,
+                "left": 76.42,
+                "right": 17.08,
+                "bottom": 40.45,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
               "name": "R-TALCA",
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "R-TALCA · Sucursal"
+                  "fixed": "R-TALCA · 192.168.10.193"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -933,12 +1051,12 @@
               "background": {
                 "color": {
                   "field": "R-TALCA",
-                  "fixed": "#2b3340"
+                  "fixed": "#4a505c"
                 }
               },
               "border": {
                 "color": {
-                  "fixed": "#3e4757"
+                  "fixed": "rgba(255,255,255,0.12)"
                 },
                 "width": 1,
                 "radius": 8
@@ -948,10 +1066,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 78,
-                "left": 3,
-                "right": 73,
-                "bottom": 10,
+                "top": 75.0,
+                "left": 3.33,
+                "right": 75.0,
+                "bottom": 13.18,
                 "rotation": 0
               },
               "connections": [
@@ -961,14 +1079,14 @@
                     "y": 1
                   },
                   "target": {
-                    "x": -1,
+                    "x": -0.6,
                     "y": -1
                   },
                   "targetName": "R-TEMUCO",
                   "path": "straight",
                   "color": {
                     "field": "R-TALCA",
-                    "fixed": "#4cc38a"
+                    "fixed": "#3fb67a"
                   },
                   "size": {
                     "fixed": 2,
@@ -988,7 +1106,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "R-CONCEPCION · Sucursal"
+                  "fixed": "R-CONCEPCION · 192.168.20.161"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -1000,12 +1118,12 @@
               "background": {
                 "color": {
                   "field": "R-CONCEPCION",
-                  "fixed": "#2b3340"
+                  "fixed": "#4a505c"
                 }
               },
               "border": {
                 "color": {
-                  "fixed": "#3e4757"
+                  "fixed": "rgba(255,255,255,0.12)"
                 },
                 "width": 1,
                 "radius": 8
@@ -1015,10 +1133,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 78,
-                "left": 37,
-                "right": 37,
-                "bottom": 10,
+                "top": 75.0,
+                "left": 39.17,
+                "right": 39.17,
+                "bottom": 13.18,
                 "rotation": 0
               },
               "connections": [
@@ -1035,7 +1153,7 @@
                   "path": "straight",
                   "color": {
                     "field": "R-CONCEPCION",
-                    "fixed": "#4cc38a"
+                    "fixed": "#3fb67a"
                   },
                   "size": {
                     "fixed": 2,
@@ -1055,7 +1173,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "R-LOS-ANGELES · Sucursal"
+                  "fixed": "R-LOS-ANGELES · 192.168.30.129"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -1067,12 +1185,12 @@
               "background": {
                 "color": {
                   "field": "R-LOS-ANGELES",
-                  "fixed": "#2b3340"
+                  "fixed": "#4a505c"
                 }
               },
               "border": {
                 "color": {
-                  "fixed": "#3e4757"
+                  "fixed": "rgba(255,255,255,0.12)"
                 },
                 "width": 1,
                 "radius": 8
@@ -1082,10 +1200,10 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 78,
-                "left": 71,
-                "right": 3,
-                "bottom": 10,
+                "top": 75.0,
+                "left": 75.0,
+                "right": 3.33,
+                "bottom": 13.18,
                 "rotation": 0
               },
               "connections": [
@@ -1095,14 +1213,14 @@
                     "y": 1
                   },
                   "target": {
-                    "x": 1,
+                    "x": 0.6,
                     "y": -1
                   },
                   "targetName": "R-TEMUCO",
                   "path": "straight",
                   "color": {
                     "field": "R-LOS-ANGELES",
-                    "fixed": "#4cc38a"
+                    "fixed": "#3fb67a"
                   },
                   "size": {
                     "fixed": 2,
@@ -1117,19 +1235,379 @@
               ]
             },
             {
-              "type": "text",
-              "name": "lbl-vpn",
+              "type": "rectangle",
+              "name": "DIST-TALCA",
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "VPN IKEv2 · AES-256 (NAT-T)"
+                  "fixed": "● DIST"
                 },
                 "align": "center",
                 "valign": "middle",
                 "color": {
-                  "fixed": "#9aa0b1"
+                  "fixed": "#f2f2f2"
                 },
                 "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "DIST-TALCA",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 3.75,
+                "right": 89.75,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC1-TALCA",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC1"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC1-TALCA",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 10.92,
+                "right": 82.58,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC2-TALCA",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC2"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC2-TALCA",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 18.08,
+                "right": 75.42,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "DIST-CONCEPCION",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● DIST"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "DIST-CONCEPCION",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 39.58,
+                "right": 53.92,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC1-CONCEPCION",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC1"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC1-CONCEPCION",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 46.75,
+                "right": 46.75,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC2-CONCEPCION",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC2"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC2-CONCEPCION",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 53.92,
+                "right": 39.58,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "DIST-LOS-ANGELES",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● DIST"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "DIST-LOS-ANGELES",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 75.42,
+                "right": 18.08,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC1-LOS-ANGELES",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC1"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC1-LOS-ANGELES",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 82.58,
+                "right": 10.92,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "rectangle",
+              "name": "ACC2-LOS-ANGELES",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "● ACC2"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#f2f2f2"
+                },
+                "size": 11
+              },
+              "background": {
+                "color": {
+                  "field": "ACC2-LOS-ANGELES",
+                  "fixed": "#4a505c"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "rgba(255,255,255,0.12)"
+                },
+                "width": 1,
+                "radius": 8
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 89.09,
+                "left": 89.75,
+                "right": 3.75,
+                "bottom": 5.0,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "text",
+              "name": "l-vpn",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "VPN IKEv2 · AES-256"
+                },
+                "align": "center",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#8fb8f7"
+                },
+                "size": 10
               },
               "background": {
                 "color": {
@@ -1146,16 +1624,16 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 16,
-                "left": 44,
-                "right": 42,
-                "bottom": 76,
+                "top": 8.64,
+                "left": 61.25,
+                "right": 29.42,
+                "bottom": 87.73,
                 "rotation": 0
               }
             },
             {
               "type": "text",
-              "name": "lbl-t1",
+              "name": "l-t1",
               "config": {
                 "text": {
                   "mode": "fixed",
@@ -1183,16 +1661,16 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 64,
-                "left": 10,
-                "right": 68,
-                "bottom": 30,
+                "top": 65.91,
+                "left": 20.83,
+                "right": 67.5,
+                "bottom": 30.45,
                 "rotation": 0
               }
             },
             {
               "type": "text",
-              "name": "lbl-t2",
+              "name": "l-t2",
               "config": {
                 "text": {
                   "mode": "fixed",
@@ -1220,16 +1698,16 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 66,
-                "left": 44,
-                "right": 44,
-                "bottom": 28,
+                "top": 67.73,
+                "left": 50.83,
+                "right": 42.5,
+                "bottom": 28.64,
                 "rotation": 0
               }
             },
             {
               "type": "text",
-              "name": "lbl-t3",
+              "name": "l-t3",
               "config": {
                 "text": {
                   "mode": "fixed",
@@ -1257,168 +1735,20 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 64,
-                "left": 68,
-                "right": 10,
-                "bottom": 30,
+                "top": 65.91,
+                "left": 67.5,
+                "right": 20.83,
+                "bottom": 30.45,
                 "rotation": 0
               }
             },
             {
               "type": "text",
-              "name": "lbl-sw-tal",
+              "name": "l-sw",
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "3 switches · VLAN 10-99"
-                },
-                "align": "center",
-                "valign": "middle",
-                "color": {
-                  "fixed": "#9aa0b1"
-                },
-                "size": 10
-              },
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "constraint": {
-                "horizontal": "scale",
-                "vertical": "scale"
-              },
-              "placement": {
-                "top": 91,
-                "left": 3,
-                "right": 73,
-                "bottom": 2,
-                "rotation": 0
-              }
-            },
-            {
-              "type": "text",
-              "name": "lbl-sw-con",
-              "config": {
-                "text": {
-                  "mode": "fixed",
-                  "fixed": "3 switches · VLAN 10-99"
-                },
-                "align": "center",
-                "valign": "middle",
-                "color": {
-                  "fixed": "#9aa0b1"
-                },
-                "size": 10
-              },
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "constraint": {
-                "horizontal": "scale",
-                "vertical": "scale"
-              },
-              "placement": {
-                "top": 91,
-                "left": 37,
-                "right": 37,
-                "bottom": 2,
-                "rotation": 0
-              }
-            },
-            {
-              "type": "text",
-              "name": "lbl-sw-los",
-              "config": {
-                "text": {
-                  "mode": "fixed",
-                  "fixed": "3 switches · VLAN 10-99"
-                },
-                "align": "center",
-                "valign": "middle",
-                "color": {
-                  "fixed": "#9aa0b1"
-                },
-                "size": 10
-              },
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "constraint": {
-                "horizontal": "scale",
-                "vertical": "scale"
-              },
-              "placement": {
-                "top": 91,
-                "left": 71,
-                "right": 3,
-                "bottom": 2,
-                "rotation": 0
-              }
-            },
-            {
-              "type": "text",
-              "name": "lbl-sw-tem",
-              "config": {
-                "text": {
-                  "mode": "fixed",
-                  "fixed": "3 switches + 2960 físico · VLAN 10-99"
-                },
-                "align": "center",
-                "valign": "middle",
-                "color": {
-                  "fixed": "#9aa0b1"
-                },
-                "size": 10
-              },
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "constraint": {
-                "horizontal": "scale",
-                "vertical": "scale"
-              },
-              "placement": {
-                "top": 59,
-                "left": 30,
-                "right": 46,
-                "bottom": 34,
-                "rotation": 0
-              }
-            },
-            {
-              "type": "text",
-              "name": "lbl-pend",
-              "config": {
-                "text": {
-                  "mode": "fixed",
-                  "fixed": "gris = equipo aún no monitoreado"
+                  "fixed": "switches de la matriz"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -1442,10 +1772,47 @@
                 "vertical": "scale"
               },
               "placement": {
-                "top": 2,
-                "left": 1,
-                "right": 72,
-                "bottom": 90,
+                "top": 60.45,
+                "left": 62.08,
+                "right": 17.08,
+                "bottom": 36.36,
+                "rotation": 0
+              }
+            },
+            {
+              "type": "text",
+              "name": "l-leg",
+              "config": {
+                "text": {
+                  "mode": "fixed",
+                  "fixed": "Verde en línea · Rojo caído · Gris no monitoreado aún · líneas animadas = flujo hacia AWS"
+                },
+                "align": "left",
+                "valign": "middle",
+                "color": {
+                  "fixed": "#6c7283"
+                },
+                "size": 10
+              },
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "constraint": {
+                "horizontal": "scale",
+                "vertical": "scale"
+              },
+              "placement": {
+                "top": 0.91,
+                "left": 1.67,
+                "right": 63.33,
+                "bottom": 95.45,
                 "rotation": 0
               }
             }
@@ -1476,144 +1843,19 @@
     },
     {
       "id": 9,
-      "type": "stat",
-      "title": "Estado de equipos por sede",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 15,
-        "y": 9,
-        "w": 9,
-        "h": 15
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "alexanderzobnin-zabbix-datasource",
-            "uid": "${DS_ZABBIX}"
-          },
-          "queryType": "0",
-          "group": {
-            "filter": "/Routers Agroprodel|Switches Agroprodel/"
-          },
-          "host": {
-            "filter": "/.*/"
-          },
-          "application": {
-            "filter": ""
-          },
-          "itemTag": {
-            "filter": ""
-          },
-          "item": {
-            "filter": "ICMP ping"
-          },
-          "functions": [],
-          "options": {
-            "showDisabledItems": false,
-            "skipEmptyValues": false
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "none",
-          "decimals": 0,
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "EN LÍNEA",
-                  "color": "green",
-                  "index": 0
-                },
-                "0": {
-                  "text": "CAÍDO",
-                  "color": "red",
-                  "index": 1
-                }
-              }
-            }
-          ],
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "orientation": "vertical",
-        "wideLayout": false,
-        "text": {
-          "titleSize": 12,
-          "valueSize": 13
-        }
-      },
-      "description": "Cada recuadro es un equipo (routers y switches DIST/ACC). Verde = responde desde el SOC.",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "^(\\S+) .*$",
-            "renamePattern": "$1"
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "sort": [
-              {
-                "field": "Field",
-                "desc": false
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": 10,
       "type": "row",
       "title": "Disponibilidad",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 24,
+        "y": 26,
         "w": 24,
         "h": 1
       },
       "panels": []
     },
     {
-      "id": 11,
+      "id": 10,
       "type": "state-timeline",
       "title": "Línea de tiempo de estado · routers (ICMP desde el SOC)",
       "datasource": {
@@ -1622,9 +1864,9 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 25,
+        "y": 27,
         "w": 16,
-        "h": 7
+        "h": 8
       },
       "targets": [
         {
@@ -1767,8 +2009,8 @@
       }
     },
     {
-      "id": 12,
-      "type": "stat",
+      "id": 11,
+      "type": "bargauge",
       "title": "Disponibilidad por sede (periodo)",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
@@ -1776,9 +2018,9 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 25,
+        "y": 27,
         "w": 8,
-        "h": 7
+        "h": 8
       },
       "targets": [
         {
@@ -1810,11 +2052,22 @@
           }
         }
       ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\S+) .*$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "description": "Promedio de ICMP ping en el rango. Verde ≥ 99,5 % (SLA). Los cortes del laboratorio corresponden a pausas del host EVE-NG (P-09).",
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
           "decimals": 1,
-          "mappings": [],
+          "min": 0.8,
+          "max": 1,
           "color": {
             "mode": "thresholds"
           },
@@ -1826,7 +2079,7 @@
                 "value": null
               },
               {
-                "color": "orange",
+                "color": "#f2b84b",
                 "value": 0.99
               },
               {
@@ -1895,38 +2148,29 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "value_and_name",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "wideLayout": true
-      },
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "^(\\S+) .*$",
-            "renamePattern": "$1"
-          }
-        }
-      ]
+        "orientation": "horizontal",
+        "displayMode": "lcd",
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "top",
+        "sizing": "auto"
+      }
     },
     {
-      "id": 13,
+      "id": 12,
       "type": "row",
       "title": "Rendimiento",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 35,
         "w": 24,
         "h": 1
       },
       "panels": []
     },
     {
-      "id": 14,
+      "id": 13,
       "type": "timeseries",
       "title": "Latencia SOC → sedes (vía VPN)",
       "datasource": {
@@ -1935,7 +2179,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 33,
+        "y": 36,
         "w": 16,
         "h": 9
       },
@@ -2078,16 +2322,16 @@
       }
     },
     {
-      "id": 15,
+      "id": 14,
       "type": "bargauge",
-      "title": "CPU de los routers",
+      "title": "Tráfico actual por enlace",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
         "x": 16,
-        "y": 33,
+        "y": 36,
         "w": 8,
         "h": 9
       },
@@ -2103,7 +2347,7 @@
             "filter": "Routers Agroprodel"
           },
           "host": {
-            "filter": "/.*/"
+            "filter": "/R-TEMUCO.*/"
           },
           "application": {
             "filter": ""
@@ -2112,7 +2356,35 @@
             "filter": ""
           },
           "item": {
-            "filter": "/CPU utilization/"
+            "filter": "/Interface Et0\\/0.*Bits (received|sent)/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Routers Agroprodel"
+          },
+          "host": {
+            "filter": "/R-TEMUCO.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/Interface Tu[0-9].*Bits received/"
           },
           "functions": [],
           "options": {
@@ -2121,87 +2393,72 @@
           }
         }
       ],
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "^(\\S+) .*$",
-            "renamePattern": "$1"
-          }
-        }
-      ],
       "fieldConfig": {
         "defaults": {
-          "unit": "percent",
+          "unit": "bps",
           "min": 0,
-          "max": 100,
           "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
+            "mode": "continuous-BlPu"
           }
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TEMUCO"
+              "id": "byRegexp",
+              "options": ".*Et0/0.*received.*"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Temuco (matriz)"
+                "value": "WAN Temuco · entrada"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TALCA"
+              "id": "byRegexp",
+              "options": ".*Et0/0.*sent.*"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Talca"
+                "value": "WAN Temuco · salida"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-CONCEPCION"
+              "id": "byRegexp",
+              "options": ".*Tu1.*"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Concepción"
+                "value": "Tunnel1 · Talca"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-LOS-ANGELES"
+              "id": "byRegexp",
+              "options": ".*Tu2.*"
             },
             "properties": [
               {
                 "id": "displayName",
-                "value": "Los Ángeles"
+                "value": "Tunnel2 · Concepción"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*Tu3.*"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Tunnel3 · Los Ángeles"
               }
             ]
           }
@@ -2218,21 +2475,22 @@
         "orientation": "horizontal",
         "displayMode": "gradient",
         "showUnfilled": true,
-        "valueMode": "color"
+        "valueMode": "color",
+        "namePlacement": "top"
       }
     },
     {
-      "id": 16,
+      "id": 15,
       "type": "timeseries",
-      "title": "Tráfico WAN R-TEMUCO (Ethernet0/0)",
+      "title": "Tráfico WAN de Temuco y túneles de las sucursales",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
         "x": 0,
-        "y": 42,
-        "w": 12,
+        "y": 45,
+        "w": 24,
         "h": 8
       },
       "targets": [
@@ -2263,77 +2521,9 @@
             "showDisabledItems": false,
             "skipEmptyValues": false
           }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "min": 0,
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineWidth": 1,
-            "fillOpacity": 20,
-            "showPoints": "never"
-          }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*received.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Entrada"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*sent.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Salida"
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "legend": {
-          "showLegend": true,
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi"
-        }
-      }
-    },
-    {
-      "id": 17,
-      "type": "timeseries",
-      "title": "Tráfico por túnel (sucursales → Temuco)",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 42,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
         {
-          "refId": "A",
+          "refId": "B",
           "datasource": {
             "type": "alexanderzobnin-zabbix-datasource",
             "uid": "${DS_ZABBIX}"
@@ -2371,11 +2561,35 @@
           "custom": {
             "drawStyle": "line",
             "lineWidth": 1,
-            "fillOpacity": 15,
+            "fillOpacity": 12,
             "showPoints": "never"
           }
         },
         "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*Et0/0.*received.*"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "WAN Temuco · entrada"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*Et0/0.*sent.*"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "WAN Temuco · salida"
+              }
+            ]
+          },
           {
             "matcher": {
               "id": "byRegexp",
@@ -2417,29 +2631,35 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "list",
-          "placement": "bottom"
+          "displayMode": "table",
+          "placement": "right",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
         },
         "tooltip": {
-          "mode": "multi"
+          "mode": "multi",
+          "sort": "desc"
         }
       }
     },
     {
-      "id": 18,
+      "id": 16,
       "type": "row",
       "title": "Eventos",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 50,
+        "y": 53,
         "w": 24,
         "h": 1
       },
       "panels": []
     },
     {
-      "id": 19,
+      "id": 17,
       "type": "alexanderzobnin-zabbix-triggers-panel",
       "title": "Problemas actuales (Zabbix)",
       "datasource": {
@@ -2448,7 +2668,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 51,
+        "y": 54,
         "w": 24,
         "h": 8
       },
