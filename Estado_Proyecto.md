@@ -17,7 +17,7 @@
 | 10 | Clase C privada + VLSM | ✅ | Verificado sin errores. Reserva de crecimiento de Temuco: 192.168.41.0/24 (resumen 192.168.40.0/23, sin renumerar) |
 | 11 | Routers como DHCP | ✅ | DNS de la nube + respaldo 1.1.1.1 en VLAN 10-40 y 70 |
 | 12 | Demostración física o simulada | ✅ | EVE-NG + Catalyst 2960 |
-| 13 | Etapas según carta Gantt | ❌ | Pendiente (equipo) |
+| 13 | Etapas según carta Gantt | ⏳ | A cargo de un integrante del equipo |
 | 14 | IoT de riego (humedad + umbral) | ✅ | Prototipo ESP32 con notificaciones por Telegram. En laboratorio sale por Wi-Fi directo; en producción se integra a la VLAN 70 mediante un AP (ACL IOT-IN: solo Internet) |
 | 15 | Wi-Fi clientes en ventas, solo Internet | ✅ | VLAN 60 + INVITADOS-IN |
 | 16 | FTP, DNS, WEB en la nube | ✅ | AWS: HTTPS (Let's Encrypt) y FTPS implícito TLS 1.3 |
@@ -40,4 +40,4 @@
 3. Seguridad de gestión en SW-FISICO-TEM (+ apagar puertos sin uso).
 4. Probar llamadas con las ACL entre VLAN activas (Issabel del compañero).
 5. Topología física, especificaciones técnicas, actualización de informes y bitácora.
-6. Carta Gantt y formato de informe final Duoc (docente, roles, fechas).
+6. Formato de informe final Duoc (docente, roles, fechas). La carta Gantt la desarrolla un integrante del equipo.
