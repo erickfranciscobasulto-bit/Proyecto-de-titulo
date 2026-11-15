@@ -207,3 +207,12 @@ sudo swanctl --terminate --ike temuco
 ```
 Resultado: `remote_ts = 192.168.0.0/16,203.0.113.0/30` · `loaded connection 'temuco'`.
 En R-TEMUCO: línea 20 en `VPN-AWS` y `clear crypto session`; túnel restablecido (ping 9/10).
+
+## 15. Higiene de credenciales
+Las primeras pruebas `snmpget` se ejecutaron sin espacio inicial y las claves SNMPv3 quedaron en el historial de la shell.
+```bash
+history -c && history -w
+cat ~/.bash_history | grep -c snmpget   # 0
+```
+Pendiente: rotar las claves SNMPv3 (se expusieron en capturas). Gracias a las macros globales, el cambio en Zabbix es en un
+solo lugar (`{$SNMPV3_AUTH}`, `{$SNMPV3_PRIV}`) más la línea `snmp-server user` en cada equipo.
