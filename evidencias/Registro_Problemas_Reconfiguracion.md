@@ -87,3 +87,24 @@ Cada entrada indica el equipo, el síntoma, la causa técnica, la solución apli
 | **Solución temporal** | `shutdown` en e0/2-3 de ACC2 (Po3), `duplex full` en ACC1/ACC2, `clear mac address-table dynamic` en DIST, ACC1 y ACC2. Resultado: los tres PC obtienen IP y llegan a internet. Se pierde temporalmente la redundancia ACC1–ACC2. |
 | **Solución definitiva** | Cambiar la imagen de ACC1 y ACC2 de Concepción a la misma IOL 15.2 del resto de los switches y reactivar Po3 vigilando las tasas. Resuelve también P-05 (SSH con AES-CTR). |
 | **Aprendizaje** | Un enlace bloqueado por STP que muestra miles de pps de entrada y MAC aprendidas en un puerto miembro indica un bucle en el plano de datos. Cortar primero el enlace redundante, verificar, descartar hipótesis una a una (reinicio, duplex) y, si la causa es el software, estandarizar la versión de IOS en toda la red. |
+
+
+## P-09 – Caída simultánea de las adyacencias OSPFv2/OSPFv3 en R-TEMUCO (evento del laboratorio)
+
+**Síntoma.** En el log de R-TEMUCO, a las 17:35:08 y a las 18:20:30 (hora UTC del router; 14:35 y 15:20 en Chile),
+las 6 adyacencias (OSPFv2 y OSPFv3 con 2.2.2.2, 3.3.3.3 y 4.4.4.4 por Tunnel1-3) pasan a DOWN por
+*Dead timer expired* en el mismo milisegundo y vuelven a FULL entre 35 y 65 ms después.
+
+**Análisis.**
+- Si un túnel o un enlace hubiese fallado, solo caerían los vecinos de ese túnel y la recuperación tomaría al menos
+  un intervalo de hello (10 s) más el intercambio de bases de datos.
+- Aquí caen los 6 vecinos a la vez, en los tres túneles y en ambas versiones de OSPF, y se recuperan en milisegundos.
+  Ese patrón corresponde a que el proceso del router dejó de ejecutarse durante más de 40 s (dead interval): al
+  reanudarse vence el temporizador de todos los vecinos y, de inmediato, procesa los hellos en cola y vuelve a FULL.
+- La causa es del host de virtualización (EVE-NG sobre el notebook: suspensión, ahorro de energía o falta de CPU),
+  no de la configuración de red.
+
+**Verificación.** `show ip ospf neighbor` y `show ipv6 ospf neighbor`: 3 vecinos FULL en cada versión.
+
+**Acción.** Desactivar la suspensión y el ahorro de energía del notebook que ejecuta EVE-NG durante las pruebas.
+Este tipo de evento queda visible en Zabbix como una pérdida de datos simultánea en los 4 routers.
