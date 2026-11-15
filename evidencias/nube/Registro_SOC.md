@@ -18,7 +18,7 @@ IP dinámica (red doméstica y red de Duoc). La VPN administrada exige registrar
 con clave compartida.
 
 ## Grupos de seguridad
-### SG_SOC_NOC (SRV-NOC)
+### SG_SOC_NOC (SRV-NOC) – sg-009f0cbc448d25185
 | Tipo | Puerto | Origen | Descripción |
 |---|---|---|---|
 | UDP | 500 | 0.0.0.0/0 | VPN IKE |
@@ -31,7 +31,7 @@ con clave compartida.
 UDP 500/4500 se abren a cualquier origen porque el extremo del laboratorio cambia de IP; el túnel exige clave
 compartida y cifrado, sin los cuales la negociación se rechaza.
 
-### SG_SOC_SIEM (SRV-SIEM)
+### SG_SOC_SIEM (SRV-SIEM) – sg-04301cb151e77d101
 | Tipo | Puerto | Origen | Descripción |
 |---|---|---|---|
 | UDP | 514 | 192.168.0.0/16 | Syslog de routers y switches (por la VPN) |
