@@ -138,3 +138,22 @@ Se elimina el sitio por defecto de Nginx para que el puerto 80 sirva directament
 
 Resultado: `listen 80;` · `server_name _;` · `syntax is ok` · 4 servicios `active` · log sin errores de acceso a la
 base (`server #47 started [snmp poller #1]`, `configuration syncer`, `internal poller`, `proxy group manager`).
+
+## 10. Panel web de Zabbix (asistente de instalación)
+Idioma español: los idiomas aparecían deshabilitados porque el sistema solo tenía la configuración regional en inglés.
+```bash
+sudo locale-gen es_ES.UTF-8
+sudo systemctl restart php8.3-fpm
+```
+Asistente en `http://98.83.92.138/` (puerto 80 permitido solo desde la IP del administrador en SG_SOC_NOC):
+
+| Pantalla | Valor |
+|---|---|
+| Idioma | Español (es_ES) |
+| Requisitos previos | Todos OK (PHP 8.3.6, MySQL, bcmath, mbstring, sockets…) |
+| Conexión BD | MySQL · localhost · puerto por defecto · base `zabbix` · usuario `zabbix` · clave no documentada · sin TLS (conexión por socket local) |
+| Nombre del servidor | SOC-AGROPRODEL |
+
+Resultado: tablero *Global view* operativo; "El servidor Zabbix se está ejecutando: Sí (localhost:10051)", versión 7.0.32,
+1 equipo (Zabbix server) monitoreado por el agente 2.
+La clave de fábrica del usuario `Admin` se cambió al primer ingreso (no documentada).
