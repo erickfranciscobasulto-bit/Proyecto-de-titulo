@@ -55,3 +55,13 @@ El SIEM no expone ningún puerto a Internet.
 | Perfil IAM / créditos | LabInstanceProfile · standard |
 | Llave | LLAVE-NOC (exclusiva del servidor; no se documenta) |
 | IP elástica | 98.83.92.138 (eipalloc-0a80a0ba5323a9f9a): extremo fijo de la VPN para R-TEMUCO |
+
+## Enrutamiento en la VPC
+- SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
+- Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:
+
+| Destino | Destino siguiente | Uso |
+|---|---|---|
+| 10.40.0.0/16 | local | Tráfico interno de la VPC |
+| 0.0.0.0/0 | igw-0038a87052752e964 | Internet |
+| 192.168.0.0/16 | eni-0d88fe11da28b32a8 (SRV-NOC) | Redes de las 4 sedes, a través de la VPN |
