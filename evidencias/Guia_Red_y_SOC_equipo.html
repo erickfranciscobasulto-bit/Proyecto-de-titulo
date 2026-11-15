@@ -1,0 +1,251 @@
+<title>Red Agroprodel y SOC</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: guía técnica de una columna (~760px) con diagramas a ancho ampliado y tablas en contenedores con scroll propio */
+:root{
+  --bg:#f5f7fa; --surface:#ffffff; --ink:#18212d; --muted:#5b6778; --line:#dbe1e9;
+  --accent:#1f5f9e; --accent-soft:#e3edf8;
+  --ok:#23845a; --ok-soft:#e1f2ea; --bad:#c23a46; --bad-soft:#f8e3e5; --warn:#b77a12; --warn-soft:#f8eedb; --idle:#8a93a2; --idle-soft:#eceff3;
+  --vpn:#3a78c9;
+  --f-display:"Space Grotesk",system-ui,sans-serif; --f-body:"Inter",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161d; --surface:#18202a; --ink:#e4e9f0; --muted:#9aa6b6; --line:#2a3440; --accent:#7fb2ea; --accent-soft:#1d2d40;
+  --ok:#4cc38a; --ok-soft:#173226; --bad:#ec6b76; --bad-soft:#3a1d22; --warn:#e3ad4d; --warn-soft:#3a2d15; --idle:#8a93a2; --idle-soft:#262e38; --vpn:#7fb2ea; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161d; --surface:#18202a; --ink:#e4e9f0; --muted:#9aa6b6; --line:#2a3440; --accent:#7fb2ea; --accent-soft:#1d2d40;
+  --ok:#4cc38a; --ok-soft:#173226; --bad:#ec6b76; --bad-soft:#3a1d22; --warn:#e3ad4d; --warn-soft:#3a2d15; --idle:#8a93a2; --idle-soft:#262e38; --vpn:#7fb2ea; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.6;margin:0}
+.wrap{max-width:820px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wide{max-width:1080px}
+header .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--f-display);font-size:clamp(28px,4.5vw,40px);line-height:1.15;margin:8px 0 12px;text-wrap:balance}
+h2{font-family:var(--f-display);font-size:24px;margin:52px 0 10px;text-wrap:balance}
+h3{font-family:var(--f-display);font-size:17px;margin:26px 0 6px}
+p{margin:0 0 12px;max-width:68ch}
+.lead{font-size:17px;color:var(--muted)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.toc a{display:inline-block;padding:5px 11px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;font-size:13.5px;background:var(--surface)}
+.toc a:hover,.toc a:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+code,.mono{font-family:var(--f-mono);font-size:.9em}
+code{background:var(--accent-soft);color:var(--ink);padding:1px 5px;border-radius:4px}
+.figure{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin:16px 0;overflow-x:auto}
+.figure svg{display:block;min-width:720px;width:100%;height:auto}
+.caption{font-size:13px;color:var(--muted);margin-top:8px}
+.tbl{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+.flow{display:grid;gap:10px;margin:16px 0;padding:0;list-style:none;counter-reset:f}
+.flow li{counter-increment:f;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.flow li::before{content:counter(f);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-display);font-weight:700}
+.flow li>div{min-width:0}
+.flow b{font-family:var(--f-display)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:500}
+.pill i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.p-ok{background:var(--ok-soft);color:var(--ok)}.p-ok i{background:var(--ok)}
+.p-bad{background:var(--bad-soft);color:var(--bad)}.p-bad i{background:var(--bad)}
+.p-warn{background:var(--warn-soft);color:var(--warn)}.p-warn i{background:var(--warn)}
+.p-idle{background:var(--idle-soft);color:var(--idle)}.p-idle i{background:var(--idle)}
+.panel{display:grid;grid-template-columns:200px 1fr;gap:4px 18px;padding:14px 0;border-top:1px solid var(--line)}
+.panel:first-of-type{border-top:0}
+.panel h4{margin:0;font-family:var(--f-display);font-size:15px}
+.panel .sec{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.panel>div{min-width:0}
+.panel p{margin:0 0 6px}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:16px 0;font-size:14.5px}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media (max-width:640px){.panel{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+.flowline{stroke-dasharray:7 6;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-26}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Proyecto de título · Agroprodel Ltda. · Guía para el equipo</div>
+  <h1>Cómo funciona la red de Agroprodel y cómo leer el SOC</h1>
+  <p class="lead">Resumen de la red de las cuatro sedes, del centro de monitoreo en AWS y del dashboard de Grafana, para que todo el equipo pueda explicarlo y operarlo.</p>
+  <ul class="toc">
+    <li><a href="#red">La red</a></li>
+    <li><a href="#direcciones">Direccionamiento</a></li>
+    <li><a href="#soc">El SOC en la nube</a></li>
+    <li><a href="#camino">Cómo llega el monitoreo</a></li>
+    <li><a href="#dashboard">Leer el dashboard</a></li>
+    <li><a href="#incidentes">Qué hacer si algo cae</a></li>
+    <li><a href="#estado">Estado y pendientes</a></li>
+  </ul>
+</header>
+
+<h2 id="red">1. La red en una imagen</h2>
+<p>La empresa tiene una <b>casa matriz en Temuco</b> y tres <b>sucursales</b>: Talca, Concepción y Los Ángeles. La topología es <b>hub-and-spoke</b>: Temuco es el centro y cada sucursal se conecta a Temuco con un <b>túnel GRE protegido con IPsec</b> que viaja por Internet. Las rutas se intercambian con <b>OSPF</b> (IPv4) y <b>OSPFv3</b> (IPv6) sobre esos túneles.</p>
+<p>Temuco sale a Internet a través del firewall <b>FW-TEMUCO (OPNsense)</b>, que también ejecuta el IDS Suricata. Desde R-TEMUCO sale además una <b>VPN IKEv2</b> hacia la nube de AWS, donde están los servidores y el SOC.</p>
+</div>
+
+<div class="wrap wide">
+<div class="figure" role="img" aria-label="Diagrama de la red: AWS conectado por VPN a Temuco, Temuco conectado por túneles a Talca, Concepción y Los Ángeles">
+<svg viewBox="0 0 1040 470" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--ok)"/></marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--vpn)"/></marker>
+  </defs>
+  <style>
+    .bx{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+    .hub{fill:var(--ok-soft);stroke:var(--ok);stroke-width:1.5}
+    .cloud{fill:var(--accent-soft);stroke:var(--vpn);stroke-width:1.5}
+    .t1{font:600 14px var(--f-display);fill:var(--ink)}
+    .t2{font:400 11.5px var(--f-body);fill:var(--muted)}
+    .t3{font:500 11px var(--f-mono);fill:var(--muted)}
+    .sw{fill:var(--bg);stroke:var(--line)}
+  </style>
+  <!-- links -->
+  <line x1="470" y1="70" x2="660" y2="70" class="flowline" style="stroke:var(--vpn);stroke-width:2.5" marker-end="url(#b)"/>
+  <text x="565" y="58" text-anchor="middle" class="t3">VPN IKEv2 · AES-256</text>
+  <line x1="350" y1="138" x2="350" y2="110" class="flowline" style="stroke:var(--idle);stroke-width:2.5" marker-end="url(#a)"/>
+  <line x1="350" y1="230" x2="350" y2="196" class="flowline" style="stroke:var(--ok);stroke-width:2.5" marker-end="url(#a)"/>
+  <line x1="150" y1="345" x2="300" y2="292" class="flowline" style="stroke:var(--ok);stroke-width:2" marker-end="url(#a)"/>
+  <line x1="350" y1="345" x2="350" y2="292" class="flowline" style="stroke:var(--ok);stroke-width:2" marker-end="url(#a)"/>
+  <line x1="550" y1="345" x2="400" y2="292" class="flowline" style="stroke:var(--ok);stroke-width:2" marker-end="url(#a)"/>
+  <text x="200" y="312" class="t3">Tunnel1</text><text x="358" y="324" class="t3">Tunnel2</text><text x="470" y="312" class="t3">Tunnel3</text>
+  <!-- nodes -->
+  <rect x="230" y="40" width="240" height="60" rx="10" class="bx"/>
+  <text x="350" y="66" text-anchor="middle" class="t1">ISP / Internet</text>
+  <text x="350" y="84" text-anchor="middle" class="t2">Proveedor (se monitorea el enlace)</text>
+  <rect x="230" y="138" width="240" height="58" rx="10" class="bx"/>
+  <text x="350" y="163" text-anchor="middle" class="t1">FW-TEMUCO · OPNsense</text>
+  <text x="350" y="181" text-anchor="middle" class="t2">Firewall + Suricata (IDS)</text>
+  <rect x="230" y="230" width="240" height="62" rx="10" class="hub"/>
+  <text x="350" y="256" text-anchor="middle" class="t1">R-TEMUCO · casa matriz</text>
+  <text x="350" y="275" text-anchor="middle" class="t2">Hub · VPN a AWS · 4 switches</text>
+  <rect x="40" y="345" width="220" height="56" rx="10" class="hub"/>
+  <text x="150" y="369" text-anchor="middle" class="t1">R-TALCA</text><text x="150" y="387" text-anchor="middle" class="t2">sucursal · 3 switches</text>
+  <rect x="240" y="345" width="220" height="56" rx="10" class="hub" transform="translate(0,0)"/>
+  <text x="350" y="369" text-anchor="middle" class="t1">R-CONCEPCION</text><text x="350" y="387" text-anchor="middle" class="t2">sucursal · 3 switches</text>
+  <rect x="440" y="345" width="220" height="56" rx="10" class="hub" transform="translate(0,0)"/>
+  <text x="550" y="369" text-anchor="middle" class="t1">R-LOS-ANGELES</text><text x="550" y="387" text-anchor="middle" class="t2">sucursal · 3 switches</text>
+  <!-- switches row -->
+  <g class="t3">
+    <text x="150" y="425" text-anchor="middle">DIST · ACC1 · ACC2</text>
+    <text x="350" y="425" text-anchor="middle">DIST · ACC1 · ACC2</text>
+    <text x="550" y="425" text-anchor="middle">DIST · ACC1 · ACC2</text>
+  </g>
+  <!-- AWS -->
+  <rect x="660" y="24" width="350" height="300" rx="12" class="cloud"/>
+  <text x="680" y="52" class="t1">AWS us-east-1 · VPC 10.40.0.0/16</text>
+  <rect x="680" y="70" width="310" height="70" rx="8" class="bx"/>
+  <text x="696" y="94" class="t1">SRV-NOC · 10.40.1.30</text>
+  <text x="696" y="113" class="t2">Zabbix 7.0 · Grafana · strongSwan (fin de la VPN)</text>
+  <text x="696" y="129" class="t2">IP elástica 98.83.92.138</text>
+  <rect x="680" y="152" width="310" height="62" rx="8" class="bx"/>
+  <text x="696" y="176" class="t1">SRV-AGROPRODEL · 10.40.1.10</text>
+  <text x="696" y="195" class="t2">Web HTTPS · DNS (BIND) · FTPS</text>
+  <rect x="680" y="226" width="310" height="62" rx="8" class="bx" style="stroke-dasharray:5 4"/>
+  <text x="696" y="250" class="t1">SRV-SIEM · 10.40.1.20</text>
+  <text x="696" y="269" class="t2">Wazuh (próxima etapa)</text>
+  <text x="680" y="312" class="t3">Subred pública 10.40.1.0/24</text>
+</svg>
+<div class="caption">Las flechas animadas indican el sentido del tráfico de monitoreo: de cada sede hacia Temuco y desde Temuco por la VPN hasta AWS.</div>
+</div>
+</div>
+
+<div class="wrap">
+<h3>Qué hay dentro de cada sede</h3>
+<p>Cada sede tiene un <b>router</b>, un switch de <b>distribución</b> (DIST) y dos switches de <b>acceso</b> (ACC1 y ACC2) unidos con EtherChannel. En Temuco además está el switch físico Catalyst 2960. La red interna se separa en VLAN, y las ACL entre VLAN aplican <b>mínimo privilegio</b>: cada área solo llega a lo que necesita.</p>
+<div class="tbl"><table>
+<thead><tr><th>VLAN</th><th>Uso</th><th>Nota</th></tr></thead>
+<tbody>
+<tr><td class="mono">10–40</td><td>Departamentos (siembra, cosecha, envasado, ventas)</td><td>Bloqueados hacia redes internas y hacia la nube privada</td></tr>
+<tr><td class="mono">50</td><td>Voz (teléfonos IP / MicroSIP)</td><td>QoS: RTP con prioridad (EF), señalización SIP (CS3)</td></tr>
+<tr><td class="mono">60</td><td>Invitados (Wi-Fi)</td><td>Solo Internet</td></tr>
+<tr><td class="mono">70</td><td>IoT de riego</td><td>Aislada</td></tr>
+<tr><td class="mono">80</td><td>Servidores (Temuco: Issabel)</td><td>Central telefónica 192.168.40.226</td></tr>
+<tr><td class="mono">99</td><td>Gestión de equipos de red</td><td>Única VLAN desde la que el SOC monitorea</td></tr>
+</tbody></table></div>
+
+<h2 id="direcciones">2. Direccionamiento que conviene saber</h2>
+<div class="tbl"><table>
+<thead><tr><th>Sede</th><th>Red de la sede</th><th>Router (gestión, VLAN 99)</th><th>Switches DIST · ACC1 · ACC2</th></tr></thead>
+<tbody>
+<tr><td>Temuco (matriz)</td><td class="mono">192.168.40.0/24</td><td class="mono">192.168.40.241</td><td class="mono">.242 · .243 · .244 (2960: .245)</td></tr>
+<tr><td>Talca</td><td class="mono">192.168.10.0/24</td><td class="mono">192.168.10.193</td><td class="mono">.194 · .195 · .196</td></tr>
+<tr><td>Concepción</td><td class="mono">192.168.20.0/24</td><td class="mono">192.168.20.161</td><td class="mono">.162 · .163 · .164</td></tr>
+<tr><td>Los Ángeles</td><td class="mono">192.168.30.0/24</td><td class="mono">192.168.30.129</td><td class="mono">.130 · .131 · .132</td></tr>
+<tr><td>Nube AWS</td><td class="mono">10.40.0.0/16</td><td colspan="2">SRV-NOC 10.40.1.30 · SRV-AGROPRODEL 10.40.1.10</td></tr>
+</tbody></table></div>
+<p>La red también es <b>doble pila</b>: cada VLAN de usuarios tiene su prefijo IPv6 (<code>2001:db8:a9::/48</code>) y los equipos se autoconfiguran con SLAAC.</p>
+
+<h2 id="soc">3. El SOC en la nube</h2>
+<p>El SOC (centro de operaciones) vive en AWS para quedar <b>fuera de la red que vigila</b>: si se cae Temuco, el SOC sigue funcionando y registra la caída.</p>
+<div class="tbl"><table>
+<thead><tr><th>Componente</th><th>Qué hace</th></tr></thead>
+<tbody>
+<tr><td><b>Zabbix 7.0</b></td><td>Consulta cada equipo, guarda el historial y genera alertas cuando algo sale de lo normal.</td></tr>
+<tr><td><b>Grafana</b></td><td>Muestra los datos de Zabbix en el dashboard del SOC. Entra a Zabbix con un usuario de <b>solo lectura</b>.</td></tr>
+<tr><td><b>strongSwan</b></td><td>Termina la VPN IKEv2 que inicia R-TEMUCO.</td></tr>
+<tr><td><b>SNMPv3</b></td><td>Protocolo con que Zabbix lee routers y switches, con autenticación (SHA) y cifrado (AES). Cada equipo solo responde a SRV-NOC.</td></tr>
+<tr><td><b>Agente Zabbix</b></td><td>En los servidores Linux: entrega CPU, memoria, disco y servicios.</td></tr>
+</tbody></table></div>
+<div class="note">Las claves (VPN, SNMP, usuarios) no están en esta guía ni en el repositorio. Si necesitas una, pídela directamente.</div>
+
+<h2 id="camino">4. Cómo llega el monitoreo a cada equipo</h2>
+<p>Este es el recorrido de una consulta de Zabbix a un switch de Talca:</p>
+<ol class="flow">
+  <li><div><b>SRV-NOC (AWS)</b> pregunta por SNMPv3 a <code>192.168.10.194</code>.</div></li>
+  <li><div>La tabla de rutas de la VPC envía todo lo que va a <code>192.168.0.0/16</code> hacia SRV-NOC, que lo <b>cifra en la VPN</b> IKEv2.</div></li>
+  <li><div>El paquete cruza Internet cifrado y llega a <b>R-TEMUCO</b>, que lo descifra.</div></li>
+  <li><div>R-TEMUCO lo envía por el <b>Tunnel1</b> (GRE/IPsec) hasta <b>R-TALCA</b>, que conoce la ruta gracias a OSPF.</div></li>
+  <li><div>El switch revisa que la consulta venga de <code>10.40.1.30</code> (ACL <code>SNMP-NOC</code>), valida usuario y claves y responde por el mismo camino.</div></li>
+</ol>
+<p>Como AWS no puede iniciar la VPN (el laboratorio tiene IP dinámica), R-TEMUCO tiene una <b>sonda IP SLA</b> que hace ping a SRV-NOC cada 30 segundos y mantiene el túnel siempre activo.</p>
+
+<h2 id="dashboard">5. Cómo leer el dashboard</h2>
+<p>El dashboard se llama <b>Agroprodel · Centro de Operaciones (SOC)</b> y se actualiza cada 30 segundos. Los colores significan lo mismo en todos los paneles:</p>
+<div class="legend">
+  <span class="pill p-ok"><i></i>Verde: en línea / dentro de lo normal</span>
+  <span class="pill p-bad"><i></i>Rojo: caído / fuera de umbral</span>
+  <span class="pill p-warn"><i></i>Amarillo: cerca del límite</span>
+  <span class="pill p-idle"><i></i>Gris: aún no monitoreado</span>
+</div>
+
+<div class="panel"><div><div class="sec">Resumen</div><h4>Sedes operativas</h4></div><div><p>Cuántos de los 4 routers responden desde el SOC. <b>4 / 4</b> es lo esperado.</p></div></div>
+<div class="panel"><div><div class="sec">Resumen</div><h4>Equipos de red en línea</h4></div><div><p>Routers más switches que responden: <b>16 / 16</b>. Si baja, mira la topología para ver cuál está en rojo.</p></div></div>
+<div class="panel"><div><div class="sec">Resumen</div><h4>VPN Temuco ↔ AWS</h4></div><div><p><b>ACTIVA</b> si el SOC alcanza la red de gestión de Temuco por el túnel. Si dice <b>CAÍDA</b>, el SOC deja de ver todas las sedes, porque todas pasan por Temuco.</p></div></div>
+<div class="panel"><div><div class="sec">Resumen</div><h4>Latencia VPN</h4></div><div><p>Tiempo de ida y vuelta entre AWS (Virginia) y Temuco. Lo normal está entre <b>130 y 290 ms</b>; la alerta salta sobre <b>400 ms</b>.</p></div></div>
+<div class="panel"><div><div class="sec">Resumen</div><h4>Disponibilidad vs SLA</h4></div><div><p>Porcentaje del tiempo en que los equipos respondieron en el rango elegido. El objetivo (SLA) es <b>99,5 %</b>. Hoy está bajo porque el notebook del laboratorio se suspendía (registrado como P-09, ya corregido).</p></div></div>
+<div class="panel"><div><div class="sec">Infraestructura</div><h4>Topología en vivo</h4></div><div><p>Cada recuadro es un equipo real conectado a su dato en Zabbix. Debajo de cada router están sus switches (DIST, ACC1, ACC2). Si un equipo deja de responder, su recuadro pasa a rojo en 1 a 3 minutos. Las líneas animadas muestran el sentido del tráfico hacia AWS.</p></div></div>
+<div class="panel"><div><div class="sec">Disponibilidad</div><h4>Línea de tiempo y barras por sede</h4></div><div><p>Cada franja es un router a lo largo del tiempo: verde respondió, rojo no. Cuando las 4 franjas se ponen rojas al mismo tiempo, el problema está en Temuco o en la VPN, no en las sucursales.</p></div></div>
+<div class="panel"><div><div class="sec">Rendimiento</div><h4>Latencia y tráfico</h4></div><div><p>La latencia por sede y el tráfico de la WAN de Temuco y de cada túnel. Sirven para ver si una sucursal está saturando su enlace o si la VPN se degradó.</p></div></div>
+<div class="panel"><div><div class="sec">Eventos</div><h4>Problemas actuales</h4></div><div><p>Lista de alertas de Zabbix con su severidad. Cada alerta revisada se <b>reconoce y se cierra con un comentario</b> que explica la causa; así queda registro de quién la revisó.</p></div></div>
+
+<div class="note warn"><b>Ojo con el zoom:</b> arrastrar el mouse sobre un gráfico cambia el rango de tiempo a ese tramo. Si todo aparece como <i>No data</i>, vuelve a <b>Last 6 hours</b> en el selector de tiempo, arriba a la derecha.</div>
+
+<h2 id="incidentes">6. Qué hacer si algo se pone rojo</h2>
+<div class="tbl"><table>
+<thead><tr><th>Lo que ves</th><th>Causa más probable</th><th>Qué revisar</th></tr></thead>
+<tbody>
+<tr><td>Todo en rojo y VPN CAÍDA</td><td>R-TEMUCO, el firewall o la salida a Internet de Temuco</td><td>Que R-TEMUCO y FW-TEMUCO estén encendidos; en R-TEMUCO: <code>show crypto ikev2 sa</code> y <code>show ip sla statistics 10</code></td></tr>
+<tr><td>Una sucursal en rojo y sus switches también</td><td>El router de la sucursal o su túnel</td><td>En R-TEMUCO: <code>show ip ospf neighbor</code>; en el router de la sucursal: <code>show interfaces tunnel</code></td></tr>
+<tr><td>Un solo switch en rojo</td><td>El switch o su EtherChannel</td><td>En el DIST de esa sede: <code>show etherchannel summary</code></td></tr>
+<tr><td>Las 4 sedes en rojo unos minutos y vuelven solas</td><td>Pausa del laboratorio (EVE-NG)</td><td>Ver P-09 en el registro de problemas</td></tr>
+<tr><td>Latencia sobre 400 ms</td><td>VPN o Internet degradados</td><td>Gráfico de latencia y tráfico de la WAN de Temuco</td></tr>
+</tbody></table></div>
+
+<h2 id="estado">7. Estado actual y lo que viene</h2>
+<div class="tbl"><table>
+<thead><tr><th>Elemento</th><th>Estado</th></tr></thead>
+<tbody>
+<tr><td>4 routers y 12 switches por SNMPv3</td><td><span class="pill p-ok"><i></i>Monitoreados</span></td></tr>
+<tr><td>SRV-NOC y SRV-AGROPRODEL (agente Zabbix)</td><td><span class="pill p-ok"><i></i>Monitoreados</span></td></tr>
+<tr><td>FW-TEMUCO y enlace a Internet</td><td><span class="pill p-warn"><i></i>En curso (actualización de OPNsense)</span></td></tr>
+<tr><td>Wazuh (SIEM) y syslog de los equipos</td><td><span class="pill p-idle"><i></i>Próxima etapa</span></td></tr>
+<tr><td>Suricata en OPNsense y alertas a Telegram</td><td><span class="pill p-idle"><i></i>Próxima etapa</span></td></tr>
+</tbody></table></div>
+<p>El acceso web a Zabbix y Grafana está restringido por IP en AWS. Para entrar desde otro equipo, hay que agregar su IP pública al grupo de seguridad del SOC.</p>
+
+<footer>Documentación detallada, configuraciones y registro de errores: repositorio del proyecto, carpetas <code>evidencias/configuraciones</code> y <code>evidencias/nube</code>.</footer>
+</div>
