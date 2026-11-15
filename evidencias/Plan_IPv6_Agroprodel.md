@@ -92,3 +92,11 @@ Incidencia: la base IPv6 de Concepción se aplicó primero por error en R-LOS-AN
 (::3 → ::4) y el router-ID (3.3.3.3 → 4.4.4.4) con `clear ipv6 ospf process` antes de formar vecinos, sin impacto.
 
 **IPv6 en doble pila operativo en las 4 sedes**, con la política de seguridad equivalente a IPv4.
+
+## 9. IPv6 First Hop Security – RA Guard
+Política `RA-GUARD-USUARIOS` (`device-role host`) en los puertos de usuario y del AP de invitados:
+ACC1/ACC2-TEMUCO, ACC1/ACC2-TALCA y ACC1/ACC2-LOS-ANGELES. Verificado: un PC de Temuco con la política activa
+sigue obteniendo su dirección por SLAAC (el RA legítimo llega por el troncal).
+No se aplica en troncales (bloquearía los RA del router). ACC1/ACC2-CONCEPCION (IOS 15.1) no soportan la
+función: se resuelve con la migración a 15.2. Mejora recomendada: aplicar la política en los puertos de los DIST
+que reciben el rack físico (Et2/2, y Et2/3 en Concepción) y en los puertos de usuario del Catalyst 2960.

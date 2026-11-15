@@ -35,7 +35,7 @@
 | Simulación de red y de servicios en la nube | ✅ |
 
 ## Pendientes
-1. ✅ IPv6 doble pila operativo en las 4 sedes (pendiente opcional: gestión IPv6 en switches y RA Guard).
+1. ✅ IPv6 doble pila operativo en las 4 sedes. RA Guard en 6 de 8 switches de acceso (ACC1/ACC2-CONCEPCION: IOS 15.1 sin soporte, se resuelve con la migración a 15.2). Opcional: RA Guard en DIST Et2/2-3 (puertos hacia el rack físico) y en los puertos de usuario del 2960; gestión IPv6 en switches.
 2. Imagen IOL 15.2 en ACC1/ACC2-CONCEPCION y reactivar Po3.
 3. Seguridad de gestión en SW-FISICO-TEM (+ apagar puertos sin uso).
 4. Probar llamadas con las ACL entre VLAN activas (Issabel del compañero).
