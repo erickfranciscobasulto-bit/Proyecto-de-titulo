@@ -42,3 +42,15 @@ compartida y cifrado, sin los cuales la negociación se rechaza.
 | Todo | Todos | 10.40.0.0/16 | Tráfico interno de la VPC |
 
 El SIEM no expone ningún puerto a Internet.
+
+## Instancias
+### SRV-NOC
+| Dato | Valor |
+|---|---|
+| ID | i-0149582ee2a3b6e88 |
+| Tipo / SO | t3.small (2 vCPU, 2 GiB) · Ubuntu Server 24.04 LTS |
+| Red | VPC_AGROPRODEL-vpc · subnet-03f4cc1647d14719c (pública 10.40.1.0/24) · IP privada 10.40.1.30 |
+| Grupo de seguridad | SG_SOC_NOC |
+| Disco | 20 GiB gp3 |
+| Perfil IAM / créditos | LabInstanceProfile · standard |
+| Llave | LLAVE-NOC (exclusiva del servidor; no se documenta) |
