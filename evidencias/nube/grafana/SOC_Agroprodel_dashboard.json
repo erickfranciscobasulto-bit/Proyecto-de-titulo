@@ -39,7 +39,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 1,
+  "version": 2,
   "panels": [
     {
       "id": 100,
@@ -299,7 +299,23 @@
           "item": {
             "filter": "ICMP ping"
           },
-          "functions": [],
+          "functions": [
+            {
+              "def": {
+                "name": "setAliasByRegex",
+                "category": "Alias",
+                "params": [],
+                "defaultParams": [
+                  "R-[A-Z-]+"
+                ]
+              },
+              "params": [
+                "R-[A-Z-]+"
+              ],
+              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "added": false
+            }
+          ],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -333,7 +349,56 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TEMUCO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temuco (matriz)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TALCA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Talca"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-CONCEPCION"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Concepción"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-LOS-ANGELES"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Los Ángeles"
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "reduceOptions": {
@@ -348,7 +413,8 @@
         "textMode": "value_and_name",
         "justifyMode": "center",
         "orientation": "auto"
-      }
+      },
+      "description": "Promedio de ICMP ping (1 = responde, 0 = no responde) en el periodo seleccionado, medido desde el SOC en AWS a través de la VPN."
     },
     {
       "id": 5,
@@ -400,7 +466,23 @@
           "item": {
             "filter": "ICMP ping"
           },
-          "functions": [],
+          "functions": [
+            {
+              "def": {
+                "name": "setAliasByRegex",
+                "category": "Alias",
+                "params": [],
+                "defaultParams": [
+                  "R-[A-Z-]+"
+                ]
+              },
+              "params": [
+                "R-[A-Z-]+"
+              ],
+              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "added": false
+            }
+          ],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -431,7 +513,8 @@
           },
           "custom": {
             "fillOpacity": 80,
-            "lineWidth": 0
+            "lineWidth": 0,
+            "insertNulls": 180000
           },
           "thresholds": {
             "mode": "absolute",
@@ -447,14 +530,63 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TEMUCO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temuco (matriz)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TALCA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Talca"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-CONCEPCION"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Concepción"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-LOS-ANGELES"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Los Ángeles"
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "showValue": "never",
         "mergeValues": true,
         "rowHeight": 0.8,
         "legend": {
-          "showLegend": true,
+          "showLegend": false,
           "displayMode": "list",
           "placement": "bottom"
         },
@@ -511,7 +643,23 @@
           "item": {
             "filter": "ICMP response time"
           },
-          "functions": [],
+          "functions": [
+            {
+              "def": {
+                "name": "setAliasByRegex",
+                "category": "Alias",
+                "params": [],
+                "defaultParams": [
+                  "R-[A-Z-]+"
+                ]
+              },
+              "params": [
+                "R-[A-Z-]+"
+              ],
+              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "added": false
+            }
+          ],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -549,7 +697,56 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TEMUCO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temuco (matriz)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TALCA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Talca"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-CONCEPCION"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Concepción"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-LOS-ANGELES"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Los Ángeles"
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -605,7 +802,23 @@
           "item": {
             "filter": "/CPU utilization/"
           },
-          "functions": [],
+          "functions": [
+            {
+              "def": {
+                "name": "setAliasByRegex",
+                "category": "Alias",
+                "params": [],
+                "defaultParams": [
+                  "R-[A-Z-]+"
+                ]
+              },
+              "params": [
+                "R-[A-Z-]+"
+              ],
+              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "added": false
+            }
+          ],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -638,7 +851,56 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TEMUCO"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Temuco (matriz)"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-TALCA"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Talca"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-CONCEPCION"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Concepción"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "R-LOS-ANGELES"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Los Ángeles"
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "reduceOptions": {
@@ -691,7 +953,23 @@
           "item": {
             "filter": "/Interface Et0\\/0.*Bits (received|sent)/"
           },
-          "functions": [],
+          "functions": [
+            {
+              "def": {
+                "name": "setAliasByRegex",
+                "category": "Alias",
+                "params": [],
+                "defaultParams": [
+                  "Bits [a-z]+"
+                ]
+              },
+              "params": [
+                "Bits [a-z]+"
+              ],
+              "text": "setAliasByRegex(Bits [a-z]+)",
+              "added": false
+            }
+          ],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -712,7 +990,32 @@
             "showPoints": "never"
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bits received"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Entrada"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bits sent"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Salida"
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -762,7 +1065,23 @@
           "item": {
             "filter": "/Interface Tu[0-9].*Bits received/"
           },
-          "functions": [],
+          "functions": [
+            {
+              "def": {
+                "name": "setAliasByRegex",
+                "category": "Alias",
+                "params": [],
+                "defaultParams": [
+                  "Tu[0-9]"
+                ]
+              },
+              "params": [
+                "Tu[0-9]"
+              ],
+              "text": "setAliasByRegex(Tu[0-9])",
+              "added": false
+            }
+          ],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -783,7 +1102,44 @@
             "showPoints": "never"
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Tu1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Tunnel1 · Talca"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Tu2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Tunnel2 · Concepción"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Tu3"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Tunnel3 · Los Ángeles"
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
