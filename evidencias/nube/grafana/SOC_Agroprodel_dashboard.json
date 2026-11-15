@@ -39,7 +39,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 3,
+  "version": 4,
   "panels": [
     {
       "id": 100,
@@ -299,23 +299,7 @@
           "item": {
             "filter": "ICMP ping"
           },
-          "functions": [
-            {
-              "def": {
-                "name": "setAlias",
-                "category": "Alias",
-                "params": [],
-                "defaultParams": [
-                  "$__zbx_host"
-                ]
-              },
-              "params": [
-                "$__zbx_host"
-              ],
-              "text": "setAlias($__zbx_host)",
-              "added": false
-            }
-          ],
+          "functions": [],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -466,23 +450,7 @@
           "item": {
             "filter": "ICMP ping"
           },
-          "functions": [
-            {
-              "def": {
-                "name": "setAlias",
-                "category": "Alias",
-                "params": [],
-                "defaultParams": [
-                  "$__zbx_host"
-                ]
-              },
-              "params": [
-                "$__zbx_host"
-              ],
-              "text": "setAlias($__zbx_host)",
-              "added": false
-            }
-          ],
+          "functions": [],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -643,23 +611,7 @@
           "item": {
             "filter": "ICMP response time"
           },
-          "functions": [
-            {
-              "def": {
-                "name": "setAlias",
-                "category": "Alias",
-                "params": [],
-                "defaultParams": [
-                  "$__zbx_host"
-                ]
-              },
-              "params": [
-                "$__zbx_host"
-              ],
-              "text": "setAlias($__zbx_host)",
-              "added": false
-            }
-          ],
+          "functions": [],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -802,23 +754,7 @@
           "item": {
             "filter": "/CPU utilization/"
           },
-          "functions": [
-            {
-              "def": {
-                "name": "setAlias",
-                "category": "Alias",
-                "params": [],
-                "defaultParams": [
-                  "$__zbx_host"
-                ]
-              },
-              "params": [
-                "$__zbx_host"
-              ],
-              "text": "setAlias($__zbx_host)",
-              "added": false
-            }
-          ],
+          "functions": [],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -953,23 +889,7 @@
           "item": {
             "filter": "/Interface Et0\\/0.*Bits (received|sent)/"
           },
-          "functions": [
-            {
-              "def": {
-                "name": "setAlias",
-                "category": "Alias",
-                "params": [],
-                "defaultParams": [
-                  "$__zbx_item_name"
-                ]
-              },
-              "params": [
-                "$__zbx_item_name"
-              ],
-              "text": "setAlias($__zbx_item_name)",
-              "added": false
-            }
-          ],
+          "functions": [],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
@@ -1065,23 +985,7 @@
           "item": {
             "filter": "/Interface Tu[0-9].*Bits received/"
           },
-          "functions": [
-            {
-              "def": {
-                "name": "setAlias",
-                "category": "Alias",
-                "params": [],
-                "defaultParams": [
-                  "$__zbx_item_name"
-                ]
-              },
-              "params": [
-                "$__zbx_item_name"
-              ],
-              "text": "setAlias($__zbx_item_name)",
-              "added": false
-            }
-          ],
+          "functions": [],
           "options": {
             "showDisabledItems": false,
             "skipEmptyValues": false
