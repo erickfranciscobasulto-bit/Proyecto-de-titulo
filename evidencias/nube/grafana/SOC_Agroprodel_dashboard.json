@@ -39,7 +39,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 2,
+  "version": 3,
   "panels": [
     {
       "id": 100,
@@ -302,17 +302,17 @@
           "functions": [
             {
               "def": {
-                "name": "setAliasByRegex",
+                "name": "setAlias",
                 "category": "Alias",
                 "params": [],
                 "defaultParams": [
-                  "R-[A-Z-]+"
+                  "$__zbx_host"
                 ]
               },
               "params": [
-                "R-[A-Z-]+"
+                "$__zbx_host"
               ],
-              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "text": "setAlias($__zbx_host)",
               "added": false
             }
           ],
@@ -352,8 +352,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TEMUCO"
+              "id": "byRegexp",
+              "options": "R-TEMUCO.*"
             },
             "properties": [
               {
@@ -364,8 +364,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TALCA"
+              "id": "byRegexp",
+              "options": "R-TALCA.*"
             },
             "properties": [
               {
@@ -376,8 +376,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-CONCEPCION"
+              "id": "byRegexp",
+              "options": "R-CONCEPCION.*"
             },
             "properties": [
               {
@@ -388,8 +388,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-LOS-ANGELES"
+              "id": "byRegexp",
+              "options": "R-LOS-ANGELES.*"
             },
             "properties": [
               {
@@ -469,17 +469,17 @@
           "functions": [
             {
               "def": {
-                "name": "setAliasByRegex",
+                "name": "setAlias",
                 "category": "Alias",
                 "params": [],
                 "defaultParams": [
-                  "R-[A-Z-]+"
+                  "$__zbx_host"
                 ]
               },
               "params": [
-                "R-[A-Z-]+"
+                "$__zbx_host"
               ],
-              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "text": "setAlias($__zbx_host)",
               "added": false
             }
           ],
@@ -533,8 +533,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TEMUCO"
+              "id": "byRegexp",
+              "options": "R-TEMUCO.*"
             },
             "properties": [
               {
@@ -545,8 +545,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TALCA"
+              "id": "byRegexp",
+              "options": "R-TALCA.*"
             },
             "properties": [
               {
@@ -557,8 +557,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-CONCEPCION"
+              "id": "byRegexp",
+              "options": "R-CONCEPCION.*"
             },
             "properties": [
               {
@@ -569,8 +569,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-LOS-ANGELES"
+              "id": "byRegexp",
+              "options": "R-LOS-ANGELES.*"
             },
             "properties": [
               {
@@ -646,17 +646,17 @@
           "functions": [
             {
               "def": {
-                "name": "setAliasByRegex",
+                "name": "setAlias",
                 "category": "Alias",
                 "params": [],
                 "defaultParams": [
-                  "R-[A-Z-]+"
+                  "$__zbx_host"
                 ]
               },
               "params": [
-                "R-[A-Z-]+"
+                "$__zbx_host"
               ],
-              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "text": "setAlias($__zbx_host)",
               "added": false
             }
           ],
@@ -700,8 +700,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TEMUCO"
+              "id": "byRegexp",
+              "options": "R-TEMUCO.*"
             },
             "properties": [
               {
@@ -712,8 +712,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TALCA"
+              "id": "byRegexp",
+              "options": "R-TALCA.*"
             },
             "properties": [
               {
@@ -724,8 +724,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-CONCEPCION"
+              "id": "byRegexp",
+              "options": "R-CONCEPCION.*"
             },
             "properties": [
               {
@@ -736,8 +736,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-LOS-ANGELES"
+              "id": "byRegexp",
+              "options": "R-LOS-ANGELES.*"
             },
             "properties": [
               {
@@ -805,17 +805,17 @@
           "functions": [
             {
               "def": {
-                "name": "setAliasByRegex",
+                "name": "setAlias",
                 "category": "Alias",
                 "params": [],
                 "defaultParams": [
-                  "R-[A-Z-]+"
+                  "$__zbx_host"
                 ]
               },
               "params": [
-                "R-[A-Z-]+"
+                "$__zbx_host"
               ],
-              "text": "setAliasByRegex(R-[A-Z-]+)",
+              "text": "setAlias($__zbx_host)",
               "added": false
             }
           ],
@@ -854,8 +854,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TEMUCO"
+              "id": "byRegexp",
+              "options": "R-TEMUCO.*"
             },
             "properties": [
               {
@@ -866,8 +866,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-TALCA"
+              "id": "byRegexp",
+              "options": "R-TALCA.*"
             },
             "properties": [
               {
@@ -878,8 +878,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-CONCEPCION"
+              "id": "byRegexp",
+              "options": "R-CONCEPCION.*"
             },
             "properties": [
               {
@@ -890,8 +890,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "R-LOS-ANGELES"
+              "id": "byRegexp",
+              "options": "R-LOS-ANGELES.*"
             },
             "properties": [
               {
@@ -956,17 +956,17 @@
           "functions": [
             {
               "def": {
-                "name": "setAliasByRegex",
+                "name": "setAlias",
                 "category": "Alias",
                 "params": [],
                 "defaultParams": [
-                  "Bits [a-z]+"
+                  "$__zbx_item_name"
                 ]
               },
               "params": [
-                "Bits [a-z]+"
+                "$__zbx_item_name"
               ],
-              "text": "setAliasByRegex(Bits [a-z]+)",
+              "text": "setAlias($__zbx_item_name)",
               "added": false
             }
           ],
@@ -993,8 +993,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Bits received"
+              "id": "byRegexp",
+              "options": ".*received.*"
             },
             "properties": [
               {
@@ -1005,8 +1005,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Bits sent"
+              "id": "byRegexp",
+              "options": ".*sent.*"
             },
             "properties": [
               {
@@ -1068,17 +1068,17 @@
           "functions": [
             {
               "def": {
-                "name": "setAliasByRegex",
+                "name": "setAlias",
                 "category": "Alias",
                 "params": [],
                 "defaultParams": [
-                  "Tu[0-9]"
+                  "$__zbx_item_name"
                 ]
               },
               "params": [
-                "Tu[0-9]"
+                "$__zbx_item_name"
               ],
-              "text": "setAliasByRegex(Tu[0-9])",
+              "text": "setAlias($__zbx_item_name)",
               "added": false
             }
           ],
@@ -1105,8 +1105,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Tu1"
+              "id": "byRegexp",
+              "options": ".*Tu1.*"
             },
             "properties": [
               {
@@ -1117,8 +1117,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Tu2"
+              "id": "byRegexp",
+              "options": ".*Tu2.*"
             },
             "properties": [
               {
@@ -1129,8 +1129,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Tu3"
+              "id": "byRegexp",
+              "options": ".*Tu3.*"
             },
             "properties": [
               {
