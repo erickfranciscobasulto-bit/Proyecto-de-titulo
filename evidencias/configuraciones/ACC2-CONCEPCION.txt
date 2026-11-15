@@ -149,5 +149,8 @@ line vty 0 4
  access-class GESTION-SSH in
  exit
 !
+! --- RA Guard (IPv6 First Hop Security): NO SOPORTADO por la imagen IOL 15.1 ---
+! 'ipv6 nd raguard policy' -> % Invalid input. Se resuelve con la migracion a IOS 15.2 (ver P-05 y P-06).
+!
 end
 write memory
