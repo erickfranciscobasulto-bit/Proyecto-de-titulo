@@ -138,5 +138,14 @@ line vty 0 4
  access-class GESTION-SSH in
  exit
 !
+! --- IPv6 First Hop Security: RA Guard en puertos de usuario ---
+! Bloquea anuncios de router (RA) falsos desde PC, telefonos o AP; los RA legitimos llegan por el troncal
+ipv6 nd raguard policy RA-GUARD-USUARIOS
+ device-role host
+ exit
+interface range ethernet 1/0 - 2
+ ipv6 nd raguard attach-policy RA-GUARD-USUARIOS
+ exit
+!
 end
 write memory
