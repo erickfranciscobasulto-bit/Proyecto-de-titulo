@@ -45,7 +45,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 9,
+  "version": 10,
   "panels": [
     {
       "id": 900,
@@ -87,7 +87,7 @@
       "gridPos": {
         "x": 0,
         "y": 4,
-        "w": 5,
+        "w": 4,
         "h": 5
       },
       "targets": [
@@ -185,9 +185,9 @@
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
-        "x": 5,
+        "x": 4,
         "y": 4,
-        "w": 5,
+        "w": 4,
         "h": 5
       },
       "targets": [
@@ -286,9 +286,9 @@
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
-        "x": 10,
+        "x": 8,
         "y": 4,
-        "w": 5,
+        "w": 4,
         "h": 5
       },
       "targets": [
@@ -387,9 +387,9 @@
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
-        "x": 15,
+        "x": 16,
         "y": 4,
-        "w": 5,
+        "w": 4,
         "h": 5
       },
       "targets": [
@@ -663,9 +663,44 @@
             "showDisabledItems": false,
             "skipEmptyValues": false
           }
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Seguridad Agroprodel"
+          },
+          "host": {
+            "filter": "/FW-TEMUCO.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/Zabbix agent availability|WAN_GW\\): estado/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
         }
       ],
       "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^.*WAN_GW\\): estado$",
+            "renamePattern": "WAN-ESTADO"
+          }
+        },
         {
           "id": "renameByRegex",
           "options": {
@@ -750,6 +785,62 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FW-TEMUCO"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#4a505c",
+                      "value": null
+                    },
+                    {
+                      "color": "#2f8f5b",
+                      "value": 1
+                    },
+                    {
+                      "color": "#c0392b",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "WAN-ESTADO"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#c0392b",
+                      "value": null
+                    },
+                    {
+                      "color": "#2f8f5b",
+                      "value": 1
+                    },
+                    {
+                      "color": "#c9962f",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -807,7 +898,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "🌐 ISP / Internet · no monitoreado"
+                  "fixed": "🌐 Enlace a Internet (ISP) · dpinger → 8.8.8.8"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -818,6 +909,7 @@
               },
               "background": {
                 "color": {
+                  "field": "WAN-ESTADO",
                   "fixed": "#4a505c"
                 }
               },
@@ -872,7 +964,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "🛡 FW-TEMUCO · OPNsense / Suricata · no monitoreado"
+                  "fixed": "🛡 FW-TEMUCO · OPNsense 26.7.9 · Suricata"
                 },
                 "align": "center",
                 "valign": "middle",
@@ -883,6 +975,7 @@
               },
               "background": {
                 "color": {
+                  "field": "FW-TEMUCO",
                   "fixed": "#4a505c"
                 }
               },
@@ -917,6 +1010,7 @@
                   "targetName": "ISP",
                   "path": "straight",
                   "color": {
+                    "field": "WAN-ESTADO",
                     "fixed": "#6c7283"
                   },
                   "size": {
@@ -1870,7 +1964,7 @@
               "config": {
                 "text": {
                   "mode": "fixed",
-                  "fixed": "Verde en línea · Rojo caído · Gris no monitoreado aún · líneas animadas = flujo hacia AWS"
+                  "fixed": "Verde en línea · Amarillo degradado · Rojo caído · Gris sin datos · líneas animadas = flujo hacia AWS"
                 },
                 "align": "left",
                 "valign": "middle",
@@ -2005,7 +2099,7 @@
           }
         }
       },
-      "description": "Routers y switches: ICMP desde el SOC (1 en línea, 0 caído). Servidores: disponibilidad del agente Zabbix (1 disponible, 2 no disponible, 0 desconocido)."
+      "description": "Routers y switches: ICMP desde el SOC. FW-TEMUCO y servidores: disponibilidad del agente Zabbix. Enlace a Internet: estado de WAN_GW (dpinger)."
     },
     {
       "id": 9,
@@ -2656,7 +2750,7 @@
       "gridPos": {
         "x": 0,
         "y": 45,
-        "w": 24,
+        "w": 14,
         "h": 8
       },
       "targets": [
@@ -2798,7 +2892,7 @@
         "legend": {
           "showLegend": true,
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "calcs": [
             "mean",
             "max",
@@ -2874,6 +2968,245 @@
           "showProblems": "problems"
         }
       ]
+    },
+    {
+      "id": 901,
+      "type": "stat",
+      "title": "Enlace a Internet (ISP)",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 4,
+        "h": 5
+      },
+      "description": "Estado de WAN_GW medido por dpinger en FW-TEMUCO hacia 8.8.8.8 (más allá del ISP).",
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Seguridad Agroprodel"
+          },
+          "host": {
+            "filter": "/FW-TEMUCO.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/WAN_GW\\): estado/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "EN LÍNEA",
+                  "color": "green",
+                  "index": 0
+                },
+                "2": {
+                  "text": "DEGRADADO",
+                  "color": "#f2b84b",
+                  "index": 1
+                },
+                "0": {
+                  "text": "CAÍDO",
+                  "color": "red",
+                  "index": 2
+                }
+              }
+            }
+          ],
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "#f2b84b",
+                "value": 2
+              }
+            ]
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "center"
+      }
+    },
+    {
+      "id": 902,
+      "type": "timeseries",
+      "title": "Enlace a Internet (ISP): latencia, jitter y pérdida",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 14,
+        "y": 45,
+        "w": 10,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Seguridad Agroprodel"
+          },
+          "host": {
+            "filter": "/FW-TEMUCO.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/WAN_GW\\): (latencia|jitter|perdida)/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*latencia.*"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Latencia"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*jitter.*"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Jitter"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*perdida.*"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Pérdida"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "showLegend": true,
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
     }
   ],
   "templating": {
