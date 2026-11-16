@@ -45,10 +45,10 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 10,
+  "version": 11,
   "panels": [
     {
-      "id": 900,
+      "id": 1,
       "type": "text",
       "title": "",
       "transparent": true,
@@ -64,9 +64,9 @@
       }
     },
     {
-      "id": 1,
+      "id": 2,
       "type": "row",
-      "title": "Resumen ejecutivo",
+      "title": "Estado general",
       "collapsed": false,
       "gridPos": {
         "x": 0,
@@ -77,9 +77,9 @@
       "panels": []
     },
     {
-      "id": 2,
+      "id": 3,
       "type": "stat",
-      "title": "Sedes operativas",
+      "title": "Conectividad",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
@@ -87,7 +87,7 @@
       "gridPos": {
         "x": 0,
         "y": 4,
-        "w": 4,
+        "w": 14,
         "h": 5
       },
       "targets": [
@@ -130,69 +130,9 @@
             "showDisabledItems": false,
             "skipEmptyValues": false
           }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "suffix: / 4",
-          "decimals": 0,
-          "mappings": [],
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 3
-              },
-              {
-                "color": "green",
-                "value": 4
-              }
-            ]
-          }
         },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "wideLayout": true
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Equipos de red en línea",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 4,
-        "y": 4,
-        "w": 4,
-        "h": 5
-      },
-      "targets": [
         {
-          "refId": "A",
+          "refId": "B",
           "datasource": {
             "type": "alexanderzobnin-zabbix-datasource",
             "uid": "${DS_ZABBIX}"
@@ -230,70 +170,64 @@
             "showDisabledItems": false,
             "skipEmptyValues": false
           }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "suffix: / 16",
-          "decimals": 0,
-          "mappings": [],
-          "color": {
-            "mode": "thresholds"
+        },
+        {
+          "refId": "C",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
           },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
+          "queryType": "0",
+          "group": {
+            "filter": "/Servidores Agroprodel|Zabbix servers|Seguridad Agroprodel/"
+          },
+          "host": {
+            "filter": "/.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/agent availability/"
+          },
+          "functions": [
+            {
+              "def": {
+                "name": "removeAboveValue",
+                "category": "Filter",
+                "params": [],
+                "defaultParams": [
+                  "1"
+                ]
               },
-              {
-                "color": "orange",
-                "value": 14
+              "params": [
+                "1"
+              ],
+              "text": "removeAboveValue(1)",
+              "added": false
+            },
+            {
+              "def": {
+                "name": "sumSeries",
+                "category": "Aggregate",
+                "params": [],
+                "defaultParams": []
               },
-              {
-                "color": "green",
-                "value": 16
-              }
-            ]
+              "params": [],
+              "text": "sumSeries()",
+              "added": false
+            }
+          ],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
           }
         },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "wideLayout": true
-      },
-      "description": "Routers y switches que responden ICMP desde el SOC (4 routers + 12 switches)."
-    },
-    {
-      "id": 4,
-      "type": "stat",
-      "title": "VPN Temuco ↔ AWS",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 4,
-        "w": 4,
-        "h": 5
-      },
-      "targets": [
         {
-          "refId": "A",
+          "refId": "D",
           "datasource": {
             "type": "alexanderzobnin-zabbix-datasource",
             "uid": "${DS_ZABBIX}"
@@ -319,29 +253,40 @@
             "showDisabledItems": false,
             "skipEmptyValues": false
           }
+        },
+        {
+          "refId": "E",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Seguridad Agroprodel"
+          },
+          "host": {
+            "filter": "/FW-TEMUCO.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/WAN_GW\\): estado/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
         }
       ],
+      "description": "Resumen de salud: sedes y equipos por ICMP desde el SOC, servidores y firewall por agente Zabbix, VPN por alcance a la VLAN 99 de Temuco, Internet por dpinger en FW-TEMUCO.",
       "fieldConfig": {
         "defaults": {
-          "unit": "none",
           "decimals": 0,
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "ACTIVA",
-                  "color": "green",
-                  "index": 0
-                },
-                "0": {
-                  "text": "CAÍDA",
-                  "color": "red",
-                  "index": 1
-                }
-              }
-            }
-          ],
           "color": {
             "mode": "thresholds"
           },
@@ -359,7 +304,205 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sedes operativas"
+              },
+              {
+                "id": "unit",
+                "value": "suffix: / 4"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 3
+                    },
+                    {
+                      "color": "green",
+                      "value": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Equipos de red"
+              },
+              {
+                "id": "unit",
+                "value": "suffix: / 16"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 14
+                    },
+                    {
+                      "color": "green",
+                      "value": 16
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Servidores y firewall"
+              },
+              {
+                "id": "unit",
+                "value": "suffix: / 3"
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 2
+                    },
+                    {
+                      "color": "green",
+                      "value": 3
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "D"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "VPN Temuco ↔ AWS"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "ACTIVA",
+                        "color": "green",
+                        "index": 0
+                      },
+                      "0": {
+                        "text": "CAÍDA",
+                        "color": "red",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "E"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Enlace a Internet"
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "EN LÍNEA",
+                        "color": "green",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "DEGRADADO",
+                        "color": "#e3a73c",
+                        "index": 1
+                      },
+                      "0": {
+                        "text": "CAÍDO",
+                        "color": "red",
+                        "index": 2
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
+                    },
+                    {
+                      "color": "#e3a73c",
+                      "value": 2
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "reduceOptions": {
@@ -371,25 +514,28 @@
         },
         "colorMode": "background",
         "graphMode": "none",
-        "textMode": "value",
+        "textMode": "value_and_name",
         "justifyMode": "center",
         "orientation": "auto",
-        "wideLayout": true
-      },
-      "description": "Indicador indirecto: el SOC alcanza la VLAN 99 de R-TEMUCO a través del túnel IPsec."
+        "wideLayout": true,
+        "text": {
+          "titleSize": 12,
+          "valueSize": 24
+        }
+      }
     },
     {
-      "id": 5,
+      "id": 4,
       "type": "stat",
-      "title": "Latencia VPN (Temuco)",
+      "title": "Latencia VPN",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
-        "x": 16,
+        "x": 14,
         "y": 4,
-        "w": 4,
+        "w": 3,
         "h": 5
       },
       "targets": [
@@ -464,6 +610,97 @@
         "justifyMode": "center",
         "orientation": "auto",
         "wideLayout": true
+      }
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Latencia ISP",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 17,
+        "y": 4,
+        "w": 3,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Seguridad Agroprodel"
+          },
+          "host": {
+            "filter": "/FW-TEMUCO.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/WAN_GW\\): latencia/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 1,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.05
+              },
+              {
+                "color": "red",
+                "value": 0.1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "value",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "wideLayout": true,
+        "text": {
+          "titleSize": 12,
+          "valueSize": 24
+        }
       }
     },
     {
@@ -2104,7 +2341,7 @@
     {
       "id": 9,
       "type": "row",
-      "title": "Disponibilidad",
+      "title": "Sedes",
       "collapsed": false,
       "gridPos": {
         "x": 0,
@@ -2116,6 +2353,859 @@
     },
     {
       "id": 10,
+      "type": "stat",
+      "title": "Temuco · matriz · 192.168.40.0/24",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "/Routers Agroprodel|Switches Agroprodel/"
+          },
+          "host": {
+            "filter": "/^(R|DIST|ACC1|ACC2)-TEMUCO /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP ping"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Routers Agroprodel"
+          },
+          "host": {
+            "filter": "/R-TEMUCO /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP response time"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^.*ICMP response time$",
+            "renamePattern": "Latencia"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\S+) .*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^R-.*$",
+            "renamePattern": "Router"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(DIST|ACC1|ACC2)-.*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Router": 0,
+              "DIST": 1,
+              "ACC1": 2,
+              "ACC2": 3,
+              "Latencia": 4
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "EN LÍNEA",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "CAÍDO",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latencia"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "mappings",
+                "value": []
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.3
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.4
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "wideLayout": true,
+        "text": {
+          "titleSize": 11,
+          "valueSize": 14
+        }
+      }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Talca · 192.168.10.0/24",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 27,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "/Routers Agroprodel|Switches Agroprodel/"
+          },
+          "host": {
+            "filter": "/^(R|DIST|ACC1|ACC2)-TALCA /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP ping"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Routers Agroprodel"
+          },
+          "host": {
+            "filter": "/R-TALCA /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP response time"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^.*ICMP response time$",
+            "renamePattern": "Latencia"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\S+) .*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^R-.*$",
+            "renamePattern": "Router"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(DIST|ACC1|ACC2)-.*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Router": 0,
+              "DIST": 1,
+              "ACC1": 2,
+              "ACC2": 3,
+              "Latencia": 4
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "EN LÍNEA",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "CAÍDO",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latencia"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "mappings",
+                "value": []
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.3
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.4
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "wideLayout": true,
+        "text": {
+          "titleSize": 11,
+          "valueSize": 14
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": "stat",
+      "title": "Concepción · 192.168.20.0/24",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 27,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "/Routers Agroprodel|Switches Agroprodel/"
+          },
+          "host": {
+            "filter": "/^(R|DIST|ACC1|ACC2)-CONCEPCION /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP ping"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Routers Agroprodel"
+          },
+          "host": {
+            "filter": "/R-CONCEPCION /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP response time"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^.*ICMP response time$",
+            "renamePattern": "Latencia"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\S+) .*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^R-.*$",
+            "renamePattern": "Router"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(DIST|ACC1|ACC2)-.*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Router": 0,
+              "DIST": 1,
+              "ACC1": 2,
+              "ACC2": 3,
+              "Latencia": 4
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "EN LÍNEA",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "CAÍDO",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latencia"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "mappings",
+                "value": []
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.3
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.4
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "wideLayout": true,
+        "text": {
+          "titleSize": 11,
+          "valueSize": 14
+        }
+      }
+    },
+    {
+      "id": 13,
+      "type": "stat",
+      "title": "Los Ángeles · 192.168.30.0/24",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 27,
+        "w": 6,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "/Routers Agroprodel|Switches Agroprodel/"
+          },
+          "host": {
+            "filter": "/^(R|DIST|ACC1|ACC2)-LOS-ANGELES /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP ping"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        },
+        {
+          "refId": "B",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "Routers Agroprodel"
+          },
+          "host": {
+            "filter": "/R-LOS-ANGELES /"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "ICMP response time"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^.*ICMP response time$",
+            "renamePattern": "Latencia"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\S+) .*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^R-.*$",
+            "renamePattern": "Router"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(DIST|ACC1|ACC2)-.*$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "Router": 0,
+              "DIST": 1,
+              "ACC1": 2,
+              "ACC2": 3,
+              "Latencia": 4
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "EN LÍNEA",
+                  "color": "green",
+                  "index": 0
+                },
+                "0": {
+                  "text": "CAÍDO",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "decimals": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Latencia"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "mappings",
+                "value": []
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 0.3
+                    },
+                    {
+                      "color": "red",
+                      "value": 0.4
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "wideLayout": true,
+        "text": {
+          "titleSize": 11,
+          "valueSize": 14
+        }
+      }
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "Disponibilidad",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 15,
       "type": "state-timeline",
       "title": "Línea de tiempo de estado · routers (ICMP desde el SOC)",
       "datasource": {
@@ -2124,7 +3214,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 27,
+        "y": 33,
         "w": 16,
         "h": 8
       },
@@ -2269,7 +3359,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 16,
       "type": "bargauge",
       "title": "Disponibilidad por sede (periodo)",
       "datasource": {
@@ -2278,7 +3368,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 27,
+        "y": 33,
         "w": 8,
         "h": 8
       },
@@ -2417,20 +3507,20 @@
       }
     },
     {
-      "id": 12,
+      "id": 17,
       "type": "row",
       "title": "Rendimiento",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 35,
+        "y": 41,
         "w": 24,
         "h": 1
       },
       "panels": []
     },
     {
-      "id": 13,
+      "id": 18,
       "type": "timeseries",
       "title": "Latencia SOC → sedes (vía VPN)",
       "datasource": {
@@ -2439,8 +3529,8 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 36,
-        "w": 16,
+        "y": 42,
+        "w": 12,
         "h": 9
       },
       "targets": [
@@ -2582,176 +3672,18 @@
       }
     },
     {
-      "id": 14,
-      "type": "bargauge",
-      "title": "Tráfico actual por enlace",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 36,
-        "w": 8,
-        "h": 9
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "alexanderzobnin-zabbix-datasource",
-            "uid": "${DS_ZABBIX}"
-          },
-          "queryType": "0",
-          "group": {
-            "filter": "Routers Agroprodel"
-          },
-          "host": {
-            "filter": "/R-TEMUCO.*/"
-          },
-          "application": {
-            "filter": ""
-          },
-          "itemTag": {
-            "filter": ""
-          },
-          "item": {
-            "filter": "/Interface Et0\\/0.*Bits (received|sent)/"
-          },
-          "functions": [],
-          "options": {
-            "showDisabledItems": false,
-            "skipEmptyValues": false
-          }
-        },
-        {
-          "refId": "B",
-          "datasource": {
-            "type": "alexanderzobnin-zabbix-datasource",
-            "uid": "${DS_ZABBIX}"
-          },
-          "queryType": "0",
-          "group": {
-            "filter": "Routers Agroprodel"
-          },
-          "host": {
-            "filter": "/R-TEMUCO.*/"
-          },
-          "application": {
-            "filter": ""
-          },
-          "itemTag": {
-            "filter": ""
-          },
-          "item": {
-            "filter": "/Interface Tu[0-9].*Bits received/"
-          },
-          "functions": [],
-          "options": {
-            "showDisabledItems": false,
-            "skipEmptyValues": false
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "min": 0,
-          "color": {
-            "mode": "continuous-BlPu"
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Et0/0.*received.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "WAN Temuco · entrada"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Et0/0.*sent.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "WAN Temuco · salida"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Tu1.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Tunnel1 · Talca"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Tu2.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Tunnel2 · Concepción"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Tu3.*"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Tunnel3 · Los Ángeles"
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "horizontal",
-        "displayMode": "gradient",
-        "showUnfilled": true,
-        "valueMode": "color",
-        "namePlacement": "top"
-      }
-    },
-    {
-      "id": 15,
+      "id": 19,
       "type": "timeseries",
-      "title": "Tráfico WAN de Temuco y túneles de las sucursales",
+      "title": "Tráfico WAN de Temuco y túneles",
       "datasource": {
         "type": "alexanderzobnin-zabbix-datasource",
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
-        "x": 0,
-        "y": 45,
-        "w": 14,
-        "h": 8
+        "x": 12,
+        "y": 42,
+        "w": 12,
+        "h": 9
       },
       "targets": [
         {
@@ -2906,178 +3838,7 @@
       }
     },
     {
-      "id": 16,
-      "type": "row",
-      "title": "Eventos",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 53,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 17,
-      "type": "alexanderzobnin-zabbix-triggers-panel",
-      "title": "Problemas actuales (Zabbix)",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 54,
-        "w": 24,
-        "h": 8
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "alexanderzobnin-zabbix-datasource",
-            "uid": "${DS_ZABBIX}"
-          },
-          "queryType": "5",
-          "group": {
-            "filter": "/.*/"
-          },
-          "host": {
-            "filter": "/.*/"
-          },
-          "application": {
-            "filter": ""
-          },
-          "itemTag": {
-            "filter": ""
-          },
-          "item": {
-            "filter": ""
-          },
-          "functions": [],
-          "options": {
-            "showDisabledItems": false,
-            "skipEmptyValues": false,
-            "minSeverity": 0,
-            "acknowledged": 2,
-            "sortProblems": "default",
-            "hostsInMaintenance": false,
-            "limit": 50
-          },
-          "showProblems": "problems"
-        }
-      ]
-    },
-    {
-      "id": 901,
-      "type": "stat",
-      "title": "Enlace a Internet (ISP)",
-      "datasource": {
-        "type": "alexanderzobnin-zabbix-datasource",
-        "uid": "${DS_ZABBIX}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 4,
-        "w": 4,
-        "h": 5
-      },
-      "description": "Estado de WAN_GW medido por dpinger en FW-TEMUCO hacia 8.8.8.8 (más allá del ISP).",
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "alexanderzobnin-zabbix-datasource",
-            "uid": "${DS_ZABBIX}"
-          },
-          "queryType": "0",
-          "group": {
-            "filter": "Seguridad Agroprodel"
-          },
-          "host": {
-            "filter": "/FW-TEMUCO.*/"
-          },
-          "application": {
-            "filter": ""
-          },
-          "itemTag": {
-            "filter": ""
-          },
-          "item": {
-            "filter": "/WAN_GW\\): estado/"
-          },
-          "functions": [],
-          "options": {
-            "showDisabledItems": false,
-            "skipEmptyValues": false
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "EN LÍNEA",
-                  "color": "green",
-                  "index": 0
-                },
-                "2": {
-                  "text": "DEGRADADO",
-                  "color": "#f2b84b",
-                  "index": 1
-                },
-                "0": {
-                  "text": "CAÍDO",
-                  "color": "red",
-                  "index": 2
-                }
-              }
-            }
-          ],
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              },
-              {
-                "color": "#f2b84b",
-                "value": 2
-              }
-            ]
-          },
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "textMode": "value",
-        "justifyMode": "center"
-      }
-    },
-    {
-      "id": 902,
+      "id": 20,
       "type": "timeseries",
       "title": "Enlace a Internet (ISP): latencia, jitter y pérdida",
       "datasource": {
@@ -3085,9 +3846,9 @@
         "uid": "${DS_ZABBIX}"
       },
       "gridPos": {
-        "x": 14,
-        "y": 45,
-        "w": 10,
+        "x": 0,
+        "y": 51,
+        "w": 12,
         "h": 8
       },
       "targets": [
@@ -3207,6 +3968,223 @@
           "mode": "multi"
         }
       }
+    },
+    {
+      "id": 21,
+      "type": "bargauge",
+      "title": "Servidores y firewall: CPU y memoria",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 51,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "0",
+          "group": {
+            "filter": "/Servidores Agroprodel|Zabbix servers|Seguridad Agroprodel/"
+          },
+          "host": {
+            "filter": "/.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": "/^(CPU|Memory) utilization$/"
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false
+          }
+        }
+      ],
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^Zabbix server.*?: (CPU|Memory) utilization$",
+            "renamePattern": "SRV-NOC · $1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\S+)[^:]*: (CPU|Memory) utilization$",
+            "renamePattern": "$1 · $2"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) · Memory$",
+            "renamePattern": "$1 · RAM"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 75
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "valueMode": "color",
+        "namePlacement": "left"
+      }
+    },
+    {
+      "id": 22,
+      "type": "row",
+      "title": "Seguridad",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 23,
+      "type": "text",
+      "title": "Alertas IDS (Suricata)",
+      "gridPos": {
+        "x": 0,
+        "y": 60,
+        "w": 12,
+        "h": 4
+      },
+      "options": {
+        "mode": "html",
+        "content": "<div style='height:100%;display:grid;place-items:center;text-align:center;opacity:.6;border:1px dashed rgba(140,150,165,.4);border-radius:6px;padding:12px'>Próxima etapa<br><small>Se activa al habilitar Suricata en FW-TEMUCO: alertas por severidad, firmas más frecuentes e IP de origen.</small></div>"
+      }
+    },
+    {
+      "id": 24,
+      "type": "text",
+      "title": "Eventos SIEM (Wazuh)",
+      "gridPos": {
+        "x": 12,
+        "y": 60,
+        "w": 12,
+        "h": 4
+      },
+      "options": {
+        "mode": "html",
+        "content": "<div style='height:100%;display:grid;place-items:center;text-align:center;opacity:.6;border:1px dashed rgba(140,150,165,.4);border-radius:6px;padding:12px'>Próxima etapa<br><small>Se activa al integrar SRV-SIEM: accesos fallidos, cambios de configuración y eventos de los equipos.</small></div>"
+      }
+    },
+    {
+      "id": 25,
+      "type": "row",
+      "title": "Eventos",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 64,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 26,
+      "type": "alexanderzobnin-zabbix-triggers-panel",
+      "title": "Problemas actuales (Zabbix)",
+      "datasource": {
+        "type": "alexanderzobnin-zabbix-datasource",
+        "uid": "${DS_ZABBIX}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 65,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "alexanderzobnin-zabbix-datasource",
+            "uid": "${DS_ZABBIX}"
+          },
+          "queryType": "5",
+          "group": {
+            "filter": "/.*/"
+          },
+          "host": {
+            "filter": "/.*/"
+          },
+          "application": {
+            "filter": ""
+          },
+          "itemTag": {
+            "filter": ""
+          },
+          "item": {
+            "filter": ""
+          },
+          "functions": [],
+          "options": {
+            "showDisabledItems": false,
+            "skipEmptyValues": false,
+            "minSeverity": 0,
+            "acknowledged": 2,
+            "sortProblems": "default",
+            "hostsInMaintenance": false,
+            "limit": 50
+          },
+          "showProblems": "problems"
+        }
+      ]
     }
   ],
   "templating": {
@@ -3214,5 +4192,14 @@
   },
   "annotations": {
     "list": []
-  }
+  },
+  "links": [
+    {
+      "title": "Zabbix",
+      "type": "link",
+      "url": "http://98.83.92.138/",
+      "targetBlank": true,
+      "icon": "external link"
+    }
+  ]
 }
