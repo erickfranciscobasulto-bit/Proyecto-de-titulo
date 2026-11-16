@@ -28,3 +28,15 @@ Monitoreo desde el SOC (AWS) - agregado 15-11-2026
            (ACL VPN-AWS linea 20 en R-TEMUCO, remote_ts en strongSwan, ruta VPC hacia SRV-NOC)
   Prueba   Interfaces > Diagnostics > Ping 10.40.1.30 origen 203.0.113.1: 26/27 (3,7 % perdida:
            primer paquete durante la negociacion de la nueva SA), RTT ~130-530 ms, promedio ~150 ms
+
+Actualizacion de firmware (15/16-11-2026)
+  Motivo   la instalacion del plugin os-zabbix7-agent fue rechazada: "Installation out of date.
+           The update to opnsense-26.7.9_1 is required."
+  Antes    respaldo de la configuracion (System > Configuration > Backups > Download, fuera del repositorio)
+  Proceso  System > Firmware > Status > Check for updates > Update: primero pkg 2.3.1 -> 2.8.4,
+           luego 96 paquetes (298,8 MiB; incluye strongswan 6.1.0, suricata 8.0.8, unbound 1.26.2,
+           python313 con vulnerabilidad corregida), sistema base y kernel 26.7.9; reinicio automatico
+  Despues  OPNsense 26.7.9_1-amd64 · FreeBSD 15.1-RELEASE-p6 · OpenSSL 3.5.9; WAN_GW activo (203.0.113.17);
+           ruta 10.40.0.0/16 via GW_RTEMUCO conservada
+  Impacto  durante el reinicio Temuco quedo sin Internet y la VPN al SOC cayo; el SOC lo registro como caida
+           simultanea de las 4 sedes y la VPN se restablecio sola (sonda IP SLA de R-TEMUCO)
