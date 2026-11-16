@@ -2,6 +2,7 @@
 ! ACC1-CONCEPCION - Switch de acceso 1 sucursal Concepcion (IOL L2)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Estado: COMPLETA (partes 1 a 5) - pings a .161, .162 y 8.8.8.8 OK - Seguridad de gestion: SSH v2, enable secret, ACL GESTION-SSH
+! Imagen: i86bi_Linux-L2-AdvEnterpriseK9-M_152_May_2018.bin (IOS 15.2) desde el 16-11-2026; la 15.2 conservo la NVRAM de la 15.1
 ! ==========================================================
 enable
 configure terminal
@@ -103,9 +104,7 @@ ip default-gateway 192.168.20.161
 ip route 0.0.0.0 0.0.0.0 192.168.20.161
 !
 ! --- Seguridad basica de gestion (endurecimiento) ---
-! NOTA: este equipo corre IOS 15.1 (imagen IOL antigua): SSH solo ofrece cifrados CBC
-! (no acepta 'ip ssh server algorithm encryption'). Acceso: ssh -c aes256-cbc -l admin 192.168.20.163
-! Recomendacion: actualizar a IOS 15.2+ para usar AES-CTR como el resto de la red.
+! Migrado a IOS 15.2: SSH negocia AES-CTR (se resuelve la limitacion CBC de P-05)
 ! La clave real NO se documenta: cumple politica de 12+ caracteres (may/min/num/simbolo)
 service password-encryption
 enable secret <clave no documentada>
@@ -139,8 +138,19 @@ line vty 0 4
  access-class GESTION-SSH in
  exit
 !
-! --- RA Guard (IPv6 First Hop Security): NO SOPORTADO por la imagen IOL 15.1 ---
-! 'ipv6 nd raguard policy' -> % Invalid input. Se resuelve con la migracion a IOS 15.2 (ver P-05 y P-06).
+! --- IPv6 First Hop Security: RA Guard en puertos de usuario (habilitado tras migrar a 15.2) ---
+ipv6 nd raguard policy RA-GUARD-USUARIOS
+ device-role host
+ exit
+interface range ethernet 1/0 - 2
+ ipv6 nd raguard attach-policy RA-GUARD-USUARIOS
+ exit
+!
+! --- Puertos sin uso: apagados ---
+interface range ethernet 1/3 , ethernet 2/0 - 3
+ description NO-USADO
+ shutdown
+ exit
 !
 !
 ! --- SNMPv3 authPriv para Zabbix (solo SRV-NOC 10.40.1.30, por la VPN) ---

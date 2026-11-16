@@ -56,8 +56,8 @@ interface range ethernet 0/2 - 3
  switchport trunk native vlan 999
  switchport trunk allowed vlan 10,20,30,40,50,60,70,99,999
  channel-group 3 mode active
- ! TEMPORAL (P-06): Po3 apagado hasta cambiar la imagen IOL 15.1 por 15.2 (el shutdown va al final del bloque)
- shutdown
+ ! P-06 resuelto (16-11-2026): ambos switches en IOS 15.2 y full duplex; Po3 activo, STP lo deja en Altn BLK
+ no shutdown
  exit
 interface port-channel 2
  description PO2-HACIA-DIST-CONCEPCION

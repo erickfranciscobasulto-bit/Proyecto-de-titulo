@@ -162,3 +162,22 @@ ACC1-CONCEPCION (aún 15.1).
 `sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target` → `Loaded: masked`, más la
 suspensión y el apagado de pantalla del escritorio en "Nunca". Al terminar el proyecto se revierte con
 `systemctl unmask` sobre las mismas unidades.
+
+
+## Cierre de P-05 y P-06 – Migración de ACC1-CONCEPCION a IOS 15.2 y reactivación del Po3 (16-11-2026)
+
+1. ACC1-CONCEPCION: `write memory`, cambio de imagen en EVE-NG a `i86bi_Linux-L2-AdvEnterpriseK9-M_152_May_2018.bin`.
+   La 15.2 cargó la NVRAM escrita por la 15.1 (hostname, IP de gestión y SNMPv3 intactos). Al guardar, IOS advierte
+   *NVRAM configuration previously written by a different version* y se confirma.
+2. Po1 hacia DIST en *suspended*: los puertos habían perdido `duplex full` con la 15.1 (origen del aviso
+   CDP-4-DUPLEX_MISMATCH y de P-06). Se aplicó `duplex full` en Et0/0-3 y `shutdown`/`no shutdown` en ambos extremos:
+   Po1(SU) y ping al gateway 5/5.
+3. RA Guard (`RA-GUARD-USUARIOS`) en Et1/0-2 → **8 de 8 switches de acceso con RA Guard**. Puertos sin uso
+   Et1/3 y Et2/0-3 apagados. Ubicación SNMP corregida a "Concepcion - Acceso 1".
+4. Po3 (ACC1 ↔ ACC2) reactivado: `no shutdown` en ACC2 Et0/2-3 y reinicio de puertos en ambos extremos.
+   Resultado: **Po3(SU)** con Et0/2(P) Et0/3(P); Rapid-PVST deja Po2 *Root FWD* y Po3 *Altn BLK* (enlace redundante en
+   reserva, sin bucle); ping al gateway 20/20.
+
+**Causa raíz de P-06 confirmada:** la imagen IOL 15.1 no conservaba `duplex full` en los miembros del EtherChannel; con
+puertos en half duplex LACP no agrupa correctamente y el enlace redundante generaba el bucle. Con ambos extremos en 15.2 y
+full duplex, el Po3 opera como respaldo normal. P-05 (SSH solo CBC) también queda resuelto en los dos equipos.
