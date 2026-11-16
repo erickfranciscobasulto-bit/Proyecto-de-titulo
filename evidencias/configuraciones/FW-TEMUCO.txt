@@ -52,3 +52,17 @@ Agente Zabbix (plugin os-zabbix7-agent 1.19, agente 7.0.32 = misma version que e
                   "SOC AWS (SRV-NOC) -> agente Zabbix del firewall, via VPN"
                   (la regla por defecto de LAN solo admite origen LAN net; sin esta regla la consulta se bloquea)
   Resultado       FW-TEMUCO con ZBX verde en Zabbix, 51 metricas, 17 iniciadores
+
+Enlace a Internet (ISP) - medido desde el firewall
+  Gateway WAN_GW  monitoreo (dpinger) habilitado · Monitor IP 8.8.8.8 (se mide el servicio mas alla del ISP,
+                  no solo el router del proveedor) · RTT ~1 ms, RTTd ~0,4 ms, Loss 0 % en el laboratorio
+  UserParameter   Key opnsense.gateways · Command /usr/local/sbin/configctl interface gateways status
+                  (Services > Zabbix Agent > Settings > Advanced > User Parameters)
+  Error           con el comando directo /usr/local/opnsense/scripts/routes/gateway_status.php el item devolvia
+                  "Fatal error: Uncaught TypeError: flock()": el agente corre como usuario zabbix y el script
+                  necesita bloquear archivos de root. Se descarto dar sudo/root al agente; configctl delega la
+                  ejecucion en configd (servicio autorizado) y funciona como usuario zabbix:
+                  su -m zabbix -c "/usr/local/sbin/configctl interface gateways status" -> JSON correcto
+  Zabbix          plantilla "Agroprodel OPNsense Enlace Internet" (zabbix/plantilla_opnsense_enlace_internet.yaml):
+                  estado (En linea/Degradado/Caido), latencia, jitter, perdida; alertas Alta (caido),
+                  Advertencia (degradado, perdida > 5 % en 5 min) y Promedio (sin datos 5 min)
