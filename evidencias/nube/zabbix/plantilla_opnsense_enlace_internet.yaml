@@ -1,0 +1,141 @@
+zabbix_export:
+  version: '7.0'
+  template_groups:
+    - uuid: d241ac5dd3524df08e4d007b7fd3be78
+      name: Templates/Agroprodel
+  templates:
+    - uuid: d258d95c81a04be8926b9caf4171c429
+      template: 'Agroprodel OPNsense Enlace Internet'
+      name: 'Agroprodel OPNsense Enlace Internet'
+      description: 'Estado, latencia, jitter y perdida del enlace a Internet (WAN_GW) medidos por dpinger en OPNsense. Requiere el UserParameter opnsense.gateways en el agente del firewall.'
+      groups:
+        - name: Templates/Agroprodel
+      items:
+        - uuid: 79dd42eeb5264384844daaef79a32ff2
+          name: 'Gateways: estado (JSON)'
+          key: opnsense.gateways
+          delay: 1m
+          history: 1d
+          value_type: TEXT
+          trends: '0'
+          description: 'Salida de /usr/local/opnsense/scripts/routes/gateway_status.php'
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: f0c8e62c92e34af29757feb8c6e00b77
+              expression: 'nodata(/Agroprodel OPNsense Enlace Internet/opnsense.gateways,5m)=1'
+              name: 'FW-TEMUCO: sin datos del estado del enlace (5 min)'
+              priority: AVERAGE
+        - uuid: 31a5edf09c0d414991144d91455f0227
+          name: 'Enlace Internet (WAN_GW): estado'
+          type: DEPENDENT
+          key: opnsense.wan.state
+          delay: '0'
+          valuemap:
+            name: 'Estado del enlace'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.WAN_GW.status'
+            - type: JAVASCRIPT
+              parameters:
+                - 'if (value == "none") return 1; if (value.indexOf("down") >= 0) return 0; return 2;'
+          master_item:
+            key: opnsense.gateways
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: 03eda828ea974388b464c98025a7b51b
+              expression: 'last(/Agroprodel OPNsense Enlace Internet/opnsense.wan.state)=0'
+              name: 'Enlace a Internet (ISP) caido'
+              priority: HIGH
+            - uuid: a1fbce51c28b42f5ab94d09e75e6410f
+              expression: 'last(/Agroprodel OPNsense Enlace Internet/opnsense.wan.state)=2'
+              name: 'Enlace a Internet degradado (latencia o perdida sobre umbral de OPNsense)'
+              priority: WARNING
+        - uuid: c77331d8495941baae9730d38bc5f6cc
+          name: 'Enlace Internet (WAN_GW): latencia'
+          type: DEPENDENT
+          key: opnsense.wan.delay
+          delay: '0'
+          value_type: FLOAT
+          units: s
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.WAN_GW.delay'
+            - type: REGEX
+              parameters:
+                - '([0-9.]+)'
+                - \1
+              error_handler: DISCARD_VALUE
+            - type: MULTIPLIER
+              parameters:
+                - '0.001'
+          master_item:
+            key: opnsense.gateways
+          tags:
+            - tag: component
+              value: network
+        - uuid: 818256ca8ff44791bc37eef6c9baedc6
+          name: 'Enlace Internet (WAN_GW): jitter'
+          type: DEPENDENT
+          key: opnsense.wan.stddev
+          delay: '0'
+          value_type: FLOAT
+          units: s
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.WAN_GW.stddev'
+            - type: REGEX
+              parameters:
+                - '([0-9.]+)'
+                - \1
+              error_handler: DISCARD_VALUE
+            - type: MULTIPLIER
+              parameters:
+                - '0.001'
+          master_item:
+            key: opnsense.gateways
+          tags:
+            - tag: component
+              value: network
+        - uuid: 922dcaab465e4ad289d7a1368f5373e4
+          name: 'Enlace Internet (WAN_GW): perdida'
+          type: DEPENDENT
+          key: opnsense.wan.loss
+          delay: '0'
+          value_type: FLOAT
+          units: '%'
+          preprocessing:
+            - type: JSONPATH
+              parameters:
+                - '$.WAN_GW.loss'
+            - type: REGEX
+              parameters:
+                - '([0-9.]+)'
+                - \1
+              error_handler: DISCARD_VALUE
+          master_item:
+            key: opnsense.gateways
+          tags:
+            - tag: component
+              value: network
+          triggers:
+            - uuid: 3377d1a8b7844e71980a58353cab61b8
+              expression: 'min(/Agroprodel OPNsense Enlace Internet/opnsense.wan.loss,5m)>5'
+              name: 'Enlace a Internet: perdida de paquetes sobre 5 % (5 min)'
+              priority: WARNING
+      valuemaps:
+        - uuid: 362303e4cf0e49ffa533fa9c3415adc2
+          name: 'Estado del enlace'
+          mappings:
+            - value: '0'
+              newvalue: 'Caido'
+            - value: '1'
+              newvalue: 'En linea'
+            - value: '2'
+              newvalue: 'Degradado'
