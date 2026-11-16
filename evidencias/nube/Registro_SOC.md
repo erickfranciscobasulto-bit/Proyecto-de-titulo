@@ -160,6 +160,7 @@ esté encendido), servidores, FW-TEMUCO e ISP (requieren ampliar el dominio de l
 ## Servidores monitoreados
 | Equipo | Interfaz | Plantilla | Grupo | Resultado |
 |---|---|---|---|---|
+| FW-TEMUCO (OPNsense 26.7.9) | Agente 7.0.32 (plugin os-zabbix7-agent), consulta pasiva 10.40.1.30 → 203.0.113.1:10050 por la VPN | FreeBSD by Zabbix agent | Seguridad Agroprodel | ZBX verde · 51 métricas · 17 iniciadores |
 | SRV-AGROPRODEL (Web · DNS · FTPS) | Agente 2 en modo activo (`ServerActive=10.40.1.30`); interfaz de agente 10.40.1.10:10050 registrada | Linux by Zabbix agent active | Servidores Agroprodel | ZBX verde · 43 métricas · 15 iniciadores |
 
 En modo activo el agente abre la conexión hacia SRV-NOC dentro de la VPC, por lo que no se agregan reglas de entrada en
