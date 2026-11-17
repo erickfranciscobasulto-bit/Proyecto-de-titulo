@@ -91,6 +91,30 @@ Primera lectura del panel: 0 agentes registrados; en 24 h, 122 alertas de severi
 propio manager (instalación de paquetes, sesiones y auditoría del servidor). Confirma la cadena completa
 manager → Filebeat → indexer → dashboard.
 
+## Syslog de los routers hacia Wazuh
+| Elemento | Configuración |
+|---|---|
+| Recepción en Wazuh | Bloque `<remote>` adicional en `/var/ossec/etc/ossec.conf`: `syslog` · UDP 514 · `allowed-ips 192.168.0.0/16` · `local_ip 10.40.1.20` (escucha solo en la IP privada). `ss -ulnp`: `10.40.1.20:514` por `wazuh-remoted` |
+| Routers (4 sedes) | `logging host 10.40.1.20` · `logging trap informational` · **`logging source-interface Ethernet0/1.99`** |
+| Hora | `clock timezone CLT -3 0` · `ntp server 216.239.35.0` y `.4` (time.google.com por IP: los routers no resuelven nombres) · `service timestamps log datetime msec localtime show-timezone` |
+
+**Por qué el origen es la VLAN 99:** sin `logging source-interface`, IOS usa la IP de la interfaz de salida (WAN), que no
+pertenece a la ACL de cifrado `VPN-AWS`; el paquete saldría sin cifrar hacia una IP privada de AWS y no llegaría. Con la
+VLAN 99 como origen, el syslog viaja por la VPN igual que SNMP (las sucursales, por su túnel GRE/IPsec hasta Temuco).
+
+**Por qué la hora:** antes los logs salían en UTC y con `*` (hora no confiable). Un SIEM correlaciona eventos por hora;
+con zona horaria y NTP todos los equipos y SRV-SIEM (America/Santiago) quedan alineados.
+
+### Pruebas
+| Prueba | Resultado |
+|---|---|
+| `send log 6 "Prueba syslog hacia Wazuh desde R-TEMUCO"` + `tcpdump -ni ens5 udp port 514` en SRV-SIEM | `IP 192.168.40.241.63992 > 10.40.1.20.514: SYSLOG local7.info` (origen VLAN 99, llegó por la VPN) |
+| `wazuh-logtest` con `%SYS-5-CONFIG_I: Configured from console by admin on console` | Decodificador **cisco-ios** (facility SYS, mnemonic CONFIG_I, severity 5) → regla **4721** nivel 3 *Cisco IOS: Router configuration changed*, mapeada a PCI DSS 10.2.7 y NIST 800-53 AU.14 → *Alert to be generated* |
+| `write memory` en cada router y búsqueda `rule.groups:cisco_ios` en Threat Hunting | 4 eventos 4721, uno por router (R-TEMUCO, R-TALCA, R-CONCEPCION, R-LOS-ANGELES) |
+
+Nota: el panel muestra las horas en UTC cuando el navegador informa UTC (protección contra rastreo); se fija con
+Dashboard management → Advanced settings → `dateFormat:tz` = America/Santiago.
+
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
 - Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:

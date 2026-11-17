@@ -519,5 +519,15 @@ snmp-server location Temuco - Casa Matriz
 snmp-server contact NOC Agroprodel
 snmp-server ifindex persist
 !
+!
+! --- Syslog hacia el SIEM (Wazuh, SRV-SIEM 10.40.1.20) y hora sincronizada (16-11-2026) ---
+! Origen VLAN 99: el syslog viaja cifrado por la VPN (dominio 192.168.0.0/16 <-> 10.40.0.0/16)
+clock timezone CLT -3 0
+ntp server 216.239.35.0
+ntp server 216.239.35.4
+service timestamps log datetime msec localtime show-timezone
+logging source-interface Ethernet0/1.99
+logging trap informational
+logging host 10.40.1.20
 end
 write memory
