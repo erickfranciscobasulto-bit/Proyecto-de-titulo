@@ -146,6 +146,18 @@ rechaza el paquete por `DEPTOS-IN`. En Wazuh (Threat Hunting → Events, `rule.g
 *Agroprodel: trafico bloqueado por ACL entre VLAN (IPACCESSLOGDP)*, `location 192.168.20.161`. Los 3 pings generan una sola
 alerta: IOS registra el primer paquete de cada flujo y luego un resumen cada 5 minutos.
 
+### Prueba de correlación: escaneo de puertos (17-11-2026)
+Desde el mismo VPCS (192.168.20.66), "ping TCP" a 10 puertos de 192.168.10.65 (21, 22, 23, 25, 53, 80, 110, 143, 443,
+3389) con `ping 192.168.10.65 -P 6 -p <puerto> -c 1`. Todos rechazados por R-CONCEPCION (ICMP 3/13).
+
+| Intento | Resultado en Wazuh | Lectura |
+|---|---|---|
+| 1: comandos escritos uno por uno (7 a 17 s entre cada uno) | 10 alertas 100100 (`IPACCESSLOGP`), **sin 100102** | Como máximo 6 bloqueos en cualquier ventana de 60 s: no alcanza el umbral (8). Un escaneo real prueba cientos de puertos por segundo; la regla no se dispara con intentos espaciados |
+| 2: los 10 comandos pegados en bloque | 8 alertas 100100 entre 23:31:55 y 23:32:28 UTC y luego **100102 nivel 10**: *Agroprodel: multiples bloqueos de ACL desde 192.168.20.66 en 60 s (posible escaneo o movimiento lateral)* (MITRE T1046), `location 192.168.20.161` | La correlación agrupa por `srcip` e identifica el equipo de origen del escaneo |
+
+Cadena demostrada: VPCS → ACL `DEPTOS-IN` en R-CONCEPCION → syslog por la VPN → reglas 100100/100102 → alerta de nivel 10
+en el panel.
+
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
 - Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:
