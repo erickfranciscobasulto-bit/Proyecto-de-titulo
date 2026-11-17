@@ -139,6 +139,13 @@ cae en la regla genérica **4716 nivel 0** (*informational message*): **no gener
 | `IPACCESSLOGDP ... denied icmp 192.168.20.2 -> 192.168.10.65` | cisco-ios · SEC · IPACCESSLOGDP · severity 6 | **100100** nivel 5, *Alert to be generated* |
 | `IPACCESSLOGP ... denied udp 192.168.20.2(137) -> 192.168.20.31(137)` | action denied · protocol udp · srcip 192.168.20.2 · dstip 192.168.20.31 · srcport/dstport 137 | **100101** nivel 0 (ruido conocido, sin alerta) |
 
+### Prueba en vivo (17-11-2026)
+VPCS en la VLAN 20 de Concepción (`ip dhcp` → 192.168.20.66/27, GW 192.168.20.65) → `ping 192.168.10.65` (VLAN 10 de
+Talca). Respuesta: `ICMP type:3, code:13, Communication administratively prohibited` desde 192.168.20.65: R-CONCEPCION
+rechaza el paquete por `DEPTOS-IN`. En Wazuh (Threat Hunting → Events, `rule.groups:agroprodel`): alerta **100100** nivel 5
+*Agroprodel: trafico bloqueado por ACL entre VLAN (IPACCESSLOGDP)*, `location 192.168.20.161`. Los 3 pings generan una sola
+alerta: IOS registra el primer paquete de cada flujo y luego un resumen cada 5 minutos.
+
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
 - Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:
