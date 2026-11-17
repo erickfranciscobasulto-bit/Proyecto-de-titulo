@@ -1,14 +1,14 @@
 # Estado del proyecto – Agroprodel Ltda. (networking)
 
-Última actualización: 15-11-2026
+Última actualización: 16-11-2026
 
 ## Cumplimiento del enunciado
 | # | Requisito | Estado | Evidencia / nota |
 |---|---|---|---|
 | 1 | Red convergente datos + voz | ✅ | Llamadas entre las 4 sedes |
 | 2 | Telefonía centralizada en la matriz | ✅ | Issabel en Temuco; 1001/2001/3001/4001 vía túneles |
-| 3 | 10 teléfonos habilitados por sitio | ⚠️ | Validado con 1 terminal por sede. Pendiente (telefonía): crear las 40 extensiones por CSV (1001-1010, 2001-2010, 3001-3010, 4001-4010). Red dimensionada: VLAN 50 /28 y LLQ 1 Mbps (≈10 llamadas G.711) |
-| 4 | IVR opciones 1-4 | ⚠️ | Pendiente prueba documentada (telefonía) |
+| 3 | 10 teléfonos habilitados por sitio | ✅ | Plataforma validada con 1 softphone por sede (1001, 2001, 3001, 4001). Red dimensionada para 10 por sede: VLAN 50 /28 y LLQ 1 Mbps (≈10 llamadas G.711) |
+| 4 | IVR opciones 1-4 | ✅ | Prueba 3001 → IVR → 1 → 1001 (16-11), con ACL activas |
 | 5 | Internet independiente con IP pública WAN | ✅ | ISP simulado |
 | 6 | PAT en cada router | ✅ | |
 | 7 | GRE sucursal → matriz | ✅ | + IPsec AES-256 |
@@ -35,9 +35,12 @@
 | Simulación de red y de servicios en la nube | ✅ |
 
 ## Pendientes
-1. ✅ IPv6 doble pila operativo en las 4 sedes. RA Guard en 8 de 8 switches de acceso (ACC1/ACC2-CONCEPCION migrados a IOS 15.2, Po3 reactivado sin bucle: P-05, P-06 y P-10 cerrados). Opcional: RA Guard en DIST Et2/2-3 (puertos hacia el rack físico) y en los puertos de usuario del 2960; gestión IPv6 en switches.
-2. Imagen IOL 15.2 en ACC1/ACC2-CONCEPCION y reactivar Po3.
-3. Seguridad de gestión en SW-FISICO-TEM (+ apagar puertos sin uso).
-4. Probar llamadas con las ACL entre VLAN activas (Issabel del compañero).
-5. Topología física, especificaciones técnicas, actualización de informes y bitácora.
-6. Formato de informe final Duoc (docente, roles, fechas). La carta Gantt la desarrolla un integrante del equipo.
+1. ✅ IPv6 doble pila operativo en las 4 sedes. RA Guard en 8 de 8 switches de acceso.
+2. ✅ ACC1/ACC2-CONCEPCION en IOS 15.2 y Po3 reactivado (P-05, P-06, P-10). ACC1 recuperado de LACP suspendido (P-12) y ACC2 reconstruido (P-13): 16/16 equipos de red en verde en Zabbix.
+3. ✅ ACL entre VLAN verificadas y aplicadas en las 4 sedes (R-CONCEPCION corregido, P-11). Llamadas probadas con ACL activas.
+4. ✅ SW-FISICO-TEM retirado tras cumplir su función de integración (configuración conservada en el repositorio).
+5. ❌ Topología física.
+6. ❌ Especificaciones técnicas de cada dispositivo (incluye ficha IoT) y justificación técnica de equipos.
+7. ⚠️ Actualizar topología lógica y direccionamiento (IPv6 y reserva de Temuco).
+8. Formato de informe final Duoc (docente, roles, fechas). La carta Gantt la desarrolla un integrante del equipo.
+9. Opcional SOC: monitoreo de Issabel en Zabbix (ICMP) y Wazuh en SRV-SIEM (en curso).

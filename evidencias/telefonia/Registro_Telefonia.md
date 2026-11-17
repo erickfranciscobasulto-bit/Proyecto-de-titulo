@@ -159,4 +159,61 @@ Contact: 2001/sip:2001@192.168.40.130:5060;transport=udp   Avail   6.393 ms
 ```
 El CP-8861 quedó registrado en Issabel como extensión **2001 (Talca)**; la pantalla muestra el menú de reposo (New call, Forward all, Redial).
 
-### Paso 7 – Prueba de llamada 2001 ↔ 1001 (en curso)
+### Paso 7 – Cierre del CP-8861
+El CP-8861 se utilizó para validar el aprovisionamiento de un teléfono físico Cisco por TFTP (pasos 1 a 6). No queda en
+la configuración final: compartía la extensión 2001 con el softphone de Talca y, tras el aprovisionamiento, operaba en la
+VLAN 10 (T-04). Las pruebas de la plataforma se realizan con los softphones MicroSIP de las 4 sedes.
+
+## Prueba del IVR y de las ACL entre VLAN (16-11-2026)
+
+Llamada: **3001 (Concepción) → IVR → opción 1 → 1001 (Temuco)**, contestada. Se mide en R-CONCEPCION porque el PC de
+Concepción está en su VLAN 10 (ACL `DEPTOS-IN`); el softphone de Temuco está en la VLAN 80, la misma red de Issabel, por
+lo que su tráfico no cruza ninguna ACL del router.
+
+**Hallazgo previo:** R-CONCEPCION no tenía cargadas las ACL IPv4 `DEPTOS-IN`, `VOZ-IN` e `IOT-IN` (ver P-11). Se
+reaplicaron desde `R-CONCEPCION.txt` y se guardaron; `show ip interface ethernet 0/1.10 | include access list` →
+*Inbound access list is DEPTOS-IN*.
+
+### Prueba positiva (la voz pasa con la segmentación activa)
+```
+clear ip access-list counters DEPTOS-IN
+show access-lists DEPTOS-IN        ! antes
+! llamada 3001 -> IVR -> 1 -> 1001
+show access-lists DEPTOS-IN        ! despues
+```
+
+| Línea de DEPTOS-IN | Antes | Después | Interpretación |
+|---|---|---|---|
+| 20 `permit ip any 192.168.40.224 0.0.0.15` (Issabel, VLAN 80) | 1 | **1978** | Señalización SIP y audio RTP de la llamada (G.711 ≈ 50 paquetes/s) |
+| 30 `deny ip any 192.168.0.0 0.0.255.255 log` | 0 | **0** | No se bloqueó ningún paquete de la llamada |
+| 60 `permit ip any any` | 83 | 579 | Tráfico del PC hacia Internet y la nube, ajeno a la llamada |
+
+En Issabel (`asterisk -rvvv`) se observa el paso por el IVR, el dígito 1 y el `Dial(PJSIP/1001...)` contestado; al
+colgar se ejecuta `macro-hangupcall` (los avisos `exited non-zero` al cortar son normales).
+
+**Conclusión:** la voz entre sedes funciona con la política de mínimo privilegio activa. `DEPTOS-IN` impide que la
+VLAN 10 de Concepción alcance otras redes internas, pero el audio se ancla en Issabel, el único destino interno
+permitido.
+
+### Prueba negativa (la ACL bloquea lo que debe bloquear)
+Ping desde el PC de Concepción a `192.168.10.65` (gateway de la VLAN 10 de Talca): **falla**. La línea 30 de
+`DEPTOS-IN` registra el bloqueo (`%SEC-6-IPACCESSLOGDP ... denied icmp`).
+
+### Registros observados en R-CONCEPCION
+`%SEC-6-IPACCESSLOGP: list DEPTOS-IN denied udp 192.168.20.2(137) -> 192.168.20.31(137)`, cada ~5 minutos.
+Corresponde a NetBIOS (UDP 137) del PC hacia el *broadcast* de su propia VLAN (192.168.20.0/27). El broadcast llega a
+los demás equipos de la VLAN por capa 2; solo se descarta la copia que recibe el router. Es tráfico esperado (ruido
+conocido): IOS registra el primer paquete y luego un resumen cada 5 minutos.
+
+## Punto único de falla
+La telefonía está centralizada en la matriz (requisito del enunciado), por lo que Issabel es un punto único de falla: si
+el servidor pierde la red se cortan las llamadas en curso (el audio pasa por la central), no se pueden realizar llamadas
+nuevas ni usar el IVR, y los softphones pierden su registro. Datos, Internet, túneles, VPN y monitoreo no se ven
+afectados. Mitigación en producción: servidor físico con UPS, enlace redundante al switch y, en un diseño mayor,
+central de respaldo o supervivencia local en las sucursales.
+
+## Equipo físico de integración
+El Catalyst 2960 (SW-FISICO-TEM) se utilizó durante la implementación para integrar los equipos físicos (Issabel,
+teléfono CP-8861 y PC con softphones) al laboratorio EVE-NG. Cumplida su función, se restableció a fábrica
+(`write erase` + `delete flash:vlan.dat`); su última configuración se conserva en
+`configuraciones/SW-FISICO-2960.txt`. Las pruebas de telefonía quedaron registradas en video y capturas.

@@ -181,3 +181,44 @@ suspensión y el apagado de pantalla del escritorio en "Nunca". Al terminar el p
 **Causa raíz de P-06 confirmada:** la imagen IOL 15.1 no conservaba `duplex full` en los miembros del EtherChannel; con
 puertos en half duplex LACP no agrupa correctamente y el enlace redundante generaba el bucle. Con ambos extremos en 15.2 y
 full duplex, el Po3 opera como respaldo normal. P-05 (SSH solo CBC) también queda resuelto en los dos equipos.
+
+---
+
+## P-11 · R-CONCEPCION sin las ACL IPv4 entre VLAN en la configuración activa (16-11-2026)
+
+| Campo | Detalle |
+|---|---|
+| **Equipo** | R-CONCEPCION |
+| **Síntoma** | Durante la prueba de telefonía con ACL, `show access-lists DEPTOS-IN` no devolvía nada aunque la llamada 3001 → IVR → 1001 funcionaba. |
+| **Diagnóstico** | `show ip access-lists` listaba GESTION-SSH, NAT-CONCEPCION, SNMP-NOC, INVITADOS-IN, VOZ-RTP y VOZ-SIP, pero **no** DEPTOS-IN, VOZ-IN ni IOT-IN. `DEPTOS-IN-V6` sí estaba cargada y con tráfico. |
+| **Causa** | El bloque de ACL IPv4 entre VLAN de `R-CONCEPCION.txt` no quedó en la configuración guardada del router (no se aplicó o se perdió en un reinicio del nodo sin `write memory`). Las VLAN 10-50 y 70 operaban sin filtrado. |
+| **Solución** | Se reaplicó el bloque desde `R-CONCEPCION.txt` (ACL DEPTOS-IN, VOZ-IN, IOT-IN y sus `ip access-group ... in` en Et0/1.10-.50 y .70) y `write memory` [OK]. |
+| **Verificación** | `show ip interface ethernet 0/1.10 \| include access list` → *Inbound access list is DEPTOS-IN*. Prueba positiva (llamada) y negativa (ping a 192.168.10.65 bloqueado) documentadas en `telefonia/Registro_Telefonia.md`. Revisión en las otras 3 sedes: `show running-config \| include interface\|access-group` en R-TEMUCO, R-TALCA y R-LOS-ANGELES muestra DEPTOS-IN en .10-.40, VOZ-IN en .50, INVITADOS-IN en .60 e IOT-IN en .70: **segmentación activa en las 4 sedes**. |
+| **Aprendizaje** | Verificar el estado real del equipo (`show ip access-lists`, `show ip interface`) y no solo el archivo de configuración; terminar cada cambio con `write memory`. |
+
+---
+
+## P-12 · ACC1-CONCEPCION sin gestión: SNMP en rojo en Zabbix por LACP suspendido (16-11-2026)
+
+| Campo | Detalle |
+|---|---|
+| **Equipo** | ACC1-CONCEPCION · DIST-CONCEPCION |
+| **Síntoma** | Zabbix muestra SNMP en rojo para ACC1-CONCEPCION (y ACC2). En ACC1 aparece `%AMDP2_FE-6-EXCESSCOLL: Ethernet0/3`. |
+| **Diagnóstico** | `show snmp user` y `show snmp engineID`: usuario `zabbix` correcto y engine ID coincidente (se descarta SNMP). `show ip interface brief \| include Vlan99`: **down/down** (no *administratively down*). `show etherchannel summary`: **Po1(SD)** y **Po3(SD)** con todos los puertos `(s)` suspendidos; `show interfaces trunk` vacío. En DIST-CONCEPCION también Po1 y Po2 en (SD); `show cdp neighbors` solo ve a R-CONCEPCION y `show lacp neighbor` sale vacío. Configuración de ambos extremos correcta (full duplex, troncal nativa 999, `channel-group 1 mode active`) y enlaces presentes en el lienzo de EVE-NG (Status up, Protocol down). |
+| **Causa** | LACP trabado en IOL tras los cambios del día (misma firma que el cierre de P-05/P-06). Sin troncal activo la VLAN 99 no tiene salida, la SVI queda down/down y SRV-NOC no alcanza al switch. La ausencia de CDP era consecuencia del protocolo down, no de un enlace roto. |
+| **Solución** | `shutdown` en ACC1 Et0/0-1 → `shutdown`/`no shutdown` en DIST Et0/1-2 → `no shutdown` en ACC1 Et0/0-1, para que ambos extremos renegocien LACP a la vez. `write memory` en ambos equipos. |
+| **Verificación** | Po1(SU), Vlan99 up/up, ping a 10.40.1.30 desde la VLAN 99 exitoso y SNMP en verde en Zabbix. |
+| **Aprendizaje** | En una SVI, down/down indica que ningún puerto activo lleva la VLAN: revisar troncales y EtherChannel antes que la propia interfaz VLAN. |
+
+---
+
+## P-13 · ACC2-CONCEPCION rechaza la contraseña de consola (16-11-2026)
+
+| Campo | Detalle |
+|---|---|
+| **Equipo** | ACC2-CONCEPCION |
+| **Síntoma** | La consola rechaza la clave del usuario local; la misma clave funciona al instante en otros switches desde la misma consola (se descarta teclado). SNMP en rojo en Zabbix. |
+| **Causa** | Credenciales del equipo distintas a las documentadas tras la reconstrucción de P-10 (clave mal ingresada o NVRAM nuevamente dañada). IOL no permite recuperación de contraseña por ROMMON. |
+| **Solución** | En EVE-NG: Stop → **Wipe** → Start con IOS 15.2 (`i86bi_Linux-L2-AdvEnterpriseK9-M_152_May_2018.bin`, *signature verified*). Se reaplicó `ACC2-CONCEPCION.txt` en 6 bloques (base y VLAN, EtherChannel, acceso y gestión, seguridad, RA Guard, SNMPv3), con las claves ingresadas a mano. Antes de `write memory` la clave se validó por SSH desde DIST-CONCEPCION. |
+| **Verificación** | Po2 y Po3 operativos, `show snmp user` con `zabbix` (SHA/AES128, GRP-NOC), ping a SRV-NOC desde la VLAN 99 y SNMP en verde en Zabbix. |
+| **Aprendizaje** | Probar el acceso con la clave nueva (SSH desde otro equipo) antes de guardar y cerrar la sesión de consola. |

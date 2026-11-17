@@ -2,6 +2,7 @@
 ! SW-FISICO-TEM - Switch fisico Cisco Catalyst 2960 (rack)
 ! Proyecto Agroprodel Ltda. - Configuracion aplicada
 ! Conectado al laboratorio por Gi0/1 (notebook -> br-rack -> SW-PUENTE e1/0)
+! RETIRADO 16-11-2026: restablecido a fabrica tras cumplir su funcion de integracion (esta es su ultima configuracion)
 ! Estado: COMPLETA (partes 1 a 6) - QoS: mls qos, trust cisco-phone/cos en Fa0/4-5, trust dscp en Gi0/1, PM-SOFTPHONE (marcado por puertos) en Fa0/2 (PC MicroSIP Concepcion, V210) y Fa0/3 - priority-queue out en Gi0/1 y Fa0/2-5, buffers ajustados - Gi0/1 trunking nativa 999 y VLAN de acceso verificados
 ! ==========================================================
 enable
