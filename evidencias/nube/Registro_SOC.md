@@ -5,7 +5,7 @@
 |---|---|---|---|---|
 | SRV-AGROPRODEL (existente) | Servicios | Nginx (HTTPS), BIND, vsftpd (FTPS) | t3.micro | 10.40.1.10 |
 | SRV-NOC | Disponibilidad, visualización y concentrador VPN | Zabbix, Grafana, strongSwan | t3.small | 10.40.1.30 |
-| SRV-SIEM | Seguridad | Wazuh (manager, indexer, dashboard) | t3.large | 10.40.1.20 |
+| SRV-SIEM | Seguridad | Wazuh 4.14.10 (manager, indexer, dashboard) | t3.large | 10.40.1.20 · EIP 98.83.168.58 |
 
 Suricata (IDS) se habilita en OPNsense (FW-TEMUCO), que ya inspecciona el tráfico hacia Internet.
 
@@ -55,6 +55,41 @@ El SIEM no expone ningún puerto a Internet.
 | Perfil IAM / créditos | LabInstanceProfile · standard |
 | Llave | LLAVE-NOC (exclusiva del servidor; no se documenta) |
 | IP elástica | 98.83.92.138 (eipalloc-0a80a0ba5323a9f9a): extremo fijo de la VPN para R-TEMUCO |
+
+### SRV-SIEM
+| Dato | Valor |
+|---|---|
+| ID | i-0dde5d0be358c5582 |
+| Tipo / SO | t3.large (2 vCPU, 8 GiB) · Ubuntu Server 24.04.5 LTS · hostname `srv-siem` · zona horaria America/Santiago |
+| Red | VPC_AGROPRODEL-vpc · subnet-03f4cc1647d14719c (pública 10.40.1.0/24) · IP privada fija 10.40.1.20 |
+| Grupo de seguridad | SG_SOC_SIEM |
+| Disco | 50 GiB gp3 (índices de alertas) |
+| Perfil IAM / créditos | LabInstanceProfile (LabRole) · standard (sin cargos por ráfagas sostenidas de CPU) |
+| Llave | LLAVE-WAZUH (exclusiva del servidor; no se documenta) |
+| IP elástica | 98.83.168.58: acceso de administración (SSH y panel) que no cambia al detener la instancia |
+
+Verificación: 3/3 *status checks*; `nproc` 2, `free -h` 7,6 GiB, sin swap (recomendado para el indexer); `ping 10.40.1.30`
+3/3 (~0,5 ms). Sistema actualizado con `apt upgrade` y reiniciado (kernel 7.0.0-1017-aws). No se aplica
+`do-release-upgrade` a 26.04: Wazuh soporta oficialmente 24.04.
+
+## Wazuh (SIEM) – instalación
+| Paso | Detalle |
+|---|---|
+| Versión | Wazuh **4.14.10** (estable; 5.0 en beta/RC se descartó). Mantiene los puertos de agente 1514/1515 del grupo de seguridad |
+| Método | Asistente oficial todo en uno dentro de `tmux` (la instalación continúa aunque se corte la sesión SSH): `curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh && sudo bash ./wazuh-install.sh -a` |
+| Componentes | Wazuh indexer, Wazuh manager + Filebeat y Wazuh dashboard (puerto 443) en el mismo servidor; certificados TLS propios generados por el asistente. Duración: ~9 min |
+| Credenciales internas | `wazuh-install-files.tar` (certificados y contraseñas) con `chmod 600`, propietario root |
+| Verificación | `systemctl is-active wazuh-indexer wazuh-manager filebeat wazuh-dashboard` → 4 × active. Acceso a https://98.83.168.58 con el usuario `admin` |
+
+### Errores encontrados
+| N° | Síntoma | Causa | Solución |
+|---|---|---|---|
+| S-15 | La contraseña de `admin` quedó visible en una captura compartida | El resumen del asistente imprime la clave en pantalla | Se trató como expuesta (mismo criterio de S-03): clave nueva con `wazuh-passwords-tool.sh -u admin -p ...`, que actualiza el indexer y el *keystore* de Filebeat; `systemctl restart filebeat`; limpieza de `history` y del historial de `tmux`. La clave no se documenta |
+| S-16 | Panel de Wazuh, Security → Internal users: *Failed to reset password. FORBIDDEN – Resource 'admin' is reserved* | `admin` es un usuario reservado: ni el panel ni la API REST pueden modificarlo | Cambio desde el servidor con `wazuh-passwords-tool.sh`, que usa los certificados de administrador del indexer |
+
+Primera lectura del panel: 0 agentes registrados; en 24 h, 122 alertas de severidad media y 192 de baja generadas por el
+propio manager (instalación de paquetes, sesiones y auditoría del servidor). Confirma la cadena completa
+manager → Filebeat → indexer → dashboard.
 
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
