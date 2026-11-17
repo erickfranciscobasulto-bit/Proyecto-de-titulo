@@ -1,6 +1,6 @@
 # Estado del proyecto – Agroprodel Ltda. (networking)
 
-Última actualización: 16-11-2026
+Última actualización: 17-11-2026
 
 ## Cumplimiento del enunciado
 | # | Requisito | Estado | Evidencia / nota |
@@ -43,4 +43,10 @@
 6. ❌ Especificaciones técnicas de cada dispositivo (incluye ficha IoT) y justificación técnica de equipos.
 7. ⚠️ Actualizar topología lógica y direccionamiento (IPv6 y reserva de Temuco).
 8. Formato de informe final Duoc (docente, roles, fechas). La carta Gantt la desarrolla un integrante del equipo.
-9. Opcional SOC: monitoreo de Issabel en Zabbix (ICMP) y Wazuh en SRV-SIEM (en curso).
+9. SIEM (Wazuh 4.14.10 en SRV-SIEM, 98.83.168.58):
+   - ✅ Instalación, IP fija y rotación de la clave de `admin` (S-15, S-16).
+   - ✅ Syslog de los 4 routers por la VPN, NTP y zona horaria; regla 4721 (cambios de configuración) en las 4 sedes.
+   - ✅ Reglas propias de ACL: 100100 (bloqueo entre VLAN), 100101 (ruido NetBIOS), 100102 (escaneo, nivel 10), probadas en vivo.
+   - ⏳ Suricata (IDS) en OPNsense (FW-TEMUCO) con sus alertas en Wazuh.
+   - ⏳ Alertas de seguridad a Telegram.
+10. Opcional: monitoreo de Issabel en Zabbix (ICMP).
