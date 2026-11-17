@@ -1,0 +1,35 @@
+<!--
+  Reglas propias de Agroprodel para Wazuh 4.14 (SRV-SIEM)
+  Archivo en el servidor: /var/ossec/etc/rules/local_rules.xml (bloque agregado al final)
+  Motivo: el ruleset oficial de Cisco IOS clasifica los bloqueos de ACL (%SEC-6-IPACCESSLOGP/DP)
+  con la regla genérica 4716 (nivel 0, sin alerta). Estas reglas los convierten en alertas,
+  filtran el ruido conocido y correlacionan bloqueos repetidos desde una misma IP.
+-->
+<!-- Agroprodel: bloqueos de ACL entre VLAN (syslog de los routers Cisco) -->
+<group name="agroprodel,cisco_ios,acl,">
+
+  <rule id="100100" level="5">
+    <if_sid>4716</if_sid>
+    <field name="cisco.mnemonic">^IPACCESSLOG</field>
+    <match>denied</match>
+    <description>Agroprodel: trafico bloqueado por ACL entre VLAN ($(cisco.mnemonic))</description>
+    <group>access_denied,nist_800_53_SC.7,</group>
+  </rule>
+
+  <rule id="100101" level="0">
+    <if_sid>100100</if_sid>
+    <dstport>^137$|^138$</dstport>
+    <description>Agroprodel: NetBIOS a broadcast bloqueado por ACL (ruido conocido)</description>
+  </rule>
+
+  <rule id="100102" level="10" frequency="8" timeframe="60">
+    <if_matched_sid>100100</if_matched_sid>
+    <same_source_ip />
+    <description>Agroprodel: multiples bloqueos de ACL desde $(srcip) en 60 s (posible escaneo o movimiento lateral)</description>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+    <group>recon,</group>
+  </rule>
+
+</group>

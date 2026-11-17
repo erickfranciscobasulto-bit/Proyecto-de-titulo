@@ -115,6 +115,30 @@ con zona horaria y NTP todos los equipos y SRV-SIEM (America/Santiago) quedan al
 Nota: el panel muestra las horas en UTC cuando el navegador informa UTC (protección contra rastreo); se fija con
 Dashboard management → Advanced settings → `dateFormat:tz` = America/Santiago.
 
+## Reglas propias: bloqueos de ACL como alertas
+**Hallazgo:** `wazuh-logtest` con un bloqueo real de R-CONCEPCION
+(`%SEC-6-IPACCESSLOGDP: list DEPTOS-IN denied icmp 192.168.20.2 -> 192.168.10.65`) lo decodifica como `cisco-ios`, pero
+cae en la regla genérica **4716 nivel 0** (*informational message*): **no genera alerta**. El ruleset oficial de Cisco IOS
+(4.14) solo trae reglas de cambio de configuración (4721) y de login al router (4722/4724).
+
+**Solución:** reglas propias en `/var/ossec/etc/rules/local_rules.xml` (copia en `wazuh/local_rules_agroprodel.xml`):
+
+| ID | Nivel | Detecta |
+|---|---|---|
+| 100100 | 5 | Tráfico bloqueado por una ACL (`IPACCESSLOGP` con puertos e `IPACCESSLOGDP` ICMP). NIST 800-53 SC.7 |
+| 100101 | 0 | NetBIOS (137/138) bloqueado hacia el broadcast de la propia VLAN: ruido conocido de Windows, sin alerta |
+| 100102 | 10 | 8 o más bloqueos desde la misma IP en 60 s: posible escaneo o movimiento lateral (MITRE T1046). Agrupa por `srcip`, que el decodificador extrae en los bloqueos TCP/UDP |
+
+| N° | Síntoma | Causa | Solución |
+|---|---|---|---|
+| S-17 | `wazuh-manager` no arranca al cargar las reglas: *Failure to read rule 100101. Field 'dstport' is static* y *(1220) Error loading the rules* | `dstport` es un campo estático del decodificador; no se usa con `<field name="...">` sino con su etiqueta propia | `sed` para reemplazar por `<dstport>^137$\|^138$</dstport>`; `systemctl restart wazuh-manager` → active. Mientras el manager estuvo detenido el SIEM no recibió eventos: revisar `ossec.log` tras cada cambio de reglas |
+
+### Pruebas con `wazuh-logtest`
+| Log | Fase 2 (decodificación) | Fase 3 (regla) |
+|---|---|---|
+| `IPACCESSLOGDP ... denied icmp 192.168.20.2 -> 192.168.10.65` | cisco-ios · SEC · IPACCESSLOGDP · severity 6 | **100100** nivel 5, *Alert to be generated* |
+| `IPACCESSLOGP ... denied udp 192.168.20.2(137) -> 192.168.20.31(137)` | action denied · protocol udp · srcip 192.168.20.2 · dstip 192.168.20.31 · srcport/dstport 137 | **100101** nivel 0 (ruido conocido, sin alerta) |
+
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
 - Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:
