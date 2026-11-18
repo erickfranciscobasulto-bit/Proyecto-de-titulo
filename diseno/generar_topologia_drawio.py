@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera Topologia_Agroprodel.drawio (5 paginas: AS-IS, arquitectura TO-BE, OSPF, LAN Temuco, LAN sucursales) con iconos Cisco 2019 de draw.io."""
+"""Genera Topologia_Agroprodel.drawio (6 paginas: AS-IS, arquitectura TO-BE, OSPF, LAN Temuco, LAN sucursales, Cisco SAFE) con iconos Cisco 2019 de draw.io."""
 import sys, html
 from xml.sax.saxutils import escape
 
@@ -191,8 +191,8 @@ pstnc = p.icon("cloud", 1000, 400, "PSTN" + SUB + "<br>respaldo de voz</span>", 
 p.e(fw, inet, WAN, "WAN")
 p.e(fw, sipc, SIP, "", pts=[(965, 185), (965, 327)])
 p.e(fxo, pstnc, "strokeColor=#00897B;strokeWidth=1.5;", "", pts=[(940, 350), (940, 427)])
-p.text(1150, 300, 170, 200, "<b>WAN por sede</b><br>Temuco 203.0.113.18<br>Talca 203.0.113.6<br>Concepción 203.0.113.10"
-       "<br>Los Ángeles 203.0.113.14", fs=10, color="#4A148C")
+p.text(995, 470, 330, 45, "<b>WAN:</b> Temuco .18 · Talca .6 · Concepción .10 · Los Ángeles .14 (203.0.113.0/24)",
+       fs=9.5, color="#4A148C")
 
 # Data center (AWS)
 p.box(1360, 90, 620, 430, "ENTERPRISE DATA CENTER · Nube AWS (VPC 10.40.0.0/16)", "#E8F5E9", "#2E7D32")
@@ -202,7 +202,7 @@ s3 = p.icon("secure_server", 1800, 150, "SRV-SIEM" + SUB + "<br>Wazuh<br>10.40.1
 tg = p.icon("cell", 1905, 330, "Telegram" + SUB + "<br>alertas</span>", size=50)
 p.e(s3, tg, "strokeColor=#2E7D32;strokeWidth=1.5;endArrow=classic;dashed=1;")
 p.e(inet, s1, WAN, "IGW", pts=[(1300, 160), (1400, 160)])
-p.e(rt, s2, VPN, "VPN IPsec IKEv2 (gestión)", pts=[(715, 122), (1637, 122)])
+p.e(rt, s2, VPN, "VPN IPsec IKEv2 (gestión)", pts=[(715, 128), (1637, 128)])
 p.text(1380, 300, 480, 200, "<b>Servicios esenciales virtualizados</b> (WEB, DNS, FTP)<br><b>SOC:</b> disponibilidad "
        "(Zabbix/Grafana), eventos de seguridad (Wazuh) y alertas al celular.<br>Grupos de seguridad con mínimo "
        "privilegio; administración solo por la VPN.", fs=10.5, color="#1B5E20")
@@ -225,7 +225,7 @@ for k, (nom, tag, red, us, rid, tn, tnet, caps, col) in enumerate(SEDES):
         nr = p.icon("storage", x0 + 30, 770, "NAS réplica", size=36)
         p.e(d, nr, "strokeColor=#78909C;strokeWidth=1.5;")
     p.e(r, inet, WAN, "", pts=[(x0 + 355, 538), (1345, 538), (1345, 210)])
-    p.e(r, rt, GRE, "GRE/IPsec ×3" if k == 0 else "", pts=[(x0 + 405, 675), (x0 + 405, 552), (635, 552), (635, 205)])
+    p.e(r, rt, GRE, "GRE/IPsec ×3" if k == 0 else "", pts=[(x0 + 395, 675), (x0 + 395, 552), (635, 552), (635, 205)])
 
 legend(p, 1005, [L_LACP, L_TRK, L_WAN, L_GRE, L_VPN, L_STP, L_SIP, L_OSPF],
        extra="Cada sucursal: 10 teléfonos IP · PC por departamento · AP de invitados (VLAN 60, solo Internet) · "
@@ -482,6 +482,98 @@ q.text(1220, 1050, 760, 120, "<b>Requerimientos del cliente que motivan el proye
 q.text(1220, 1180, 760, 50, "Nota: el enunciado no entrega la red existente en detalle; este AS-IS es una deducción "
        "razonable a partir de las necesidades descritas por la empresa.", fs=10, color="#757575")
 
+
+# -----------------------------------------------------------------------------------------------------
+# PAGINA 6: SEGURIDAD - CISCO SAFE
+# -----------------------------------------------------------------------------------------------------
+f6 = Page("6 - Seguridad (Cisco SAFE)", 2000, 1300)
+f6.text(20, 10, 1700, 34, "Seguridad por zonas — Modelo Cisco SAFE (lugares de la red × dominios de seguridad)",
+        fs=20, color="#B71C1C", bold=True)
+f6.text(20, 44, 1900, 22, "Qué se protege, de qué amenaza y con qué control · todos los controles listados están "
+        "implementados, salvo los marcados como diseño", fs=12, color="#455A64")
+DOM = [("GES", "Gestión", "#1565C0"), ("INT", "Inteligencia", "#6A1B9A"), ("CUM", "Cumplimiento", "#00838F"),
+       ("SEG", "Segmentación", "#2E7D32"), ("DEF", "Defensa contra amenazas", "#C62828"),
+       ("SRV", "Servicios seguros", "#EF6C00")]
+DC = {k: c for k, _, c in DOM}
+for k, (code, nom, col) in enumerate(DOM):
+    f6.v(f"rounded=1;html=1;fillColor={col};strokeColor=none;fontColor=#FFFFFF;fontSize=11;fontStyle=1;",
+         20 + k * 325, 75, 310, 26, f"{code} · {nom}")
+
+
+def chips(items):
+    out = []
+    for code, txt in items:
+        out.append(f"<span style='background:{DC[code]};color:#fff;font-weight:bold;padding:0 4px;border-radius:3px'>"
+                   f"{code}</span> {txt}")
+    return "<br>".join(out)
+
+
+ZONAS = [
+    ("Campus · Temuco", "l2_switch", "#1565C0", [
+        ("SEG", "9 VLAN por función; ACL DEPTOS-IN, VOZ-IN, IOT-IN, INVITADOS-IN (+ IPv6)"),
+        ("SRV", "PortFast + BPDU Guard, RA Guard, VLAN nativa 999, puertos libres apagados"),
+        ("GES", "VLAN 99 de gestión, SSH, SNMPv3 authPriv (SHA/AES)"),
+        ("CUM", "Syslog a Wazuh con hora NTP")]),
+    ("Sucursales", "branch", "#00838F", [
+        ("SEG", "Misma segmentación y ACL que la matriz"),
+        ("DEF", "Bloqueos de ACL → Wazuh (100100); escaneo → nivel 10 (100102) → Telegram"),
+        ("SRV", "ATA con línea de emergencia si cae el túnel"),
+        ("GES", "Acceso de gestión solo desde la red de administración")]),
+    ("Borde · Internet", "firewall", "#E65100", [
+        ("DEF", "Firewall OPNsense perimetral en la matriz"),
+        ("DEF", "IDS Suricata en la WAN, alertas por syslog a Wazuh"),
+        ("INT", "Firmas ET Open actualizables"),
+        ("SRV", "PAT: el direccionamiento interno no se expone"),
+        ("GES", "Agente Zabbix aceptado solo desde SRV-NOC")]),
+    ("WAN · entre sedes y nube", "vpn_concentrator", "#6A1B9A", [
+        ("SRV", "GRE sobre IPsec AES-256 en los 3 túneles"),
+        ("SRV", "VPN IKEv2 matriz ↔ AWS; IP SLA mantiene el túnel activo"),
+        ("SEG", "ACL de cifrado: solo las redes internas viajan por la VPN"),
+        ("SRV", "QoS: la voz conserva DSCP EF dentro del túnel")]),
+    ("Sala de servidores · Temuco", "server", "#455A64", [
+        ("SEG", "VLAN 80 dedicada, accesible solo para los servicios necesarios"),
+        ("SRV", "Active Directory: identidad central, GPO, permisos por departamento"),
+        ("SRV", "Clúster Proxmox + NAS con réplica en Talca (ransomware / fallas)"),
+        ("CUM", "Respaldos diarios verificables; UPS en equipos críticos")]),
+    ("Nube · AWS", "secure_server", "#2E7D32", [
+        ("GES", "Grupos de seguridad con mínimo privilegio; administración por VPN"),
+        ("SRV", "HTTPS (Let's Encrypt) y FTPS TLS 1.3"),
+        ("DEF", "Wazuh SIEM con reglas propias; alertas a Telegram (≥ nivel 10)"),
+        ("CUM", "Zabbix + Grafana: disponibilidad e historial de eventos")]),
+]
+for k, (nom, ic, col, items) in enumerate(ZONAS):
+    x0, y0 = 20 + (k % 3) * 655, 115 + (k // 3) * 300
+    f6.box(x0, y0, 635, 285, nom, "#FFFFFF", col, fs=13)
+    f6.icon(ic, x0 + 20, y0 + 50, "", size=50) if ic not in ("branch",) else f6.icon("branch", x0 + 20, y0 + 50, "", size=50)
+    f6.text(x0 + 85, y0 + 40, 540, 240, chips(items), fs=11, color="#263238")
+
+MAT = [("Llamada sucursal ↔ matriz", "Escucha o interceptación de la voz", "GRE + IPsec AES-256; QoS EF", "WAN", "SRV"),
+       ("Cliente usa el Wi-Fi de la sala de ventas", "Acceso a la red interna", "VLAN 60 + ACL INVITADOS-IN (solo Internet)",
+        "Campus / Sucursal", "SEG"),
+       ("Equipo infectado en un departamento", "Propagación lateral", "ACL DEPTOS-IN; alertas 100100/100102 → Telegram",
+        "Campus / Sucursal", "SEG · DEF"),
+       ("Sensor IoT de riego comprometido", "Pivote hacia la red interna", "VLAN 70 + ACL IOT-IN (solo Internet)",
+        "Campus / Sucursal", "SEG"),
+       ("Tráfico desde Internet hacia la matriz", "Escaneo o explotación", "Firewall + IDS Suricata → Wazuh", "Borde",
+        "DEF · INT"),
+       ("Cambio de configuración en un router", "Error o sabotaje sin rastro", "Syslog + regla 4721, SSH, NTP",
+        "Todos", "CUM · GES"),
+       ("Clientes usan la web y el FTP", "Robo de credenciales o datos", "HTTPS / FTPS TLS; grupos de seguridad",
+        "Nube", "SRV · GES"),
+       ("Falla de servidor o ransomware", "Pérdida de datos y servicio", "Clúster Proxmox; NAS + réplica en Talca",
+        "Sala de servidores", "SRV")]
+rows = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td><td>{d}</td><td><b>{e}</b></td></tr>" for a, b, c, d, e in MAT)
+f6.text(20, 725, 1960, 340,
+        "<b style='font-size:14px'>Matriz SAFE: flujo del negocio → amenaza → control</b>"
+        "<table border='1' cellpadding='5' style='border-collapse:collapse;margin-top:6px;width:100%'>"
+        "<tr style='background:#FFEBEE'><th>Flujo del negocio</th><th>Amenaza</th><th>Control aplicado</th>"
+        "<th>Lugar</th><th>Dominio</th></tr>" + rows + "</table>", fs=11, color="#263238")
+f6.text(20, 1080, 1960, 110,
+        "<b>Brechas y próximos pasos (trabajo futuro):</b> autenticación 802.1X en los puertos de acceso · IPS en modo "
+        "bloqueo una vez ajustadas las firmas · firewall en alta disponibilidad (CARP) · segundo enlace a Internet en "
+        "Temuco · MFA para la administración · rotación periódica de claves SNMPv3 y VPN.",
+        fs=11.5, color="#4E342E", fill="#FFF8E1", stroke="#FFB300")
+
 with open(OUT, "w", encoding="utf-8") as f:
-    f.write('<mxfile host="drawio" version="24.7.17">' + "".join(pg.xml() for pg in (q, p, o, t, b)) + "</mxfile>")
+    f.write('<mxfile host="drawio" version="24.7.17">' + "".join(pg.xml() for pg in (q, p, o, t, b, f6)) + "</mxfile>")
 print("ok", OUT)
