@@ -189,6 +189,35 @@ Nota: la prueba con testmynids.org ya no sirve (el dominio está a la venta y no
 Acceso a la consola: el VNC de QEMU no permite pegar texto (los comandos llegan incompletos); se recomienda SSH a OPT1
 (192.168.133.188) con una regla que permita TCP 22 solo desde OPT1 net.
 
+## Alertas de seguridad a Telegram (18-11-2026)
+Wazuh no trae integración nativa con Telegram: se creó una integración propia que `wazuh-integratord` ejecuta para cada
+alerta de **nivel ≥ 10** (escaneo 100102, ataques y alertas graves de Suricata), para no saturar el celular.
+
+| Elemento | Configuración |
+|---|---|
+| Bot | `@soc_agroprodel_bot` ("SOC Agroprodel"), creado con @BotFather; separado del bot del prototipo IoT |
+| Token y chat id | Solo en `/var/ossec/etc/ossec.conf` de SRV-SIEM (no se documentan). El token se cargó con `read -rs TG_TOKEN` para que no quede en el historial ni en pantalla, y el chat id se obtuvo con `getUpdates` |
+| Script | `/var/ossec/integrations/custom-telegram.py` (copia en `wazuh/custom-telegram.py`) + lanzador `custom-telegram` (copia del de Slack, que lo ejecuta con el Python de Wazuh) · `root:wazuh` · `750` |
+| Mensaje | Gravedad, nivel, descripción, regla, equipo (los routers y el firewall se nombran a partir de su IP de syslog), origen → destino, firma de Suricata si existe, hora |
+| `ossec.conf` | Bloque `<ossec_config><integration>`: `name custom-telegram` · `hook_url https://api.telegram.org/bot<token>/sendMessage` · `api_key <chat id>` · `level 10` · `alert_format json`. Respaldo previo en `/root/ossec.conf.bak-telegram` |
+| Salida | HTTPS saliente de SRV-SIEM (el grupo de seguridad permite todo el tráfico de salida) |
+
+### Pruebas
+| Prueba | Resultado |
+|---|---|
+| Ejecución manual del script con una alerta JSON de prueba | Mensaje *[SOC Agroprodel] Alerta ALTA (nivel 10)* recibido en el celular ✅ |
+| `ossec.log` tras reiniciar | `wazuh-integratord: INFO: Enabling integration for: 'custom-telegram'` ✅ |
+| Prueba real: 10 "ping TCP" en bloque desde el VPCS 192.168.20.66 hacia 192.168.10.65 | Bloqueos de `DEPTOS-IN` en R-CONCEPCION → syslog por la VPN → regla 100102 → **Telegram en segundos**: *Agroprodel: multiples bloqueos de ACL desde 192.168.20.66 en 60 s (posible escaneo o movimiento lateral)*, origen 192.168.20.66 → destino 192.168.10.65 ✅ |
+
+Ajuste posterior: en la prueba real el campo "Equipo" mostraba `srv-siem` (los routers no tienen agente y Wazuh atribuye
+el evento al manager); el script se actualizó para traducir la IP de origen del syslog (`location`) al nombre del equipo.
+
+### Errores encontrados
+| N° | Síntoma | Causa | Solución |
+|---|---|---|---|
+| S-20 | `getUpdates` devolvía `{"ok":true,"result":[]}` y luego nada | Primero no había mensajes nuevos para el bot; después se abrió otra sesión SSH y la variable `TG_TOKEN` quedó vacía | Enviar un mensaje nuevo al bot y recargar el token con `read -rs` en la misma sesión; `echo ${#TG_TOKEN}` = 46 confirma que está cargado sin mostrarlo |
+| S-21 | `chown`/`chmod .../custom-telegram*`: *No such file or directory* | El `*` lo expande el shell del usuario `ubuntu`, que no tiene permiso para listar `/var/ossec/integrations`; el patrón llega literal a `sudo` | Nombrar los archivos completos (sin comodín) |
+
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
 - Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:

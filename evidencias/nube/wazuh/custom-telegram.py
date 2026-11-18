@@ -10,7 +10,12 @@ with open(alert_file) as f:
 
 r = a.get('rule', {})
 d = a.get('data', {})
-equipo = a.get('predecoder', {}).get('hostname') or a.get('agent', {}).get('name', '-')
+# Los equipos de red no tienen agente: llegan por syslog y Wazuh los registra con su IP en "location"
+EQUIPOS = {'192.168.40.241': 'R-TEMUCO', '192.168.10.193': 'R-TALCA', '192.168.20.161': 'R-CONCEPCION',
+           '192.168.30.129': 'R-LOS-ANGELES', '203.0.113.1': 'FW-TEMUCO'}
+loc = a.get('location', '')
+equipo = (a.get('predecoder', {}).get('hostname') or EQUIPOS.get(loc)
+          or (loc if a.get('agent', {}).get('id') == '000' and loc else a.get('agent', {}).get('name', '-')))
 origen = d.get('srcip') or d.get('src_ip') or '-'
 destino = d.get('dstip') or d.get('dest_ip') or '-'
 nivel = r.get('level', 0)

@@ -49,5 +49,5 @@
    - ✅ Reglas propias de ACL: 100100 (bloqueo entre VLAN), 100101 (ruido NetBIOS), 100102 (escaneo, nivel 10), probadas en vivo.
    - ⚠️ Suricata (IDS) en OPNsense (FW-TEMUCO): instalado, reglas ET Open descargadas y envío syslog a Wazuh verificado (18-11).
      Falta: reducir reglas (S-19, falta de memoria) y prueba de alerta. Si no se completa, se presenta como diseño en el informe.
-   - ⏳ Alertas de seguridad a Telegram.
+   - ✅ Alertas de seguridad a Telegram (nivel ≥ 10): bot @soc_agroprodel_bot, probado con escaneo real desde Concepción (18-11).
 10. Opcional: monitoreo de Issabel en Zabbix (ICMP).
