@@ -47,6 +47,7 @@
    - ✅ Instalación, IP fija y rotación de la clave de `admin` (S-15, S-16).
    - ✅ Syslog de los 4 routers por la VPN, NTP y zona horaria; regla 4721 (cambios de configuración) en las 4 sedes.
    - ✅ Reglas propias de ACL: 100100 (bloqueo entre VLAN), 100101 (ruido NetBIOS), 100102 (escaneo, nivel 10), probadas en vivo.
-   - ⏳ Suricata (IDS) en OPNsense (FW-TEMUCO) con sus alertas en Wazuh.
+   - ⚠️ Suricata (IDS) en OPNsense (FW-TEMUCO): instalado, reglas ET Open descargadas y envío syslog a Wazuh verificado (18-11).
+     Falta: reducir reglas (S-19, falta de memoria) y prueba de alerta. Si no se completa, se presenta como diseño en el informe.
    - ⏳ Alertas de seguridad a Telegram.
 10. Opcional: monitoreo de Issabel en Zabbix (ICMP).

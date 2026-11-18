@@ -158,6 +158,37 @@ Desde el mismo VPCS (192.168.20.66), "ping TCP" a 10 puertos de 192.168.10.65 (2
 Cadena demostrada: VPCS → ACL `DEPTOS-IN` en R-CONCEPCION → syslog por la VPN → reglas 100100/100102 → alerta de nivel 10
 en el panel.
 
+## Suricata (IDS) en FW-TEMUCO y envío a Wazuh (18-11-2026)
+| Elemento | Configuración |
+|---|---|
+| Ubicación | OPNsense 26.7.9 (FW-TEMUCO), Suricata 8.0.8. Se descartó instalarlo en SRV-SIEM: un IDS solo analiza el tráfico que pasa por él, y en AWS solo vería el tráfico dirigido al propio servidor |
+| Modo | PCAP live mode (**IDS**, solo detecta, no bloquea) · interfaz **WAN (vtnet0)** · promiscuo desactivado |
+| Home networks | 192.168.0.0/16 · 10.40.0.0/16 · 203.0.113.0/24 |
+| Reglas | ET Open (emerging-*), descargadas el 18-11 · 71.301 reglas en el catálogo |
+| Salida | *syslog alerts* y *eve syslog output* (facility local5, ident `suricata`) · rotación semanal, 4 archivos |
+| Envío | System → Settings → Logging → Remote: UDP(4) · aplicación `suricata` · 10.40.1.20:514. Sale con origen 203.0.113.1 (LAN), que está en la ACL `VPN-AWS` línea 20: viaja cifrado por la VPN |
+| AWS | SG_SOC_SIEM: UDP 514 desde 203.0.113.0/30 (SYSLOG FW-TEMUCO) |
+| Wazuh | `ossec.conf`, bloque `<remote>` syslog: `<allowed-ips>203.0.113.0/30</allowed-ips>` además de 192.168.0.0/16; respaldo en `/root/ossec.conf.bak-suricata`; `wazuh-manager` active, escuchando en 10.40.1.20:514 |
+
+### Pruebas
+| Prueba | Resultado |
+|---|---|
+| `logger -t suricata "Prueba syslog FW-TEMUCO hacia Wazuh"` en OPNsense + `tcpdump -ni ens5 udp port 514 and host 203.0.113.1 -A` en SRV-SIEM | `IP 203.0.113.1.4561 > 10.40.1.20.514: SYSLOG user.notice ... suricata[46444]: Prueba syslog FW-TEMUCO hacia Wazuh` ✅ camino firewall → VPN → SIEM operativo |
+| `curl -s 'http://httpbin.org/get?a=uid%3D0%28root%29'` (activa la regla 2100498 *GPL ATTACK_RESPONSE id check returned root*, habilitada) | Sin alerta: Suricata no estaba en ejecución (S-19). **Pendiente** repetir con el conjunto de reglas reducido |
+
+Nota: la prueba con testmynids.org ya no sirve (el dominio está a la venta y no devuelve `uid=0(root)`).
+
+### Errores encontrados
+| N° | Síntoma | Causa | Solución |
+|---|---|---|---|
+| S-18 | Apply en Intrusion Detection: *Error reconfiguring IDS – Error (1)*; Log File: *Invalid mpm algo supplied in the yaml conf file: "hs"* | El *pattern matcher* Hyperscan necesita instrucciones SSSE3, que la CPU virtual de EVE-NG (*QEMU Virtual CPU version 2.5+*) no expone | Pattern matcher → **Default** (Aho-Corasick); Suricata arranca |
+| S-19 | Suricata aparece iniciado en la web, pero no genera alertas; `eve.json` en 0 bytes, `stats.log` sin actualizar y el log termina en *Signal Received. Stopping engine* sin *Engine started*; `dmesg`: *pid ... (suricata) was killed: failed to reclaim memory* (también cayó un proceso `php` de la web) | Se habilitaron **todas** las categorías ET Open; con el algoritmo Aho-Corasick la carga de reglas supera los 2 GB de RAM del nodo FW-TEMUCO y FreeBSD mata el proceso | Reducir a las categorías útiles (scan, icmp, dos, exploit, attack_response, malware, voip, policy, compromised, ciarmy, drop), **Detect Profile = Low**, o subir la RAM del nodo en EVE a 3-4 GB. **Pendiente de aplicar** |
+
+### Diagnóstico usado
+`pgrep -lf suricata` · `ls -l /var/log/suricata/` · `tail -15 /var/log/suricata/latest.log` · `dmesg | grep -i -E 'killed|swap'`.
+Acceso a la consola: el VNC de QEMU no permite pegar texto (los comandos llegan incompletos); se recomienda SSH a OPT1
+(192.168.133.188) con una regla que permita TCP 22 solo desde OPT1 net.
+
 ## Enrutamiento en la VPC
 - SRV-NOC: *source/destination check* desactivado (reenvía tráfico entre la VPN y la VPC).
 - Tabla `VPC_AGROPRODEL-rtb-public` (rtb-009819cc49bbdfa36), asociada a subnet-03f4cc1647d14719c:

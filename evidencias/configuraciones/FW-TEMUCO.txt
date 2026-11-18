@@ -66,3 +66,16 @@ Enlace a Internet (ISP) - medido desde el firewall
   Zabbix          plantilla "Agroprodel OPNsense Enlace Internet" (zabbix/plantilla_opnsense_enlace_internet.yaml):
                   estado (En linea/Degradado/Caido), latencia, jitter, perdida; alertas Alta (caido),
                   Advertencia (degradado, perdida > 5 % en 5 min) y Promedio (sin datos 5 min)
+
+Suricata (IDS) - 18-11-2026 (detalle y errores en evidencias/nube/Registro_SOC.md, S-18 y S-19)
+  Settings        Enabled · Capture mode PCAP live mode (IDS) · Promiscuous NO · Interfaces WAN (vtnet0)
+                  Pattern matcher Default (Hyperscan no soportado por la CPU virtual de EVE: S-18)
+                  Home networks 192.168.0.0/16, 10.40.0.0/16, 203.0.113.0/24
+                  Syslog alerts SI · Eve syslog output SI · Rotate weekly · Save logs 4
+  Rules           ET Open descargadas el 18-11. Con TODAS las categorias, Suricata muere por falta de
+                  memoria (2 GB): S-19. Pendiente: dejar solo scan, icmp, dos, exploit, attack_response,
+                  malware, voip, policy, compromised, ciarmy, drop + Detect Profile Low
+  Remote logging  System > Settings > Logging > Remote: Enabled · UDP(4) · Applications suricata ·
+                  Hostname 10.40.1.20 · Port 514 · RFC5424 NO · "Wazuh SRV-SIEM"
+                  Verificado con logger: llega a SRV-SIEM por la VPN (origen 203.0.113.1)
+  Pendiente       Timezone del firewall (System > Settings > General) = America/Santiago (hoy UTC)
