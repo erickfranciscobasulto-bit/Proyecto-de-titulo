@@ -58,7 +58,7 @@ class Page:
         if kind in ("router", "router_with_firewall"):
             return self.v(S_RND + f"prIcon={kind};" + extra, x, y, size, size, label)
         if kind in ("l2_switch", "l3_switch", "workgroup_switch", "firewall", "wireless_lan_controller", "vpn_concentrator",
-                    "net_mgmt_appliance", "ips_ids", "communications_manager", "monitoring", "security_management"):
+                    "net_mgmt_appliance", "ips_ids", "storage", "ups", "communications_manager", "monitoring", "security_management"):
             return self.v(S_RECT + f"prIcon={kind};" + extra, x, y, size, size, label)
         shapes = {"server": ("server2", .55, 1), "dns": ("dns_server2", .55, 1), "secure_server": ("secure_server2", .55, 1),
                   "phone": ("ip_phone2", 1, 1), "pc": ("workstation2", 1, .8), "laptop": ("laptop2", 1, .8),
@@ -97,50 +97,70 @@ p.text(20, 44, 1900, 22, "Red convergente datos + voz · 4 sedes · Alta disponi
 p.box(20, 80, 820, 1030, "ENTERPRISE CAMPUS — Casa matriz Temuco · 192.168.40.0/23 (reserva 192.168.41.0/24)",
       "#E3F2FD", "#1565C0")
 p.box(40, 125, 780, 150, "Distribución / núcleo colapsado", "#FFFFFF", "#90CAF9", dashed=True, fs=11)
-p.box(40, 300, 780, 150, "Acceso (Building Access)", "#FFFFFF", "#90CAF9", dashed=True, fs=11)
-p.box(40, 475, 780, 230, "Usuarios y dispositivos finales", "#FFFFFF", "#90CAF9", dashed=True, fs=11)
-p.box(40, 730, 380, 160, "Server Farm (VLAN 80)", "#FFFFFF", "#90CAF9", dashed=True, fs=11)
+p.box(40, 295, 780, 145, "Acceso (Building Access)", "#FFFFFF", "#90CAF9", dashed=True, fs=11)
+p.box(40, 455, 780, 205, "Usuarios y dispositivos finales", "#FFFFFF", "#90CAF9", dashed=True, fs=11)
+p.box(40, 675, 780, 250, "Sala de servidores — Server Farm (VLAN 80 · 192.168.40.224/28)", "#FFFFFF", "#90CAF9",
+      dashed=True, fs=11)
 
 dist = p.icon("l2_switch", 405, 160, "DIST-TEMUCO<br><span style='font-weight:normal'>Raíz Rapid-PVST+</span>")
-a1 = p.icon("l2_switch", 145, 335, "ACC1-TEMUCO")
-a2 = p.icon("l2_switch", 405, 335, "ACC2-TEMUCO")
-a3 = p.icon("l2_switch", 665, 335, "ACC3-TEMUCO<br><span style='font-weight:normal'>(proyectado)</span>", dashed=True)
+a1 = p.icon("l2_switch", 145, 330, "ACC1-TEMUCO<br><span style='font-weight:normal'>48 PoE+</span>")
+a2 = p.icon("l2_switch", 405, 330, "ACC2-TEMUCO<br><span style='font-weight:normal'>48 PoE+</span>")
+a3 = p.icon("l2_switch", 665, 330, "ACC3-TEMUCO<br><span style='font-weight:normal'>24 PoE+</span>")
 p.e(dist, a1, LACP, "Po1 · LACP")
 p.e(dist, a2, LACP, "Po2 · LACP")
-p.e(dist, a3, LACP + "dashed=1;", "Po3 · LACP")
+p.e(dist, a3, LACP, "Po3 · LACP")
 p.e(a1, a2, "strokeColor=#9E9E9E;dashed=1;strokeWidth=1.5;", "enlace redundante (STP)")
+p.e(a2, a3, "strokeColor=#9E9E9E;dashed=1;strokeWidth=1.5;")
 
 # endpoints
-ph1 = p.icon("phone", 75, 520, "Teléfonos IP<br>VLAN 50 (voz)", size=42)
-pc1 = p.icon("pc", 175, 525, "PC (detrás del<br>teléfono) VLAN 10-40", size=46)
-pc2 = p.icon("pc", 335, 525, "PC departamentos<br>VLAN 10/20/30/40", size=46)
-ap = p.icon("ap", 470, 530, "AP CBW150AX<br>VLAN 60 invitados", size=50)
+ph1 = p.icon("phone", 75, 495, "Teléfonos IP<br>VLAN 50 (voz)", size=42)
+pc1 = p.icon("pc", 175, 500, "PC (detrás del<br>teléfono) VLAN 10-40", size=46)
+pc2 = p.icon("pc", 335, 500, "PC departamentos<br>VLAN 10/20/30/40", size=46)
+ap = p.icon("ap", 470, 505, "AP CBW150AX<br>VLAN 60 invitados", size=50)
+prn = p.icon("printer", 590, 500, "Impresoras<br>de red", size=46)
 iot = p.v("rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=10;fontStyle=1;",
-          615, 520, 110, 46, "ESP32 + sensor<br>humedad (IoT)<br>VLAN 70")
-valve = p.text(615, 570, 160, 60, "Electroválvula 12 V<br>umbral → riego<br>aviso Telegram", fs=9, color="#2E7D32")
-for a, b in ((a1, ph1), (a1, pc1), (a2, pc2), (a2, ap), (a3, iot)):
+          690, 495, 110, 46, "ESP32 + sensor<br>humedad (IoT)<br>VLAN 70")
+p.text(690, 545, 125, 50, "Electroválvula 12 V<br>umbral → riego<br>aviso Telegram", fs=9, color="#2E7D32")
+for a, b in ((a1, ph1), (a1, pc1), (a2, pc2), (a2, ap), (a3, prn), (a3, iot)):
     p.e(a, b, "strokeColor=#78909C;strokeWidth=1.5;")
-p.text(55, 640, 760, 60,
+p.text(55, 605, 760, 50,
        "<b>Dotación Temuco:</b> 88 usuarios (Siembra 20 · Cosecha 26 · Envasado 32 · Ventas 10) · 10 teléfonos IP · "
-       "QoS: voz DSCP EF + LLQ · RA Guard, BPDU Guard, PortFast en acceso", fs=10, color="#37474F")
+       "120 puertos de acceso (28 libres para crecer) · QoS voz DSCP EF + LLQ · RA Guard, BPDU Guard, PortFast",
+       fs=10, color="#37474F")
 
-iss = p.icon("server", 110, 770, "SRV-ISSABEL<br><span style='font-weight:normal'>192.168.40.226 · IVR 1-4</span>",
-             size=60)
-p.text(230, 770, 180, 110, "Central IP centralizada (Issabel/Asterisk)<br>Extensiones 1001 · 2001 · 3001 · 4001<br>"
-       "IVR: 1 Temuco · 2 Talca · 3 Concepción · 4 Los Ángeles", fs=9.5, color="#37474F")
-p.e(dist, iss, "strokeColor=#78909C;strokeWidth=1.5;", "", pts=[(470, 290), (60, 290), (60, 800)])
+# sala de servidores: bus VLAN 80 + cluster Proxmox + respaldo + energia
+bus = p.v("rounded=1;html=1;fillColor=#1565C0;strokeColor=none;fontColor=#FFFFFF;fontSize=10;fontStyle=1;",
+          60, 712, 740, 18, "Switch de distribución · VLAN 80 Servidores (gateway 192.168.40.225)")
+p.e(dist, bus, "strokeColor=#1565C0;strokeWidth=2.5;", "", pts=[(30, 185), (30, 721)])
+pve1 = p.icon("server", 85, 760, "PVE-01<br><span style='font-weight:normal'>HPE DL20 Gen11</span>", size=62)
+pve2 = p.icon("server", 185, 760, "PVE-02<br><span style='font-weight:normal'>HPE DL20 Gen11</span>", size=62)
+nas = p.icon("storage", 610, 755, "NAS-RESPALDO<br><span style='font-weight:normal'>Synology RS422+</span>", size=55)
+ups = p.icon("ups", 720, 755, "UPS 1500 VA<br><span style='font-weight:normal'>x3 (rack)</span>", size=55)
+for s_ in (pve1, pve2, nas):
+    p.e(bus, s_, "strokeColor=#1565C0;strokeWidth=1.5;")
+p.e(pve1, pve2, "strokeColor=#2E7D32;strokeWidth=1.5;dashed=1;", "clúster")
+vms = ("<b>Clúster Proxmox VE (alta disponibilidad de VM)</b><br>"
+       "• <b>DC01</b> Active Directory · DNS interno · GPO<br>"
+       "• <b>DC02</b> controlador de dominio réplica<br>"
+       "• <b>SRV-ISSABEL</b> central IP · 192.168.40.226 · IVR 1-4<br>"
+       "• <b>SRV-ARCHIVOS</b> carpetas por departamento (permisos AD)<br>"
+       "• <b>SRV-IMPRESION</b> cola de impresión y escaneo<br>"
+       "Si un nodo falla, sus VM se reinician en el otro.")
+p.text(275, 740, 320, 180, vms, fs=9.5, color="#263238", fill="#F5F9FF", stroke="#90CAF9")
+p.text(600, 840, 215, 80, "Respaldo diario de VM y archivos (Active Backup), copia en Talca. UPS para servidores, "
+       "NAS, firewall y router.", fs=9, color="#37474F")
 
-vl = ("<b>VLAN por sede</b><br>10 Siembra y riego · 20 Cosecha y molienda · 30 Envasado y bodega · 40 Ventas<br>"
+vl = ("<b>VLAN por sede</b><br>10 Siembra y riego · 20 Cosecha y molienda · 30 Envasado y bodega · 40 Ventas · "
       "50 Voz · 60 Invitados (solo Internet) · 70 IoT riego · 80 Servidores · 99 Gestión · 999 Nativa<br>"
-      "<b>DHCP:</b> en cada router (router-on-a-stick, subinterfaces 802.1Q) · <b>Doble pila</b> IPv4/IPv6")
-p.text(440, 735, 390, 150, vl, fs=10, color="#263238", fill="#FFFFFF", stroke="#90CAF9")
-p.text(40, 905, 790, 195,
-       "<b>Por qué este diseño (modelo jerárquico Cisco):</b><br>"
-       "• Acceso: conecta usuarios, teléfonos, AP e IoT; aplica seguridad de puerto y QoS.<br>"
-       "• Distribución / núcleo colapsado: agrega el acceso con EtherChannel y es raíz de Rapid-PVST+; "
-       "en una sede de este tamaño núcleo y distribución se unen para ahorrar equipos sin perder escalabilidad.<br>"
-       "• Si cae un enlace, STP converge en ~1-2 s por el camino redundante; si cae un cable de un EtherChannel, el canal sigue arriba.",
-       fs=10.5, color="#263238")
+      "<b>DHCP:</b> en cada router (subinterfaces 802.1Q) · <b>DNS:</b> AD interno + reenvío · <b>Doble pila</b> IPv4/IPv6")
+p.text(40, 935, 385, 165, vl, fs=9.5, color="#263238", fill="#FFFFFF", stroke="#90CAF9")
+p.text(435, 935, 395, 170,
+       "<b>Modelo jerárquico Cisco</b><br>"
+       "• <b>Acceso:</b> usuarios, teléfonos, AP e IoT; seguridad de puerto y QoS.<br>"
+       "• <b>Distribución / núcleo colapsado:</b> agrega el acceso con EtherChannel y es raíz de Rapid-PVST+; "
+       "en una sede de este tamaño núcleo y distribución se unen sin perder escalabilidad.<br>"
+       "• Si cae un enlace, STP converge en ~1-2 s; si cae un cable de un EtherChannel, el canal sigue arriba.",
+       fs=9.5, color="#263238")
 
 # --- Enterprise Edge ---
 p.box(870, 80, 310, 500, "ENTERPRISE EDGE", "#FFF3E0", "#E65100")
@@ -195,6 +215,9 @@ for nombre, red, us, x0 in sedes:
     p.e(d, c1, LACP, "LACP")
     p.e(d, c2, LACP, "LACP")
     p.e(c1, c2, "strokeColor=#9E9E9E;dashed=1;strokeWidth=1.5;")
+    if nombre == "Talca":
+        nr = p.icon("storage", x0 + 285, 815, "NAS réplica<br><span style='font-weight:normal'>copia fuera de sitio</span>", size=40)
+        p.e(d, nr, "strokeColor=#78909C;strokeWidth=1.5;")
     p.text(x0 + 10, 1030, 330, 60, "10 teléfonos IP · PC por departamento · AP invitados (VLAN 60) · ESP32 riego (VLAN 70)",
            fs=9.5, color="#006064", align="center")
     p.e(r, inet, WAN, "", pts=[(x0 + 175, 598), (1195, 598), (1195, 235)])
