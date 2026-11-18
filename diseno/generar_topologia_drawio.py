@@ -55,7 +55,7 @@ class Page:
 
     def icon(self, kind, x, y, label, color=BLUE, dashed=False, size=50):
         extra = f"strokeColor={color};" + ("dashed=1;opacity=70;" if dashed else "")
-        if kind in ("router", "router_with_firewall"):
+        if kind in ("router", "router_with_firewall", "router_with_voice"):
             return self.v(S_RND + f"prIcon={kind};" + extra, x, y, size, size, label)
         if kind in ("l2_switch", "l3_switch", "workgroup_switch", "firewall", "wireless_lan_controller", "vpn_concentrator",
                     "net_mgmt_appliance", "ips_ids", "storage", "ups", "communications_manager", "monitoring", "security_management"):
@@ -77,6 +77,8 @@ class Page:
                 f'<root><mxCell id="0"/><mxCell id="1" parent="0"/>{"".join(self.cells)}</root></mxGraphModel></diagram>')
 
 
+OSPF_HALO = "ellipse;html=1;fillColor=#FFF59D;strokeColor=#F9A825;strokeWidth=2;dashed=1;opacity=80;"
+SIP = "dashed=1;dashPattern=2 3;strokeColor=#00897B;strokeWidth=2.5;"
 LACP = "shape=link;width=4;strokeWidth=1.5;strokeColor=#2E7D32;"
 TRUNK = "strokeColor=#005073;"
 WAN = "strokeColor=#5D4037;"
@@ -87,11 +89,11 @@ BAD = "#C62828"
 # =====================================================================================================
 # PAGINA 2: DESPUES (TO-BE) - Modelo Cisco Enterprise Composite / Enterprise Architecture
 # =====================================================================================================
-p = Page("2 - Red propuesta (TO-BE)", 2000, 1250)
+p = Page("2 - Red propuesta (TO-BE)", 2000, 1300)
 p.text(20, 10, 1500, 34, "Agroprodel Ltda. — Red propuesta e implementada (TO-BE) · Modelo de Arquitectura Empresarial Cisco",
        fs=20, color="#0D47A1", bold=True)
 p.text(20, 44, 1900, 22, "Red convergente datos + voz · 4 sedes · Alta disponibilidad capa 2 (Rapid-PVST+ / 802.1w) · "
-       "EtherChannel LACP · GRE sobre IPsec AES-256 · Servicios y SOC virtualizados en AWS", fs=12, color="#455A64")
+       "EtherChannel LACP · GRE sobre IPsec AES-256 · OSPF área 0 · Telefonía IP con troncal SIP · Servicios y SOC en AWS", fs=12, color="#455A64")
 
 # --- Enterprise Campus (Temuco) ---
 p.box(20, 80, 820, 1030, "ENTERPRISE CAMPUS — Casa matriz Temuco · 192.168.40.0/23 (reserva 192.168.41.0/24)",
@@ -134,8 +136,8 @@ bus = p.v("rounded=1;html=1;fillColor=#1565C0;strokeColor=none;fontColor=#FFFFFF
 p.e(dist, bus, "strokeColor=#1565C0;strokeWidth=2.5;", "", pts=[(30, 185), (30, 721)])
 pve1 = p.icon("server", 85, 760, "PVE-01<br><span style='font-weight:normal'>HPE DL20 Gen11</span>", size=62)
 pve2 = p.icon("server", 185, 760, "PVE-02<br><span style='font-weight:normal'>HPE DL20 Gen11</span>", size=62)
-nas = p.icon("storage", 610, 755, "NAS-RESPALDO<br><span style='font-weight:normal'>Synology RS422+</span>", size=55)
-ups = p.icon("ups", 720, 755, "UPS 1500 VA<br><span style='font-weight:normal'>x3 (rack)</span>", size=55)
+nas = p.icon("storage", 615, 755, "NAS-RESPALDO<br><span style='font-weight:normal'>Synology RS422+</span>", size=55)
+ups = p.icon("ups", 730, 755, "UPS 1500 VA<br><span style='font-weight:normal'>x3 (rack)</span>", size=55)
 for s_ in (pve1, pve2, nas):
     p.e(bus, s_, "strokeColor=#1565C0;strokeWidth=1.5;")
 p.e(pve1, pve2, "strokeColor=#2E7D32;strokeWidth=1.5;dashed=1;", "clúster")
@@ -146,8 +148,8 @@ vms = ("<b>Clúster Proxmox VE (alta disponibilidad de VM)</b><br>"
        "• <b>SRV-ARCHIVOS</b> carpetas por departamento (permisos AD)<br>"
        "• <b>SRV-IMPRESION</b> cola de impresión y escaneo<br>"
        "Si un nodo falla, sus VM se reinician en el otro.")
-p.text(275, 740, 320, 180, vms, fs=9.5, color="#263238", fill="#F5F9FF", stroke="#90CAF9")
-p.text(600, 840, 215, 80, "Respaldo diario de VM y archivos (Active Backup), copia en Talca. UPS para servidores, "
+p.text(268, 740, 305, 180, vms, fs=9.5, color="#263238", fill="#F5F9FF", stroke="#90CAF9")
+p.text(598, 845, 220, 75, "Respaldo diario de VM y archivos (Active Backup), copia en Talca. UPS para servidores, "
        "NAS, firewall y router.", fs=9, color="#37474F")
 
 vl = ("<b>VLAN por sede</b><br>10 Siembra y riego · 20 Cosecha y molienda · 30 Envasado y bodega · 40 Ventas · "
@@ -164,26 +166,34 @@ p.text(435, 935, 395, 170,
 
 # --- Enterprise Edge ---
 p.box(870, 80, 310, 500, "ENTERPRISE EDGE", "#FFF3E0", "#E65100")
-rt = p.icon("router", 905, 160, "R-TEMUCO<br><span style='font-weight:normal'>PAT · hub GRE/IPsec<br>VPN a AWS · OSPF</span>")
+p.v(OSPF_HALO, 890, 145, 80, 80)
+rt = p.icon("router", 905, 160, "R-TEMUCO<br><span style='font-weight:normal'>RID 1.1.1.1 · ASBR<br>hub GRE/IPsec · PAT</span>")
 fw = p.icon("firewall", 1085, 160, "FW-TEMUCO<br><span style='font-weight:normal'>OPNsense<br>IDS Suricata</span>")
 p.e(dist, rt, TRUNK, "Troncal 802.1Q")
 p.e(rt, fw, WAN, "203.0.113.0/30")
-p.text(885, 300, 285, 270,
+fxo = p.icon("router_with_voice", 1095, 300, "GW-FXO<br><span style='font-weight:normal'>respaldo PSTN</span>", size=40)
+p.text(885, 290, 200, 75, "<b>Voz de respaldo:</b> si cae el troncal SIP, Issabel sale por 2 líneas analógicas (FXO).",
+       fs=9, color="#004D40")
+p.text(885, 370, 285, 200,
        "<b>Funciones del borde</b><br>• PAT: los equipos internos salen con la IP pública de la sede.<br>"
        "• Hub de túneles GRE cifrados con IPsec (AES-256) hacia las 3 sucursales.<br>"
-       "• Enrutamiento dinámico OSPF entre sedes por los túneles.<br>"
+       "• OSPF entre sedes por los túneles; redistribuye la ruta de AWS (10.40.0.0/16).<br>"
        "• VPN IKEv2 hacia la nube (gestión SNMPv3, syslog, Zabbix).<br>"
        "• Firewall perimetral + IDS Suricata (alertas a Wazuh).<br>"
-       "• ACL entre VLAN: invitados e IoT solo Internet.", fs=10, color="#4E342E")
+       "• ACL entre VLAN: invitados e IoT solo Internet.", fs=9.5, color="#4E342E")
 
 # --- Service provider edge ---
 p.box(1210, 80, 290, 500, "SERVICE PROVIDER EDGE", "#F3E5F5", "#6A1B9A")
 inet = p.icon("cloud", 1285, 165, "Internet / ISP<br><span style='font-weight:normal'>IP pública por sede</span>", size=85)
 p.e(fw, inet, WAN, "WAN 203.0.113.18/30")
-p.text(1225, 320, 265, 250,
-       "<b>Enlaces a Internet independientes</b><br>Temuco 203.0.113.18 (vía firewall)<br>Talca 203.0.113.6<br>"
-       "Concepción 203.0.113.10<br>Los Ángeles 203.0.113.14<br><br>Cada sede navega por su propio enlace; el tráfico "
-       "entre sedes viaja dentro de los túneles cifrados.", fs=10, color="#4A148C")
+p.text(1225, 300, 265, 130,
+       "<b>Enlaces a Internet independientes</b><br>Temuco 203.0.113.18 (vía firewall) · Talca 203.0.113.6<br>"
+       "Concepción 203.0.113.10 · Los Ángeles 203.0.113.14<br>El tráfico entre sedes viaja dentro de los túneles.",
+       fs=9.5, color="#4A148C")
+sipc = p.icon("cloud", 1225, 450, "Proveedor VoIP<br><span style='font-weight:normal'>troncal SIP (DID)</span>", size=60)
+pstnc = p.icon("cloud", 1385, 450, "PSTN<br><span style='font-weight:normal'>respaldo</span>", size=60)
+p.e(fw, sipc, SIP, "SIP/RTP", pts=[(1150, 185), (1150, 480)])
+p.e(fxo, pstnc, "strokeColor=#00897B;strokeWidth=1.5;", "", pts=[(1115, 545), (1415, 545)])
 
 # --- Data center en la nube ---
 p.box(1530, 80, 450, 500, "ENTERPRISE DATA CENTER — Nube AWS (VPC 10.40.0.0/16)", "#E8F5E9", "#2E7D32")
@@ -192,22 +202,24 @@ s2 = p.icon("server", 1730, 140, "SRV-NOC<br><span style='font-weight:normal'>Za
 s3 = p.icon("secure_server", 1890, 140, "SRV-SIEM<br><span style='font-weight:normal'>Wazuh SIEM<br>10.40.1.20</span>", size=60)
 tg = p.icon("cell", 1900, 330, "Telegram<br><span style='font-weight:normal'>alertas ≥ nivel 10</span>", size=55)
 p.e(s3, tg, "strokeColor=#2E7D32;strokeWidth=1.5;endArrow=classic;dashed=1;")
-p.e(inet, s1, WAN + "endArrow=none;", "Internet Gateway", pts=[(1500, 205), (1500, 120), (1600, 120)])
+p.e(inet, s1, WAN, "Internet Gateway", pts=[(1545, 207), (1545, 170)])
 p.text(1545, 330, 330, 240,
        "<b>Servicios esenciales virtualizados</b> (FTP, DNS, WEB)<br>+ <b>SOC</b>: disponibilidad (Zabbix/Grafana), "
        "eventos de seguridad (Wazuh) y alertas al celular.<br><br>Grupos de seguridad con mínimo privilegio; "
        "gestión solo por la VPN.", fs=10, color="#1B5E20")
-p.e(rt, s2, VPN, "VPN IPsec IKEv2 (gestión)", pts=[(930, 105), (1760, 105)])
+p.e(rt, s2, VPN, "VPN IPsec IKEv2 (gestión)", pts=[(930, 115), (1760, 115)])
 
 # --- Branches ---
-p.box(870, 610, 1110, 500, "ENTERPRISE BRANCH — Sucursales (mismo diseño jerárquico de 2 capas, misma plantilla de configuración)",
+p.box(870, 600, 1110, 510, "ENTERPRISE BRANCH — Sucursales (mismo diseño jerárquico de 2 capas, misma plantilla de configuración)",
       "#E0F7FA", "#00838F")
-sedes = [("Talca", "192.168.10.0/24", "76 usuarios", 885), ("Concepción", "192.168.20.0/24", "51 usuarios", 1250),
-         ("Los Ángeles", "192.168.30.0/24", "31 usuarios", 1615)]
-for nombre, red, us, x0 in sedes:
+sedes = [("Talca", "192.168.10.0/24", "76 usuarios", 885, "2.2.2.2", 1, "172.16.0.0/30"),
+         ("Concepción", "192.168.20.0/24", "51 usuarios", 1250, "3.3.3.3", 2, "172.16.0.4/30"),
+         ("Los Ángeles", "192.168.30.0/24", "31 usuarios", 1615, "4.4.4.4", 3, "172.16.0.8/30")]
+for nombre, red, us, x0, rid, tn, tnet in sedes:
     p.box(x0, 650, 350, 445, f"{nombre} · {red} · {us}", "#FFFFFF", "#4DD0E1", dashed=True, fs=11)
     tag = nombre.upper().replace("Á", "A").replace("Ó", "O").replace(" ", "-")
-    r = p.icon("router", x0 + 150, 690, f"R-{tag}<br><span style='font-weight:normal'>PAT · GRE/IPsec · DHCP</span>")
+    p.v(OSPF_HALO, x0 + 135, 675, 80, 80)
+    r = p.icon("router", x0 + 150, 690, f"R-{tag}<br><span style='font-weight:normal'>RID {rid} · Tunnel{tn} {tnet}<br>PAT · DHCP</span>")
     d = p.icon("l2_switch", x0 + 150, 815, f"DIST-{tag}")
     c1 = p.icon("l2_switch", x0 + 45, 935, f"ACC1-{tag}")
     c2 = p.icon("l2_switch", x0 + 255, 935, f"ACC2-{tag}")
@@ -218,27 +230,36 @@ for nombre, red, us, x0 in sedes:
     if nombre == "Talca":
         nr = p.icon("storage", x0 + 285, 815, "NAS réplica<br><span style='font-weight:normal'>copia fuera de sitio</span>", size=40)
         p.e(d, nr, "strokeColor=#78909C;strokeWidth=1.5;")
-    p.text(x0 + 10, 1030, 330, 60, "10 teléfonos IP · PC por departamento · AP invitados (VLAN 60) · ESP32 riego (VLAN 70)",
+    p.text(x0 + 10, 1030, 330, 60, "10 teléfonos IP · PC por departamento · AP invitados (VLAN 60) · ESP32 riego (VLAN 70) · ATA + línea analógica de emergencia",
            fs=9.5, color="#006064", align="center")
-    p.e(r, inet, WAN, "", pts=[(x0 + 175, 598), (1195, 598), (1195, 235)])
-    p.e(r, rt, GRE, "GRE/IPsec" if x0 == 885 else "", pts=[(x0 + 120, 632), (855, 632), (855, 235)])
+    p.e(r, inet, WAN, "", pts=[(x0 + 300, 705), (x0 + 300, 590), (1195, 590), (1195, 235)])
+    p.e(r, rt, GRE, "GRE/IPsec" if x0 == 885 else "", pts=[(x0 + 320, 725), (x0 + 320, 642), (855, 642), (855, 235)])
 
 # legend
 L = 1125
-p.box(20, L, 1960, 110, "Leyenda", "#FAFAFA", "#9E9E9E", fs=11)
+p.box(20, L, 1960, 160, "Leyenda", "#FAFAFA", "#9E9E9E", fs=11)
 items = [("shape=link;width=4;strokeColor=#2E7D32;", "EtherChannel LACP (agregación)"),
          ("strokeColor=#005073;strokeWidth=2;", "Troncal 802.1Q"),
          ("strokeColor=#5D4037;strokeWidth=2;", "Enlace WAN / Internet"),
          ("dashed=1;dashPattern=8 4;strokeColor=#E65100;strokeWidth=2;", "Túnel GRE sobre IPsec (sucursal → matriz)"),
          ("dashed=1;dashPattern=8 4;strokeColor=#6A1B9A;strokeWidth=2.5;", "VPN IPsec IKEv2 matriz ↔ AWS"),
-         ("strokeColor=#9E9E9E;dashed=1;strokeWidth=1.5;", "Enlace redundante bloqueado por STP")]
+         ("strokeColor=#9E9E9E;dashed=1;strokeWidth=1.5;", "Enlace redundante bloqueado por STP"),
+         ("dashed=1;dashPattern=2 3;strokeColor=#00897B;strokeWidth=2.5;", "Troncal SIP hacia el proveedor VoIP"),
+         ("strokeColor=#F9A825;strokeWidth=6;opacity=60;", "Router OSPF área 0 (halo amarillo)")]
 for k, (st, lab) in enumerate(items):
-    x = 40 + (k % 3) * 640
-    y = L + 40 + (k // 3) * 32
+    x = 40 + (k % 4) * 490
+    y = L + 40 + (k // 4) * 32
     a = p.v("text;html=1;", x, y, 1, 1)
     b = p.v("text;html=1;", x + 60, y, 1, 1)
     p.e(a, b, st)
-    p.text(x + 70, y - 10, 540, 22, lab, fs=11, color="#212121")
+    p.text(x + 70, y - 10, 410, 22, lab, fs=11, color="#212121")
+
+p.text(40, L + 105, 1920, 50,
+       "<b>Enrutamiento:</b> OSPF proceso 1, <b>área 0 única (backbone)</b> · 4 routers en hub-and-spoke sobre los túneles GRE "
+       "(Tunnel1-3, 172.16.0.0/28) · LAN pasivas (vecindad solo por túneles) · R-TEMUCO es <b>ASBR</b>: redistribuye "
+       "10.40.0.0/16 (AWS) como ruta externa E2 · OSPFv3 para IPv6 · con 4 routers un área única es lo recomendado "
+       "(multiárea se justifica en redes grandes, del orden de 50+ routers).", fs=10.5, color="#5D4037",
+       fill="#FFFDE7", stroke="#F9A825")
 
 # =====================================================================================================
 # PAGINA 1: ANTES (AS-IS)
@@ -278,7 +299,11 @@ sites = [("Temuco (casa matriz)", "88 usuarios", 20, 90), ("Talca", "76 usuarios
 for nombre, us, x0, y0 in sites:
     mod, tel = sede_asis(x0, y0, nombre, us, x0 > 1000)
     q.e(mod, cloud, "strokeColor=#78909C;")
-    q.e(tel, pstn, "strokeColor=#B0BEC5;dashed=1;")
+    if y0 > 300:
+        xs = 760 if x0 < 1000 else 1240
+        q.e(tel, pstn, "strokeColor=#B0BEC5;dashed=1;", "", pts=[(xs, y0 + 350), (xs, 615)])
+    else:
+        q.e(tel, pstn, "strokeColor=#B0BEC5;dashed=1;")
 
 probs = ["✖ Sedes aisladas: sin enlace privado entre ellas; los datos se comparten por correo",
          "✖ Punto único de falla: switches en cascada sin enlaces redundantes (sin alta disponibilidad capa 2)",
