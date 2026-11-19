@@ -130,15 +130,10 @@ const hd = (size, before) => ({ run: { font: FONT, size, bold: true, color: "000
 const doc = new Document({
   features: { updateFields: true },
   styles: {
-    default: { document: { run: { font: FONT, size: 24, color: "000000" }, paragraph: { spacing: { line: 360 } } } },
-    paragraphStyles: [
-      { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true, ...hd(28, 360),
-        paragraph: { spacing: { before: 360, after: 120, line: 360 }, keepNext: true, outlineLevel: 0 } },
-      { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true, ...hd(26, 240),
-        paragraph: { spacing: { before: 240, after: 120, line: 360 }, keepNext: true, outlineLevel: 1 } },
-      { id: "Heading3", name: "Heading 3", basedOn: "Normal", next: "Normal", quickFormat: true, ...hd(24, 200),
-        paragraph: { spacing: { before: 200, after: 80, line: 360 }, keepNext: true, outlineLevel: 2 } },
-    ],
+    default: {
+      document: { run: { font: FONT, size: 24, color: "000000" }, paragraph: { spacing: { line: 360 } } },
+      heading1: hd(28, 360), heading2: hd(26, 240), heading3: hd(24, 200),
+    },
   },
   numbering: { config: [{ reference: "titulos", levels: [
     { level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT,
