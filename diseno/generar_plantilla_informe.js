@@ -61,12 +61,12 @@ const portada = [
   center("Diseño de Red de Datos, Telefonía IP y Servicios para una Empresa", 28, true, 120),
   center("Caso: Agroprodel Ltda.", 26, false, 1800),
   center("Asignatura: Portafolio de Título", 24, false, 120),
-  center("Docente: [Nombre del docente]", 24, false, 480),
+  center("Docente: Alfonso Danilo Barahona Abarca", 24, false, 480),
   center("Integrantes:", 24, true, 60),
   center("Erick Basulto", 24, false, 40),
   center("Nabidh Ulloa", 24, false, 40),
-  center("Rodrigo Verdejo", 24, false, 1200),
-  center("Sede [nombre de la sede] · [mes] de 2026", 24, false, 0),
+  center("Salvador Verdejo", 24, false, 1200),
+  center("Sede Plaza Oeste · 30 de noviembre de 2026", 24, false, 0),
 ];
 
 // ---------------------------------------------------------------- indices
@@ -101,7 +101,7 @@ add(h(1, "Acta de constitución del proyecto"), table(["Ítem", "Contenido"], [
 ], [3000, W - 3000]), brk());
 add(h(1, "Asignación de roles"), table(["Integrante", "Rol", "Funciones y tareas"], [
   ["Erick Basulto", "[Rol]", "[Funciones y tareas]"], ["Nabidh Ulloa", "[Rol]", "[Funciones y tareas]"],
-  ["Rodrigo Verdejo", "[Rol]", "[Funciones y tareas]"],
+  ["Salvador Verdejo", "[Rol]", "[Funciones y tareas]"],
 ], [2400, 2200, W - 4600]));
 add(h(1, "Metodología utilizada en el proyecto"), guide("Metodología, fases y función de cada fase."));
 add(h(1, "Carta Gantt"), guide("Imagen de la carta Gantt con etapas, recursos y fechas. Adjuntar el archivo .mpp."), brk());
