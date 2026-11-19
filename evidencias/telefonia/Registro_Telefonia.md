@@ -11,6 +11,13 @@ Proyecto Agroprodel Ltda. · Fase 2 (implementación)
 
 ## Terminales
 
+> **Softphones en el laboratorio vs. teléfonos en la empresa real.** El equipo contaba con un solo teléfono IP físico
+> (Cisco CP-8861), por lo que las pruebas entre sedes se realizaron con softphones (MicroSIP). Un softphone usa el mismo
+> protocolo SIP y recorre la misma ruta de red que un teléfono físico (VLAN de la sede → router → túnel GRE/IPsec →
+> Issabel), de modo que valida el enrutamiento, los túneles, la QoS, las ACL y el IVR. La implementación real considera
+> **10 teléfonos Cisco CP-7841 (firmware 3PCC, SIP) por sede**, alimentados por PoE en la VLAN de voz 50, con el PC
+> conectado detrás del teléfono. Los softphones quedan como complemento para teletrabajo o usuarios móviles.
+
 | Extensión | Sede | Terminal | Tecnología | Red / puerto |
 |---|---|---|---|---|
 | 1001 | Temuco | MicroSIP (PC con Issabel) | PJSIP | Host 192.168.40.232 (VLAN 80), Issabel 192.168.40.226 |

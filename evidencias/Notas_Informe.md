@@ -129,3 +129,26 @@ Método: flujos del negocio → amenazas → capacidades → arquitectura.
 
 Lugares de la red: Campus (Temuco) · Sucursales · Borde · WAN (túneles) · Data Center (sala de servidores) ·
 Nube (AWS).
+
+## Telefonía: softphones en el laboratorio
+Redacción sugerida: *"Por disponer de un solo teléfono IP físico, las pruebas entre sedes se realizaron con
+softphones (MicroSIP), que utilizan el mismo protocolo SIP y la misma ruta de red que un teléfono físico. La
+implementación real considera 10 teléfonos Cisco CP-7841 por sede, alimentados por PoE en la VLAN de voz."*
+
+## Telefonía: puntos que debe redactar el responsable (técnico)
+1. Arquitectura: Issabel centralizada en Temuco (192.168.40.226/28, VLAN 80); sucursales por túneles GRE/IPsec.
+2. Plan de numeración: 1001 Temuco · 2001 Talca · 3001 Concepción · 4001 Los Ángeles; rango para 10 teléfonos por sede.
+3. Protocolo y códec: SIP (PJSIP), G.711, ancho de banda por llamada.
+4. Configuración de extensiones con capturas (sin mostrar secrets).
+5. IVR: mensaje, opciones 1-4, opción inválida y sin respuesta.
+6. Rutas de llamadas: salientes, entrantes (DID → IVR) y entre sedes.
+7. Teléfono físico CP-8861: TFTP (opción 150), archivo SEP<MAC>.cnf.xml, VLAN de voz 50, PoE.
+8. Softphones del laboratorio y teléfonos CP-7841 de la implementación real (nota anterior).
+9. QoS (en conjunto con redes): voz DSCP EF (46), señalización CS3, LLQ, marca conservada en los túneles.
+10. Diseño de producción no implementado: troncal SIP con DID, GW-FXO con 2 líneas PSTN, ATA de emergencia por sucursal.
+11. Respaldo de la central: snapshot, respaldo de configuración, VM en clúster Proxmox.
+12. Pruebas y resultados: llamadas entre las 4 sedes, IVR con ACL activas, Wireshark con DSCP EF.
+13. Problemas y soluciones: T-01 (yum 403), T-02 (TFTP vacío), P-04 (pool DHCP con opción 150).
+14. Justificación: Issabel (sin licencias), CP-7841 3PCC (SIP sin licencias), costo frente a central propietaria.
+15. Ahorro: llamadas entre sedes a $0; un troncal SIP en lugar de 4 grupos de líneas analógicas.
+Material base: `evidencias/telefonia/Registro_Telefonia.md` e Informe Técnico §7.
