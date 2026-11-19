@@ -13,7 +13,7 @@ Estado al 19-11-2026. ✅ listo en el repo · ⚠️ existe pero falta adaptarlo
 | 7 | Objetivo general | ⚠️ | Enunciado: "Diseñar e implementar una red convergente..." |
 | 8 | Objetivos específicos (≥ 3, medibles) | ⚠️ | Enunciado (5); falta hacerlos medibles (plazo e indicador) |
 | 9 | Competencias del perfil de egreso (≥ 3) | ⚠️ | Enunciado trae 2; agregar al menos 1 (p. ej. seguridad de redes) |
-| 10 | Acta de constitución (nombre, descripción, objetivos, factores de éxito, fases y entregables, interesados, **riesgos**, hitos, presupuesto, aprobación, líder) | ❌ | Falta el documento completo |
+| 10 | Acta de constitución (nombre, descripción, objetivos, factores de éxito, fases y entregables, interesados, **riesgos**, hitos, presupuesto, aprobación, líder) | ⚠️ | Riesgos: `Matriz_Riesgos_Agroprodel.xlsx` (25 riesgos) · falta el resto del acta |
 | 11 | Asignación de roles (funciones y tareas por integrante) | ❌ | Erick: networking y SOC · Issabel y Gantt: compañeros |
 | 12 | Metodología (fases y función de cada una) | ⚠️ | Scrum + Top-Down Cisco (`Notas_Informe.md`) |
 | 13 | Carta Gantt (+ archivo .mpp) | ⏳ | A cargo de un integrante |
