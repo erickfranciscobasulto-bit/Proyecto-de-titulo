@@ -27,7 +27,7 @@ cr = wb.active
 cr.title = "Criterios"
 cr["A1"] = "Matriz de riesgos — Proyecto Agroprodel Ltda. · Criterios de evaluación"
 cr["A1"].font = Font(name=F, size=14, bold=True)
-cr["A2"] = ("Metodología: identificación, análisis y tratamiento de riesgos (enfoque ISO 31000). "
+cr["A2"] = ("Metodología: identificación, análisis, evaluación y tratamiento de riesgos según ISO 31000:2018. "
             "Nivel = Probabilidad × Impacto (escala 1 a 5).")
 cr["A2"].font = BODY
 
@@ -46,7 +46,7 @@ table(cr, 5, ["Valor", "Nivel", "Descripción"], [
     (1, "Muy baja", "Excepcional; no se espera durante el proyecto ni en el primer año de operación"),
     (2, "Baja", "Podría ocurrir una vez en varios años"),
     (3, "Media", "Puede ocurrir alguna vez en el año / durante el proyecto"),
-    (4, "Alta", "Ocurrirá probablemente varias veces en el año / ya ocurrió en el laboratorio"),
+    (4, "Alta", "Ocurrirá probablemente varias veces en el año"),
     (5, "Muy alta", "Ocurre de forma frecuente o es casi seguro")])
 cr["A12"] = "Impacto (I)"; cr["A12"].font = Font(name=F, size=12, bold=True)
 table(cr, 13, ["Valor", "Nivel", "Descripción"], [
@@ -87,176 +87,197 @@ def clasif(cell):
 m = wb.create_sheet("Matriz de riesgos")
 m["A1"] = "Matriz de riesgos — Proyecto: Diseño de red de datos, telefonía IP y servicios para Agroprodel Ltda."
 m["A1"].font = Font(name=F, size=14, bold=True)
-m["A2"] = ("P/I = probabilidad e impacto antes de los controles (inherente) · Residual = después de aplicar las medidas. "
-           "Evidencia: códigos del registro de problemas (P-xx red, S-xx SOC) en el repositorio.")
+m["A2"] = ("Fase: Implementación = riesgos del proyecto de instalación · Operación = riesgos de la red ya en servicio. "
+           "P e I antes de los controles (riesgo inherente); P res. e I res. después de aplicar las medidas (riesgo residual).")
 m["A2"].font = BODY
 m.merge_cells("A3:K3"); m["A3"] = "Riesgo inherente"
-m.merge_cells("L3:O3"); m["L3"] = "Tratamiento"
-m.merge_cells("P3:T3"); m["P3"] = "Riesgo residual"
-for c in ("A3", "L3", "P3"):
+m.merge_cells("L3:P3"); m["L3"] = "Tratamiento"
+m.merge_cells("Q3:T3"); m["Q3"] = "Riesgo residual"
+for c in ("A3", "L3", "Q3"):
     m[c].font, m[c].fill, m[c].alignment = BOLD, SUBFILL, CEN
-H = ["ID", "Tipo", "Categoría", "Riesgo", "Causa", "Consecuencia", "P", "I", "Nivel", "Clasificación",
-     "Estrategia", "Medidas de mitigación (preventivas)", "Plan de contingencia", "Responsable", "Estado",
-     "P res.", "I res.", "Nivel res.", "Clasificación res.", "Evidencia / referencia"]
+H = ["ID", "Fase", "Categoría", "Riesgo", "Causa", "Consecuencia", "P", "I", "Nivel", "Clasificación",
+     "Estrategia", "Medidas preventivas", "Plan de contingencia", "Disparador (señal de alerta)", "Responsable",
+     "Estado", "P res.", "I res.", "Nivel res.", "Clasificación res."]
 for j, h in enumerate(H):
     c = m.cell(4, 1 + j, h); c.font, c.fill, c.alignment, c.border = HDR, HFILL, CEN, BRD
 
+R_JP, R_RED, R_TEL, R_TI, R_PROV = ("Jefe de proyecto", "Ingeniero de redes", "Especialista en telefonía",
+                                     "Encargado TI Agroprodel", "Proveedor / distribuidor")
 RS = [
- # Proyecto
- ("Proyecto", "Plazos", "Retraso de entregables o hitos", "Complejidad técnica alta (4 sedes, SOC, IoT) y tiempo acotado del semestre",
-  "Entrega incompleta o fuera de plazo", 3, 4, "Mitigar",
-  "Sprints Scrum con backlog priorizado según el enunciado; carta Gantt con hitos; avance revisado semanalmente",
-  "Repriorizar: primero requisitos obligatorios del enunciado, luego mejoras (SOC, IPv6)", "Líder del proyecto",
-  "Controlado", 2, 3, "Carta Gantt · Estado_Proyecto.md"),
- ("Proyecto", "Recursos", "RAM insuficiente para simular todos los nodos en EVE-NG",
-  "Equipo anfitrión con memoria limitada para routers, switches, firewall y servidores",
-  "No se pueden simular todos los equipos del diseño real; nodos inestables", 4, 3, "Mitigar",
-  "Imágenes IOL livianas; 2 switches de acceso por sede en el laboratorio; el diseño real (ACC3, servidores) se documenta en los diagramas",
-  "Apagar nodos que no participan de la prueba; desplazar servicios a AWS", "Redes y SOC", "Materializado y controlado",
-  2, 2, "P-09 · S-19 · diseno/*.drawio"),
- ("Proyecto", "Equipo", "Dependencia del conocimiento en un solo integrante",
-  "Tareas técnicas concentradas en una persona", "Bloqueo del avance si esa persona no está disponible", 3, 4,
-  "Mitigar", "Documentación de cada paso en el repositorio, guía de la red para el equipo, roles cruzados en las pruebas",
-  "Otro integrante continúa con la guía y los registros de comandos", "Líder del proyecto", "Controlado", 2, 3,
-  "Guia_Red_y_SOC_equipo.html"),
- ("Proyecto", "Información", "Pérdida de configuraciones o evidencias",
-  "Falla del PC, NVRAM dañada en EVE-NG, uso de Wipe o cierre del laboratorio AWS",
-  "Rehacer configuraciones; pérdida de evidencias para el informe", 3, 5, "Mitigar",
-  "Repositorio GitHub con todas las configuraciones; exportación de configs; no usar Wipe en EVE ni Reset en AWS",
-  "Restaurar desde el repositorio y reaplicar por bloques", "Redes y SOC", "Materializado y controlado", 1, 4,
-  "P-10 · evidencias/configuraciones"),
- ("Proyecto", "Plataforma", "Indisponibilidad del laboratorio AWS (Learner Lab)",
-  "Sesión que expira, créditos limitados, IP pública cambiante del lugar de trabajo",
-  "Servicios en la nube y SOC no disponibles para pruebas o la presentación", 3, 4, "Mitigar",
-  "IP elásticas, comandos documentados para reconstruir, grupos de seguridad por IP de origen",
-  "Agregar la IP del lugar en los grupos de seguridad; respaldo por hotspot móvil", "Redes y SOC", "Controlado", 2, 3,
-  "Comandos_SRV-NOC.md · Registro_SOC.md"),
- ("Proyecto", "Financiero", "Variación del tipo de cambio en el presupuesto",
-  "Equipos Cisco cotizados en USD", "Mayor costo de la inversión", 3, 3, "Mitigar",
-  "Contingencia del 10 % sobre la inversión; escenarios A y B; tipo de cambio como supuesto editable",
-  "Cotizar con distribuidor local al momento de la compra; ajustar escenario", "Gestión de proyecto", "Controlado",
-  2, 2, "Presupuesto (hojas Supuestos y Escenarios)"),
- ("Proyecto", "Tecnología", "Equipos propuestos fuera de venta o soporte",
-  "Ciclo de vida de los productos (Catalyst 2960-X, ISR 1111)", "Equipos sin soporte ni actualizaciones de seguridad",
-  3, 3, "Evitar", "Verificar anuncios de fin de vida; proponer Catalyst 9200L y C1121-8P",
-  "Reemplazar el modelo por el sucesor oficial antes de la compra", "Redes y SOC", "Controlado", 1, 2,
-  "Notas_Informe.md (cantidad de switches)"),
- ("Proyecto", "Alcance", "Cambios en los requerimientos del cliente o del docente",
-  "Nuevas exigencias durante el semestre", "Retrabajo y desvío del plan", 2, 3, "Mitigar",
-  "Backlog Scrum y revisión al cierre de cada sprint; trazabilidad requisito → evidencia",
-  "Evaluar impacto en plazo y presupuesto antes de aceptar el cambio", "Líder del proyecto", "Abierto", 2, 2,
-  "Estado_Proyecto.md"),
- ("Proyecto", "Seguridad", "Exposición de credenciales durante el trabajo",
-  "Claves visibles en capturas, chat o historial de comandos", "Acceso no autorizado a equipos o servicios",
-  4, 4, "Mitigar", "Claves nunca documentadas; capturas revisadas antes de compartir; historial limpiado",
-  "Rotar la clave expuesta de inmediato", "Redes y SOC", "Materializado y controlado", 2, 3, "S-03 · S-15"),
- # Tecnicos / operacionales
- ("Técnico", "Disponibilidad", "Caída del router, firewall o enlace a Internet de la casa matriz",
-  "Punto único de falla en Temuco (hub de túneles, telefonía y VPN)",
-  "Las 4 sedes pierden la telefonía interna y el acceso a servidores", 2, 5, "Mitigar",
-  "Diseño: segundo router con HSRP, segundo ISP o 4G con ruta flotante e IP SLA, DIST en stack (escenario B)",
-  "Líneas analógicas de emergencia (ATA) en cada sede; procedimiento F-01/F-20", "Redes y SOC",
-  "En diseño (escenario B)", 1, 5, "Notas_Informe.md (riesgo principal) · Manual F-01, F-20"),
- ("Técnico", "Disponibilidad", "Caída del enlace a Internet de una sucursal",
+ # ---------------------------------------------------------------- Implementación
+ ("Implementación", "Externo", "Retraso en la entrega de equipos",
+  "Importación, quiebre de stock o demora del distribuidor Cisco", "Se desplaza el inicio de la instalación en las sedes",
+  3, 4, "Mitigar", "Orden de compra al aprobarse el proyecto; cotizar con dos distribuidores; recibir primero los equipos de la casa matriz",
+  "Reprogramar la secuencia de sedes; arriendo temporal de equipos equivalentes", "Fecha de despacho confirmada posterior a la planificada",
+  R_JP, "Con plan de respuesta", 2, 3),
+ ("Implementación", "Externo", "Demora del ISP en habilitar enlaces o IP públicas",
+  "Plazos de instalación del proveedor en zonas industriales o rurales", "Sedes sin salida a Internet ni túneles hacia la matriz",
+  3, 4, "Mitigar", "Solicitar los enlaces al inicio del proyecto con fecha comprometida por contrato; validar factibilidad técnica por sede",
+  "Enlace 4G provisorio para la sede afectada", "Proveedor sin fecha de instalación a dos semanas del hito",
+  R_JP, "Con plan de respuesta", 2, 3),
+ ("Implementación", "Externo", "Alza del tipo de cambio", "Equipos y licencias cotizados en dólares",
+  "Mayor costo de la inversión respecto del presupuesto aprobado", 3, 3, "Mitigar",
+  "Contingencia del 10 % sobre la inversión; fijar precio con el distribuidor al emitir la orden de compra",
+  "Diferir compras no críticas (escenario B) a una segunda etapa", "Dólar sobre el valor usado en el presupuesto",
+  R_JP, "Con plan de respuesta", 2, 2),
+ ("Implementación", "Gestión del proyecto", "Sobrecosto del proyecto",
+  "Trabajos no previstos (cableado adicional, accesorios, horas extra)", "El proyecto excede el presupuesto aprobado",
+  2, 4, "Mitigar", "Levantamiento en terreno antes de comprar; control de gastos por sede contra el presupuesto",
+  "Usar la contingencia; aprobar el ajuste con la gerencia antes de ejecutarlo", "Gasto acumulado sobre el 90 % del presupuesto de la etapa",
+  R_JP, "Con plan de respuesta", 1, 3),
+ ("Implementación", "Técnico", "Corte de servicio durante la migración",
+  "Reemplazo de equipos y cambio de direccionamiento en horario laboral", "Usuarios sin red ni teléfono; pérdida de ventas",
+  3, 5, "Mitigar", "Migración por sede en ventanas fuera de horario; plan de vuelta atrás (rollback) por cada cambio; aviso previo a los usuarios",
+  "Volver a la configuración anterior y reagendar la ventana", "Pruebas de aceptación fallidas al cierre de la ventana",
+  R_RED, "Con plan de respuesta", 2, 3),
+ ("Implementación", "Técnico", "Errores de configuración en la puesta en marcha",
+  "Configuración manual de muchos equipos en poco tiempo", "Fallas de conectividad, VLAN o enrutamiento después de la migración",
+  3, 4, "Mitigar", "Plantillas de configuración validadas en laboratorio; revisión por un segundo ingeniero; protocolo de pruebas por sede",
+  "Restaurar la configuración respaldada y corregir en ventana", "Alertas de Zabbix o reclamos de usuarios tras el cambio",
+  R_RED, "Con plan de respuesta", 2, 2),
+ ("Implementación", "Técnico", "Problemas al portar los números telefónicos",
+  "Trámite de portabilidad hacia el proveedor SIP o datos incompletos", "Clientes no logran comunicarse con la empresa",
+  2, 4, "Mitigar", "Iniciar la portabilidad con anticipación; mantener las líneas actuales hasta confirmar el traspaso",
+  "Desviar los números antiguos al troncal SIP mientras se completa el trámite", "Rechazo o atraso en la solicitud de portabilidad",
+  R_TEL, "Con plan de respuesta", 1, 3),
+ ("Implementación", "Externo", "Atraso en las obras de cableado estructurado",
+  "Permisos del recinto, faenas productivas activas o falta de canalización", "No se pueden conectar puestos de trabajo nuevos",
+  3, 3, "Mitigar", "Coordinar con la administración de cada sede; contratista con certificación de puntos Cat6",
+  "Priorizar puntos críticos (teléfonos, servidores) y completar el resto después", "Avance del cableado bajo lo planificado",
+  R_PROV, "Con plan de respuesta", 2, 2),
+ ("Implementación", "Seguridad y salud", "Accidente durante la instalación",
+  "Trabajo en altura, manipulación de racks o riesgo eléctrico", "Lesiones al personal y detención de la obra",
+  2, 4, "Mitigar", "Uso obligatorio de EPP; procedimientos de trabajo seguro; personal acreditado para trabajos eléctricos",
+  "Primeros auxilios, aviso a la mutualidad y suspensión de la faena", "Incumplimiento de EPP detectado en terreno",
+  R_JP, "Con plan de respuesta", 1, 4),
+ ("Implementación", "Organizacional", "Resistencia de los usuarios al cambio",
+  "Nueva telefonía, inicio de sesión con usuario de dominio y nuevas políticas", "Baja adopción y aumento de solicitudes de soporte",
+  3, 3, "Mitigar", "Capacitación por departamento; manual de uso breve; acompañamiento la primera semana",
+  "Reforzar la capacitación en las áreas con más reclamos", "Aumento de tickets de soporte después de la puesta en marcha",
+  R_TI, "Con plan de respuesta", 2, 2),
+ ("Implementación", "Gestión del proyecto", "Cambios de alcance durante la ejecución",
+  "Nuevas necesidades de la empresa no consideradas al inicio", "Atrasos y costos adicionales",
+  3, 3, "Mitigar", "Alcance firmado en el acta de constitución; control de cambios con evaluación de plazo y costo",
+  "Incorporar el cambio en una etapa posterior", "Solicitudes nuevas fuera del acta", R_JP, "Con plan de respuesta", 2, 2),
+ ("Implementación", "Organizacional", "Ausencia de personal clave",
+  "Licencias, renuncias o conocimiento concentrado en una persona", "Detención de tareas críticas",
+  2, 4, "Mitigar", "Documentación completa del diseño y las configuraciones; roles de respaldo definidos",
+  "Reasignar la tarea al rol de respaldo", "Tareas críticas sin avance por más de 3 días", R_JP, "Con plan de respuesta", 1, 3),
+ # ---------------------------------------------------------------- Operación
+ ("Operación", "Disponibilidad", "Caída del router, firewall o enlace de la casa matriz",
+  "Temuco concentra la telefonía, los túneles y la conexión a la nube", "Las cuatro sedes quedan sin telefonía interna ni acceso a los servidores",
+  2, 5, "Mitigar", "Segundo router con HSRP, segundo ISP o 4G con ruta flotante e IP SLA, switches de distribución en stack",
+  "Líneas analógicas de emergencia en cada sede; atención del proveedor con SLA", "Alerta de Zabbix por caída del enlace o del router",
+  R_RED, "Con plan de respuesta", 1, 5),
+ ("Operación", "Disponibilidad", "Caída del enlace a Internet de una sucursal",
   "Falla del proveedor o del router de la sede", "La sucursal queda sin datos ni telefonía con la matriz",
-  3, 4, "Mitigar", "Monitoreo en Zabbix con alerta; ATA con línea de emergencia; 4G de respaldo (trabajo futuro)",
-  "Escalar al proveedor; usar línea de emergencia", "Redes y SOC", "Controlado", 3, 2, "Manual F-01 · F-02"),
- ("Técnico", "Telefonía", "Falla de la central Issabel", "Falla del servidor o actualización fallida",
+  3, 4, "Mitigar", "Monitoreo permanente con alerta; enlace 4G de respaldo; contrato con tiempo de reposición",
+  "Línea analógica de emergencia; escalamiento al ISP", "Pérdida de paquetes sobre el 5 % o enlace caído",
+  R_RED, "Con plan de respuesta", 2, 3),
+ ("Operación", "Telefonía", "Falla de la central telefónica", "Falla de hardware o actualización defectuosa",
   "Ninguna sede puede llamar ni recibir llamadas", 2, 5, "Mitigar",
-  "Clúster Proxmox (la VM se reinicia en el otro nodo); snapshot antes de actualizar; respaldo en NAS",
-  "Restaurar snapshot o respaldo; procedimiento F-16", "Telefonía", "Controlado", 1, 4, "Manual F-16"),
- ("Técnico", "Capa 2", "Bucle de capa 2 o tormenta de broadcast", "Cable mal conectado o switch no autorizado",
-  "Caída de toda la sede", 2, 4, "Mitigar", "Rapid-PVST+ con raíz definida; PortFast + BPDU Guard en acceso",
-  "Aislar el puerto; procedimiento F-09", "Redes y SOC", "Controlado", 1, 3, "Manual F-07 · F-09"),
- ("Técnico", "Capa 2", "Falla de un enlace o switch de acceso", "Falla de hardware o cable",
+  "Central en clúster de virtualización; snapshot antes de cada actualización; respaldo diario",
+  "Restaurar el snapshot o el último respaldo", "Teléfonos sin registro en la central", R_TEL, "Con plan de respuesta", 1, 4),
+ ("Operación", "Telefonía", "Falla del proveedor SIP", "Incidente en la plataforma del proveedor",
+  "No se pueden hacer ni recibir llamadas externas", 2, 4, "Mitigar",
+  "Gateway FXO con dos líneas analógicas como ruta de respaldo",
+  "Desviar llamadas salientes por las líneas analógicas", "Troncal SIP sin registro", R_TEL, "Con plan de respuesta", 1, 3),
+ ("Operación", "Telefonía", "Mala calidad de voz", "Congestión de los enlaces WAN",
+  "Cortes, eco o voz entrecortada en llamadas con clientes", 3, 3, "Mitigar",
+  "QoS con prioridad para la voz (DSCP EF y LLQ) conservada dentro de los túneles",
+  "Revisar el consumo del enlace y limitar el tráfico no prioritario", "Reclamos de calidad o jitter alto en el monitoreo",
+  R_TEL, "Con plan de respuesta", 1, 2),
+ ("Operación", "Red local", "Bucle de capa 2 o tormenta de broadcast", "Conexión indebida de cables o equipos no autorizados",
+  "Caída de la red de una sede completa", 2, 4, "Mitigar",
+  "Rapid-PVST+ con raíz definida; PortFast y BPDU Guard en los puertos de usuario",
+  "Aislar el puerto afectado y revisar la conexión", "Puerto en estado err-disabled o CPU alta en el switch",
+  R_RED, "Con plan de respuesta", 1, 3),
+ ("Operación", "Red local", "Falla de un switch o de un enlace entre switches", "Falla de hardware o daño en el cableado",
   "Usuarios de un switch sin red", 3, 3, "Mitigar",
-  "EtherChannel LACP y enlaces redundantes con STP; 2 o más switches de acceso por sede",
-  "Reemplazo del equipo con configuración desde el repositorio", "Redes y SOC", "Materializado y controlado", 2, 2,
-  "P-05 · P-06 · P-12 · P-13"),
- ("Técnico", "Seguridad", "Ataque desde Internet (escaneo o explotación)", "Exposición del perímetro",
+  "Agregación de enlaces LACP, enlaces redundantes y al menos dos switches de acceso por sede",
+  "Reemplazo del equipo y carga de la configuración respaldada", "Alerta de interfaz caída en Zabbix",
+  R_RED, "Con plan de respuesta", 2, 2),
+ ("Operación", "Ciberseguridad", "Ataque desde Internet", "Exposición del perímetro y vulnerabilidades conocidas",
   "Compromiso de equipos o fuga de información", 4, 4, "Mitigar",
-  "Firewall perimetral, IDS Suricata (ET Open), Wazuh con alertas a Telegram",
-  "Bloquear origen en el firewall; análisis en Wazuh", "Redes y SOC", "Controlado", 2, 3,
-  "Registro_SOC.md (Suricata, Telegram)"),
- ("Técnico", "Seguridad", "Propagación de malware entre departamentos", "Equipo de usuario infectado",
-  "Infección de otros segmentos de la empresa", 3, 4, "Mitigar",
-  "VLAN por departamento, ACL DEPTOS-IN (mínimo privilegio), regla 100102 de escaneo con alerta",
-  "Aislar el puerto del equipo; revisión con el panel de Wazuh", "Redes y SOC", "Controlado", 2, 2,
-  "Registro_SOC.md (100100-100102)"),
- ("Técnico", "Seguridad", "Acceso de invitados a la red interna", "Wi-Fi de clientes sin aislamiento",
-  "Exposición de servidores y equipos internos", 3, 4, "Mitigar", "VLAN 60 + ACL INVITADOS-IN (solo Internet)",
-  "Desactivar el SSID de invitados; procedimiento F-17", "Redes y SOC", "Controlado", 1, 2, "Manual F-17"),
- ("Técnico", "Seguridad", "Dispositivo IoT de riego comprometido", "Firmware débil del ESP32",
-  "Pivote hacia la red interna o riego manipulado", 3, 3, "Mitigar", "VLAN 70 + ACL IOT-IN (solo Internet)",
-  "Desconectar el dispositivo; riego manual; procedimiento F-18", "Redes y SOC", "Controlado", 1, 2, "Manual F-18"),
- ("Técnico", "Calidad", "Mala calidad de voz", "Congestión en los enlaces WAN",
-  "Cortes, eco o voz robótica en llamadas a clientes", 3, 3, "Mitigar",
-  "QoS: voz DSCP EF, cola de prioridad (LLQ), marca conservada en los túneles", "Procedimiento F-14",
-  "Telefonía", "Controlado", 1, 2, "Manual F-14"),
- ("Técnico", "Energía", "Corte de energía", "Falla del suministro eléctrico",
-  "Caída de servidores y equipos de red; daño de hardware", 3, 4, "Mitigar",
-  "UPS en servidores, NAS, firewall y router; apagado ordenado", "Procedimiento F-22", "Redes y SOC",
-  "En diseño", 2, 2, "Manual F-22"),
- ("Técnico", "Datos", "Ransomware o pérdida de datos en servidores", "Malware o falla de discos",
-  "Pérdida de archivos y del servicio", 2, 5, "Mitigar",
-  "Respaldo diario en NAS con réplica en Talca (fuera de sitio); permisos por departamento en AD; RAID 1",
-  "Restaurar desde la réplica de Talca", "Redes y SOC", "En diseño", 1, 4, "Diagrama pág. 4 y 6"),
- ("Técnico", "Operación", "Error humano en un cambio de configuración",
-  "Comando mal aplicado o en el equipo equivocado", "Caída parcial o total de un servicio", 3, 4, "Mitigar",
-  "Respaldo antes de cada cambio; cambios por bloques; regla 4721 registra cada cambio en Wazuh",
-  "Revertir con la configuración del repositorio; procedimiento F-23", "Redes y SOC",
-  "Materializado y controlado", 2, 2, "P-04 · S-13 · Manual F-23"),
- ("Técnico", "Monitoreo", "Caída de la VPN hacia AWS", "Túnel inactivo o desincronizado",
-  "Pérdida de monitoreo (Zabbix) y de registros (Wazuh)", 3, 3, "Mitigar",
-  "IP SLA mantiene el túnel activo; cambios de cifrado en ambos extremos en la misma ventana",
-  "Reiniciar sesiones IKE en ambos extremos", "Redes y SOC", "Materializado y controlado", 2, 2, "S-06 · S-13"),
- ("Técnico", "Seguridad", "IDS fuera de servicio por falta de recursos",
-  "Demasiadas reglas para la memoria del firewall", "El tráfico deja de inspeccionarse sin aviso", 3, 3, "Mitigar",
-  "Firewall real con 8 GB (DEC2750); selección de categorías de reglas; monitoreo del servicio",
-  "Reducir reglas y reiniciar Suricata", "Redes y SOC", "Materializado y controlado", 1, 2, "S-18 · S-19"),
- ("Técnico", "Mantenimiento", "Vulnerabilidades por falta de actualizaciones",
-  "Firmware y sistemas sin parches", "Explotación de fallas conocidas", 3, 4, "Mitigar",
-  "Plan de mantenimiento preventivo; firmware del firewall actualizado; reglas IDS semanales",
-  "Aplicar parche de emergencia en ventana de mantenimiento", "Redes y SOC", "Controlado", 2, 3,
-  "Manual §9 (mantenimiento)"),
+  "Firewall perimetral, IDS con firmas actualizadas, correlación en el SIEM y alertas en tiempo real",
+  "Bloquear el origen, contener y analizar el incidente", "Alerta de nivel alto en el SIEM", R_RED, "Con plan de respuesta", 2, 3),
+ ("Operación", "Ciberseguridad", "Ransomware o malware en la red interna", "Correo malicioso o equipo de usuario infectado",
+  "Cifrado de archivos, propagación entre áreas y detención de la operación", 3, 5, "Mitigar",
+  "Segmentación por VLAN con ACL de mínimo privilegio; permisos por departamento; respaldo diario con copia fuera de sitio",
+  "Aislar el segmento afectado y restaurar desde la copia de Talca", "Bloqueos repetidos de ACL o escaneos detectados por el SIEM",
+  R_RED, "Con plan de respuesta", 2, 3),
+ ("Operación", "Ciberseguridad", "Acceso de visitantes a la red interna", "Red Wi-Fi de clientes en la sala de ventas",
+  "Exposición de servidores y equipos de la empresa", 3, 4, "Mitigar",
+  "Red de invitados aislada con salida solo a Internet", "Desactivar la red de invitados y revisar la configuración",
+  "Tráfico de invitados hacia redes internas en los registros", R_RED, "Con plan de respuesta", 1, 2),
+ ("Operación", "Ciberseguridad", "Compromiso de los sensores de riego", "Dispositivos IoT con firmware poco robusto",
+  "Uso del dispositivo como puerta de entrada o riego alterado", 3, 3, "Mitigar",
+  "Red IoT aislada con salida solo a Internet; credenciales propias por dispositivo",
+  "Desconectar el dispositivo y operar el riego en modo manual", "Tráfico anómalo desde la red IoT", R_RED, "Con plan de respuesta", 1, 2),
+ ("Operación", "Ciberseguridad", "Robo de credenciales de administración",
+  "Contraseñas reutilizadas o compartidas por medios inseguros", "Control no autorizado de equipos de red o servidores",
+  2, 5, "Mitigar", "Gestor de contraseñas, rotación periódica, acceso de gestión solo desde la red de administración y autenticación multifactor",
+  "Cambiar todas las credenciales afectadas y revisar los registros de acceso", "Inicio de sesión desde un origen no habitual",
+  R_TI, "Con plan de respuesta", 1, 4),
+ ("Operación", "Infraestructura", "Corte de energía", "Falla del suministro eléctrico", "Caída de servidores y equipos de red; daño de hardware",
+  3, 4, "Mitigar", "UPS en servidores, almacenamiento, firewall y router; procedimiento de apagado ordenado",
+  "Apagado controlado y verificación de servicios al volver la energía", "UPS operando con batería", R_TI, "Con plan de respuesta", 2, 2),
+ ("Operación", "Infraestructura", "Falla de hardware en servidores o almacenamiento", "Desgaste de discos o falla de un nodo",
+  "Servicios internos detenidos o pérdida de información", 2, 4, "Mitigar",
+  "Clúster de dos nodos, discos en RAID 1 y respaldo diario en NAS", "Migrar las máquinas virtuales al nodo disponible y reemplazar la pieza",
+  "Alerta de disco o nodo degradado", R_TI, "Con plan de respuesta", 1, 3),
+ ("Operación", "Gestión del cambio", "Error humano en un cambio de configuración", "Comando mal aplicado o en el equipo equivocado",
+  "Caída parcial o total de un servicio", 3, 4, "Mitigar",
+  "Procedimiento de cambios con respaldo previo, ventana aprobada y registro automático de cada cambio en el SIEM",
+  "Revertir con la configuración respaldada", "Evento de cambio de configuración fuera de una ventana aprobada",
+  R_RED, "Con plan de respuesta", 2, 2),
+ ("Operación", "Monitoreo", "Pérdida del monitoreo y de los registros de seguridad", "Caída de la VPN hacia la nube",
+  "Incidentes sin detectar durante la interrupción", 2, 3, "Mitigar",
+  "Túnel con mantención automática (IP SLA) y alerta por falta de datos", "Restablecer la VPN y revisar los eventos del periodo",
+  "Equipos sin datos en el monitoreo por más de 5 minutos", R_RED, "Con plan de respuesta", 1, 2),
+ ("Operación", "Ciclo de vida", "Vencimiento de licencias y fin de soporte",
+  "Suscripciones a tres años y fin de vida anunciado por el fabricante", "Equipos sin actualizaciones de seguridad ni soporte",
+  3, 3, "Mitigar", "Calendario de renovaciones incluido en el OPEX; revisión anual de los anuncios de fin de vida",
+  "Renovar o reemplazar el equipo afectado", "Licencia a menos de 90 días de vencer", R_TI, "Con plan de respuesta", 1, 2),
+ ("Operación", "Proveedores", "Indisponibilidad o alza de costos del servicio en la nube",
+  "Incidente del proveedor o cambio de tarifas", "Sitio web, DNS y FTP fuera de servicio o mayor OPEX",
+  2, 4, "Mitigar", "Copias de las instancias, infraestructura documentada para reconstruir y control mensual del gasto",
+  "Restaurar desde las copias en otra zona de disponibilidad", "Alerta de servicio caído o gasto sobre lo presupuestado",
+  R_TI, "Con plan de respuesta", 1, 3),
 ]
 N = len(RS)
 first, last = 5, 4 + N
-for i, (tipo, cat, rie, cau, con, p, im, est, mit, cont, resp, estado, pr, ir, evi) in enumerate(RS):
+for i, (fase, cat, rie, cau, con, p, im, est, mit, cont, disp, resp, estado, pr, ir) in enumerate(RS):
     r = first + i
-    vals = [f"R-{i + 1:02d}", tipo, cat, rie, cau, con, p, im, f"=G{r}*H{r}", clasif(f"I{r}"), est, mit, cont, resp,
-            estado, pr, ir, f"=P{r}*Q{r}", clasif(f"R{r}"), evi]
+    vals = [f"R-{i + 1:02d}", fase, cat, rie, cau, con, p, im, f"=G{r}*H{r}", clasif(f"I{r}"), est, mit, cont, disp,
+            resp, estado, pr, ir, f"=Q{r}*R{r}", clasif(f"S{r}")]
     for j, v in enumerate(vals):
         c = m.cell(r, 1 + j, v)
         c.border, c.alignment = BRD, WRAP
-        c.font = BLUE_IN if (1 + j) in (7, 8, 11, 15, 16, 17) else BODY
-        if (1 + j) in (1, 7, 8, 9, 10, 16, 17, 18, 19):
+        c.font = BLUE_IN if (1 + j) in (7, 8, 11, 16, 17, 18) else BODY
+        if (1 + j) in (1, 7, 8, 9, 10, 17, 18, 19, 20):
             c.alignment = CEN
     m.row_dimensions[r].height = 62
-widths = [7, 10, 13, 30, 30, 30, 5, 5, 7, 12, 11, 42, 34, 16, 18, 6, 6, 8, 13, 24]
+widths = [7, 15, 16, 30, 32, 32, 5, 5, 7, 13, 11, 44, 36, 30, 20, 20, 6, 6, 8, 13]
 for j, w in enumerate(widths):
     m.column_dimensions[get_column_letter(1 + j)].width = w
 m.row_dimensions[4].height = 32
 m.freeze_panes = "E5"
 m.auto_filter.ref = f"A4:T{last}"
-for col in ("J", "S"):
+for col in ("J", "T"):
     rng = f"{col}{first}:{col}{last}"
     for n, colr in COL.items():
         m.conditional_formatting.add(rng, FormulaRule(formula=[f'{col}{first}="{n}"'],
                                      fill=PatternFill("solid", fgColor=colr)))
-for col in ("I", "R"):
-    rng = f"{col}{first}:{col}{last}"
-    for n, lo in (("Crítico", TH[2]), ("Alto", TH[1]), ("Medio", TH[0])):
-        pass
 dv = DataValidation(type="whole", operator="between", formula1="1", formula2="5", allow_blank=True)
 m.add_data_validation(dv)
-for col in ("G", "H", "P", "Q"):
+for col in ("G", "H", "Q", "R"):
     dv.add(f"{col}{first}:{col}{last}")
 dv2 = DataValidation(type="list", formula1='"Evitar,Mitigar,Transferir,Aceptar"', allow_blank=True)
 m.add_data_validation(dv2); dv2.add(f"K{first}:K{last}")
-dv3 = DataValidation(type="list", formula1='"Abierto,Controlado,Materializado y controlado,En diseño,En diseño (escenario B),Cerrado"',
+dv3 = DataValidation(type="list", formula1='"Identificado,Con plan de respuesta,En seguimiento,Materializado,Cerrado"',
                      allow_blank=True)
-m.add_data_validation(dv3); dv3.add(f"O{first}:O{last}")
+m.add_data_validation(dv3); dv3.add(f"P{first}:P{last}")
 m.cell(last + 2, 1, f"Total de riesgos identificados: {N}. Celdas en azul = editables; Nivel y Clasificación son fórmulas.").font = Font(name=F, size=10, italic=True)
 
 # ------------------------------------------------------------------ Mapa de calor
@@ -281,7 +302,7 @@ def heat(r0, title, pcol, icol):
             c.number_format = '0;-0;""'
         h.row_dimensions[rr].height = 34
 heat(3, "Riesgo inherente (antes de los controles)", "G", "H")
-heat(12, "Riesgo residual (después de los controles)", "P", "Q")
+heat(12, "Riesgo residual (después de los controles)", "Q", "R")
 h.column_dimensions["A"].width = 26
 for col in "BCDEF":
     h.column_dimensions[col].width = 12
@@ -300,7 +321,7 @@ for k, n in enumerate(["Crítico", "Alto", "Medio", "Bajo"]):
     r = 4 + k
     s.cell(r, 1, n).fill = PatternFill("solid", fgColor=COL[n])
     s.cell(r, 2, f'=COUNTIF({MR}!$J${first}:$J${last},A{r})')
-    s.cell(r, 3, f'=COUNTIF({MR}!$S${first}:$S${last},A{r})')
+    s.cell(r, 3, f'=COUNTIF({MR}!$T${first}:$T${last},A{r})')
     s.cell(r, 4, f"=C{r}-B{r}")
     for j in range(4):
         cc = s.cell(r, 1 + j); cc.border = BRD; cc.font = BODY; cc.alignment = CEN
@@ -309,21 +330,21 @@ s.cell(8, 1, "Total").font = BOLD
 for j, col in enumerate("BC"):
     c = s.cell(8, 2 + j, f"=SUM({col}4:{col}7)"); c.font = BOLD; c.alignment = CEN; c.border = BRD
 s.cell(8, 1).border = BRD
-for j, hh in enumerate(["Tipo", "Cantidad", "Nivel promedio inherente", "Nivel promedio residual", "Reducción"]):
+for j, hh in enumerate(["Fase", "Cantidad", "Nivel promedio inherente", "Nivel promedio residual", "Reducción"]):
     c = s.cell(10, 1 + j, hh); c.font, c.fill, c.alignment, c.border = HDR, HFILL, CEN, BRD
-for k, tp in enumerate(["Proyecto", "Técnico"]):
+for k, tp in enumerate(["Implementación", "Operación"]):
     r = 11 + k
     s.cell(r, 1, tp)
     s.cell(r, 2, f'=COUNTIF({MR}!$B${first}:$B${last},A{r})')
     s.cell(r, 3, f'=IFERROR(AVERAGEIF({MR}!$B${first}:$B${last},A{r},{MR}!$I${first}:$I${last}),0)')
-    s.cell(r, 4, f'=IFERROR(AVERAGEIF({MR}!$B${first}:$B${last},A{r},{MR}!$R${first}:$R${last}),0)')
+    s.cell(r, 4, f'=IFERROR(AVERAGEIF({MR}!$B${first}:$B${last},A{r},{MR}!$S${first}:$S${last}),0)')
     s.cell(r, 5, f'=IF(C{r}=0,0,1-D{r}/C{r})')
     for j in range(5):
         cc = s.cell(r, 1 + j); cc.border = BRD; cc.font = BODY; cc.alignment = CEN
     s.cell(r, 3).number_format = s.cell(r, 4).number_format = "0.0"
     s.cell(r, 5).number_format = "0.0%"
-s["A14"] = ("Lectura: la reducción indica cuánto bajan, en promedio, los niveles de riesgo gracias a los controles "
-            "implementados o diseñados. Los riesgos 'En diseño' dependen de ejecutar el escenario B del presupuesto.")
+s["A14"] = ("Lectura: la reducción indica cuánto baja, en promedio, el nivel de riesgo al aplicar las medidas preventivas. "
+            "El riesgo residual de la casa matriz (R-13) supone la redundancia del escenario B del presupuesto.")
 s["A14"].font = Font(name=F, size=10, italic=True)
 for col, w in zip("ABCDE", (16, 12, 24, 24, 12)):
     s.column_dimensions[col].width = w
