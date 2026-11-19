@@ -1,7 +1,7 @@
 const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, TableOfContents, Footer, PageNumber,
-  LevelFormat, Table, TableRow, TableCell, WidthType, ShadingType, BorderStyle, PageBreak, SequentialIdentifier,
+  LevelFormat, ImageRun, LineRuleType, Table, TableRow, TableCell, WidthType, ShadingType, BorderStyle, PageBreak, SequentialIdentifier,
 } = require("docx");
 
 const OUT = process.argv[2];
@@ -53,19 +53,22 @@ function table(headers, rows, widths) {
 }
 
 // ---------------------------------------------------------------- portada
+const LOGO = require("path").join(__dirname, "recursos", "logo_duoc.png");
 const portada = [
-  center("Duoc UC", 28, true, 60),
-  center("Escuela de Informática y Telecomunicaciones", 24, false, 60),
-  center("Ingeniería en Conectividad y Redes", 24, false, 1800),
-  center("Informe Final", 32, true, 240),
+  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 200, line: 240, lineRule: LineRuleType.AUTO },
+    children: [new ImageRun({ type: "png", data: fs.readFileSync(LOGO),
+      transformation: { width: 190, height: 51 } })] }), // ~5 cm de ancho, proporcion 1374x372
+  center("Escuela de Informática y Telecomunicaciones", 24, false, 40),
+  center("Ingeniería en Conectividad y Redes", 24, false, 1700),
+  center("Informe Final", 28, true, 240),
   center("Diseño de Red de Datos, Telefonía IP y Servicios para una Empresa", 28, true, 120),
-  center("Caso: Agroprodel Ltda.", 26, false, 1800),
-  center("Asignatura: Portafolio de Título", 24, false, 120),
+  center("Caso: Agroprodel Ltda.", 24, false, 1700),
+  center("Asignatura: Portafolio de Título", 24, false, 80),
   center("Docente: Alfonso Danilo Barahona Abarca", 24, false, 480),
   center("Integrantes:", 24, true, 60),
   center("Erick Basulto", 24, false, 40),
   center("Nabidh Ulloa", 24, false, 40),
-  center("Salvador Verdejo", 24, false, 1200),
+  center("Salvador Verdejo", 24, false, 1300),
   center("Sede Plaza Oeste · 30 de noviembre de 2026", 24, false, 0),
 ];
 
