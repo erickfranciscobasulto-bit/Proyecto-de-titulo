@@ -126,7 +126,7 @@ SEDES = [  # nombre, tag, red, usuarios, rid, tunel, red tunel, accesos
     ("Concepción", "CONCEPCION", "192.168.20.0/24", 51, "3.3.3.3", 2, "172.16.0.4/30", ("48 PoE+", "24 PoE+"),
      "#43A047"),
     ("Los Ángeles", "LOS-ANGELES", "192.168.30.0/24", 31, "4.4.4.4", 3, "172.16.0.8/30", ("24 PoE+", "24 PoE+"),
-     "#8E24AA"),
+     "#C62828"),
 ]
 
 # -----------------------------------------------------------------------------------------------------
@@ -276,7 +276,10 @@ o.text(1420, 410, 540, 540,
        "<b>Escalabilidad:</b> Temuco se resume como 192.168.40.0/23 y una sucursal nueva solo agrega un túnel y una "
        "red /24 en el área 0.",
        fs=11, color="#263238", fill="#FFFFFF", stroke="#B0BEC5")
-legend(o, 970, [L_GRE, L_VPN, L_OSPF, ("strokeColor=#1E88E5;strokeWidth=3.5;dashed=1;", "Color por sucursal")])
+legend(o, 970, [("strokeColor=#1E88E5;strokeWidth=3.5;dashed=1;dashPattern=10 5;", "Túnel GRE/IPsec Talca"),
+                ("strokeColor=#43A047;strokeWidth=3.5;dashed=1;dashPattern=10 5;", "Túnel GRE/IPsec Concepción"),
+                ("strokeColor=#C62828;strokeWidth=3.5;dashed=1;dashPattern=10 5;", "Túnel GRE/IPsec Los Ángeles"),
+                L_VPN])
 
 # -----------------------------------------------------------------------------------------------------
 # PAGINA 4: LAN TEMUCO (capa 2 + servidores)
@@ -486,7 +489,7 @@ q.text(1220, 1180, 760, 50, "Nota: el enunciado no entrega la red existente en d
 # -----------------------------------------------------------------------------------------------------
 # PAGINA 6: SEGURIDAD - CISCO SAFE
 # -----------------------------------------------------------------------------------------------------
-f6 = Page("6 - Seguridad (Cisco SAFE)", 2000, 1300)
+f6 = Page("6 - Seguridad (Cisco SAFE)", 2000, 1220)
 f6.text(20, 10, 1700, 34, "Seguridad por zonas — Modelo Cisco SAFE (lugares de la red × dominios de seguridad)",
         fs=20, color="#B71C1C", bold=True)
 f6.text(20, 44, 1900, 22, "Qué se protege, de qué amenaza y con qué control · todos los controles listados están "
@@ -496,8 +499,8 @@ DOM = [("GES", "Gestión", "#1565C0"), ("INT", "Inteligencia", "#6A1B9A"), ("CUM
        ("SRV", "Servicios seguros", "#EF6C00")]
 DC = {k: c for k, _, c in DOM}
 for k, (code, nom, col) in enumerate(DOM):
-    f6.v(f"rounded=1;html=1;fillColor={col};strokeColor=none;fontColor=#FFFFFF;fontSize=11;fontStyle=1;",
-         20 + k * 325, 75, 310, 26, f"{code} · {nom}")
+    f6.v(f"rounded=1;html=1;fillColor={col};strokeColor=none;fontColor=#FFFFFF;fontSize=15;fontStyle=1;",
+         20 + k * 325, 75, 310, 34, f"{code} · {nom}")
 
 
 def chips(items):
@@ -542,10 +545,10 @@ ZONAS = [
         ("CUM", "Zabbix + Grafana: disponibilidad e historial de eventos")]),
 ]
 for k, (nom, ic, col, items) in enumerate(ZONAS):
-    x0, y0 = 20 + (k % 3) * 655, 115 + (k // 3) * 300
-    f6.box(x0, y0, 635, 285, nom, "#FFFFFF", col, fs=13)
-    f6.icon(ic, x0 + 20, y0 + 50, "", size=50) if ic not in ("branch",) else f6.icon("branch", x0 + 20, y0 + 50, "", size=50)
-    f6.text(x0 + 85, y0 + 40, 540, 240, chips(items), fs=11, color="#263238")
+    x0, y0 = 20 + (k % 3) * 655, 120 + (k // 3) * 255
+    f6.box(x0, y0, 635, 245, nom, "#FFFFFF", col, fs=17)
+    f6.icon(ic, x0 + 15, y0 + 55, "", size=55)
+    f6.text(x0 + 82, y0 + 36, 548, 205, chips(items), fs=14.5, color="#263238")
 
 MAT = [("Llamada sucursal ↔ matriz", "Escucha o interceptación de la voz", "GRE + IPsec AES-256; QoS EF", "WAN", "SRV"),
        ("Cliente usa el Wi-Fi de la sala de ventas", "Acceso a la red interna", "VLAN 60 + ACL INVITADOS-IN (solo Internet)",
@@ -563,16 +566,16 @@ MAT = [("Llamada sucursal ↔ matriz", "Escucha o interceptación de la voz", "G
        ("Falla de servidor o ransomware", "Pérdida de datos y servicio", "Clúster Proxmox; NAS + réplica en Talca",
         "Sala de servidores", "SRV")]
 rows = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td><td>{d}</td><td><b>{e}</b></td></tr>" for a, b, c, d, e in MAT)
-f6.text(20, 725, 1960, 340,
-        "<b style='font-size:14px'>Matriz SAFE: flujo del negocio → amenaza → control</b>"
-        "<table border='1' cellpadding='5' style='border-collapse:collapse;margin-top:6px;width:100%'>"
+f6.text(20, 640, 1960, 460,
+        "<b style='font-size:18px'>Matriz SAFE: flujo del negocio → amenaza → control</b>"
+        "<table border='1' cellpadding='6' style='border-collapse:collapse;margin-top:6px;width:1940px'>"
         "<tr style='background:#FFEBEE'><th>Flujo del negocio</th><th>Amenaza</th><th>Control aplicado</th>"
-        "<th>Lugar</th><th>Dominio</th></tr>" + rows + "</table>", fs=11, color="#263238")
-f6.text(20, 1080, 1960, 110,
+        "<th>Lugar</th><th>Dominio</th></tr>" + rows + "</table>", fs=15, color="#263238")
+f6.text(20, 1110, 1960, 90,
         "<b>Brechas y próximos pasos (trabajo futuro):</b> autenticación 802.1X en los puertos de acceso · IPS en modo "
         "bloqueo una vez ajustadas las firmas · firewall en alta disponibilidad (CARP) · segundo enlace a Internet en "
         "Temuco · MFA para la administración · rotación periódica de claves SNMPv3 y VPN.",
-        fs=11.5, color="#4E342E", fill="#FFF8E1", stroke="#FFB300")
+        fs=15, color="#4E342E", fill="#FFF8E1", stroke="#FFB300")
 
 with open(OUT, "w", encoding="utf-8") as f:
     f.write('<mxfile host="drawio" version="24.7.17">' + "".join(pg.xml() for pg in (q, p, o, t, b, f6)) + "</mxfile>")
