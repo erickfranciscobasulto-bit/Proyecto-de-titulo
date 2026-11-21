@@ -164,9 +164,9 @@ crypto isakmp policy 10
  group 14
  lifetime 86400
  exit
-crypto isakmp key AgroTunel2026 address 203.0.113.6
-crypto isakmp key AgroTunel2026 address 203.0.113.10
-crypto isakmp key AgroTunel2026 address 203.0.113.14
+crypto isakmp key <clave no documentada> address 203.0.113.6
+crypto isakmp key <clave no documentada> address 203.0.113.10
+crypto isakmp key <clave no documentada> address 203.0.113.14
 !
 ! --- IPsec fase 2 (transform-set y perfil) ---
 crypto ipsec transform-set TS-AGRO esp-aes 256 esp-sha256-hmac
