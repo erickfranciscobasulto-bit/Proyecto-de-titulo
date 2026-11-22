@@ -1,0 +1,123 @@
+! ==========================================================
+! SW-PUENTE - Puente capa 2 entre rack fisico y laboratorio (IOL L2)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Uso exclusivo de laboratorio: lleva el PC y telefono fisicos a Temuco
+! y a Concepcion por un solo cable (VLAN 210 -> 10 y 250 -> 50 de Concepcion)
+! Estado: COMPLETA (partes 1 a 4) - CDP: e0/0->DIST-TEMUCO e2/2, e0/1->DIST-CONCEPCION e2/2, e0/2->DIST-CONCEPCION e2/3
+! ==========================================================
+enable
+configure terminal
+hostname SW-PUENTE
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
+!
+! --- VTP, VLANs y Rapid-PVST+ ---
+vtp mode transparent
+vlan 10
+ name TEM-SIEMBRA-RIEGO
+vlan 50
+ name TEM-VOZ
+vlan 80
+ name TEM-SERVIDORES
+vlan 99
+ name TEM-ADMINISTRACION
+vlan 210
+ name CON-DATOS
+vlan 220
+ name TAL-DATOS
+vlan 230
+ name LAN-DATOS
+vlan 250
+ name CON-VOZ
+vlan 999
+ name NATIVA
+ exit
+spanning-tree mode rapid-pvst
+!
+! --- Troncal hacia el rack fisico (Cloud / switch Cisco 2960) ---
+interface ethernet 1/0
+ description TRONCAL-HACIA-RACK-FISICO-2960
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,50,80,99,210,220,230,250,999
+ no shutdown
+ exit
+!
+! --- Troncal hacia DIST-TEMUCO e2/2 ---
+interface ethernet 0/0
+ description TRONCAL-HACIA-DIST-TEMUCO-e2/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,50,80,99,999
+ no shutdown
+ exit
+!
+! --- Puertos hacia DIST-CONCEPCION (traduccion 210 -> 10 y 250 -> 50) ---
+interface ethernet 0/1
+ description HACIA-DIST-CONCEPCION-e2/2-DATOS-V210
+ duplex full
+ switchport mode access
+ switchport access vlan 210
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+interface ethernet 0/2
+ description HACIA-DIST-CONCEPCION-e2/3-VOZ-V250
+ duplex full
+ switchport mode access
+ switchport access vlan 250
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
+! --- Puerto hacia DIST-TALCA (traduccion 220 -> 10 de Talca) ---
+interface ethernet 0/3
+ description HACIA-DIST-TALCA-e2/2-DATOS-V220
+ duplex full
+ switchport mode access
+ switchport access vlan 220
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
+! --- Puerto hacia DIST-LOS-ANGELES (traduccion 230 -> 10 de Los Angeles) ---
+interface ethernet 1/1
+ description HACIA-DIST-LOS-ANGELES-e2/2-DATOS-V230
+ duplex full
+ switchport mode access
+ switchport access vlan 230
+ spanning-tree bpdufilter enable
+ no shutdown
+ exit
+!
+! --- CDP desactivado en los puertos de traduccion ---
+! La diferencia de VLAN entre extremos (210/10, 250/50, 220/10, 230/10) es intencional;
+! sin esto CDP genera %CDP-4-NATIVE_VLAN_MISMATCH de forma continua
+interface range ethernet 0/1 - 3 , ethernet 1/1
+ no cdp enable
+ exit
+!
+! --- Seguridad basica (sin IP de gestion: solo consola) ---
+! La clave real NO se documenta
+service password-encryption
+enable secret <clave no documentada>
+username admin privilege 15 secret <clave no documentada>
+no ip http server
+banner motd ^
+ACCESO RESTRINGIDO - Agroprodel Ltda.
+Solo personal autorizado. Toda actividad es registrada.
+^
+line console 0
+ login local
+line vty 0 4
+ login local
+ transport input none
+ exit
+!
+end
+write memory

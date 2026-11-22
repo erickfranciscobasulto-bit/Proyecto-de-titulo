@@ -1,0 +1,533 @@
+! ==========================================================
+! R-TEMUCO - Router casa matriz / hub de tuneles (IOL L3)
+! Proyecto Agroprodel Ltda. - Configuracion aplicada
+! Estado: COMPLETA (partes 1 a 10) - parte 10: QoS de voz en la WAN (LLQ + shaper 10 Mbps) - Seguridad de gestion: SSH v2, enable secret, ACL GESTION-SSH - ACL entre VLAN (DEPTOS-IN, VOZ-IN, IOT-IN)
+! ==========================================================
+enable
+configure terminal
+hostname R-TEMUCO
+no ip domain-lookup
+line console 0
+ logging synchronous
+ exec-timeout 0 0
+ exit
+!
+! --- WAN hacia FW-TEMUCO (vtnet1) ---
+interface ethernet 0/0
+ description HACIA-FW-TEMUCO-vtnet1
+ ip address 203.0.113.2 255.255.255.252
+ ip nat outside
+ no shutdown
+ exit
+ip route 0.0.0.0 0.0.0.0 203.0.113.1
+!
+! --- Troncal hacia DIST-TEMUCO (router-on-a-stick) ---
+interface ethernet 0/1
+ description TRONCAL-HACIA-DIST-TEMUCO
+ no ip address
+ no shutdown
+ exit
+interface ethernet 0/1.10
+ description GW-SIEMBRA-RIEGO
+ encapsulation dot1Q 10
+ ip address 192.168.40.129 255.255.255.224
+ ip nat inside
+ exit
+interface ethernet 0/1.20
+ description GW-COSECHA-MOLIENDA
+ encapsulation dot1Q 20
+ ip address 192.168.40.1 255.255.255.192
+ ip nat inside
+ exit
+interface ethernet 0/1.30
+ description GW-ENVASADO-BODEGA
+ encapsulation dot1Q 30
+ ip address 192.168.40.65 255.255.255.192
+ ip nat inside
+ exit
+interface ethernet 0/1.40
+ description GW-VENTAS
+ encapsulation dot1Q 40
+ ip address 192.168.40.161 255.255.255.240
+ ip nat inside
+ exit
+interface ethernet 0/1.50
+ description GW-VOZ
+ encapsulation dot1Q 50
+ ip address 192.168.40.177 255.255.255.240
+ ip nat inside
+ exit
+interface ethernet 0/1.60
+ description GW-INVITADOS-WIFI
+ encapsulation dot1Q 60
+ ip address 192.168.40.193 255.255.255.240
+ ip nat inside
+ exit
+interface ethernet 0/1.70
+ description GW-IOT-RIEGO
+ encapsulation dot1Q 70
+ ip address 192.168.40.209 255.255.255.240
+ ip nat inside
+ exit
+interface ethernet 0/1.80
+ description GW-SERVIDORES
+ encapsulation dot1Q 80
+ ip address 192.168.40.225 255.255.255.240
+ ip nat inside
+ exit
+interface ethernet 0/1.99
+ description GW-ADMINISTRACION
+ encapsulation dot1Q 99
+ ip address 192.168.40.241 255.255.255.240
+ ip nat inside
+ exit
+interface ethernet 0/1.999
+ description VLAN-NATIVA-SIN-USO
+ encapsulation dot1Q 999 native
+ exit
+!
+! --- DHCP: direcciones excluidas (gateways) ---
+ip dhcp excluded-address 192.168.40.129
+ip dhcp excluded-address 192.168.40.1
+ip dhcp excluded-address 192.168.40.65
+ip dhcp excluded-address 192.168.40.161
+ip dhcp excluded-address 192.168.40.177
+ip dhcp excluded-address 192.168.40.193
+ip dhcp excluded-address 192.168.40.209
+!
+! --- DHCP: pools de datos ---
+ip dhcp pool VLAN10-SIEMBRA-TEM
+ network 192.168.40.128 255.255.255.224
+ default-router 192.168.40.129
+ dns-server <EIP-SRV-AGROPRODEL> 1.1.1.1
+ exit
+ip dhcp pool VLAN20-COSECHA-TEM
+ network 192.168.40.0 255.255.255.192
+ default-router 192.168.40.1
+ dns-server <EIP-SRV-AGROPRODEL> 1.1.1.1
+ exit
+ip dhcp pool VLAN30-ENVASADO-TEM
+ network 192.168.40.64 255.255.255.192
+ default-router 192.168.40.65
+ dns-server <EIP-SRV-AGROPRODEL> 1.1.1.1
+ exit
+ip dhcp pool VLAN40-VENTAS-TEM
+ network 192.168.40.160 255.255.255.240
+ default-router 192.168.40.161
+ dns-server <EIP-SRV-AGROPRODEL> 1.1.1.1
+ exit
+!
+! --- DHCP: pools de voz, invitados e IoT ---
+ip dhcp pool VLAN50-VOZ-TEM
+ network 192.168.40.176 255.255.255.240
+ default-router 192.168.40.177
+ dns-server 1.1.1.1
+ ! option 150: servidor TFTP (Issabel) para aprovisionar telefonos Cisco Enterprise (CP-8861)
+ option 150 ip 192.168.40.226
+ exit
+ip dhcp pool VLAN60-INVITADOS-TEM
+ network 192.168.40.192 255.255.255.240
+ default-router 192.168.40.193
+ dns-server 1.1.1.1
+ lease 0 2
+ exit
+ip dhcp pool VLAN70-IOT-TEM
+ network 192.168.40.208 255.255.255.240
+ default-router 192.168.40.209
+ dns-server <EIP-SRV-AGROPRODEL> 1.1.1.1
+ exit
+!
+! --- PAT: salida a Internet ---
+! (Reemplazada por NAT-TEMUCO-EXT en el bloque VPN-AWS; se mantiene como registro)
+ip access-list standard NAT-TEMUCO
+ permit 192.168.40.0 0.0.0.255
+ exit
+ip nat inside source list NAT-TEMUCO interface ethernet 0/0 overload
+!
+! --- ACL de invitados: solo Internet ---
+ip access-list extended INVITADOS-IN
+ permit udp any any eq bootps
+ deny ip any 10.0.0.0 0.255.255.255
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 192.168.0.0 0.0.255.255
+ permit ip any any
+ exit
+interface ethernet 0/1.60
+ ip access-group INVITADOS-IN in
+ exit
+!
+! --- IPsec fase 1 (IKE / ISAKMP) ---
+crypto isakmp policy 10
+ encryption aes 256
+ hash sha256
+ authentication pre-share
+ group 14
+ lifetime 86400
+ exit
+crypto isakmp key <clave no documentada> address 203.0.113.6
+crypto isakmp key <clave no documentada> address 203.0.113.10
+crypto isakmp key <clave no documentada> address 203.0.113.14
+!
+! --- IPsec fase 2 (transform-set y perfil) ---
+crypto ipsec transform-set TS-AGRO esp-aes 256 esp-sha256-hmac
+ mode transport
+ exit
+crypto ipsec profile PROF-AGRO
+ set transform-set TS-AGRO
+ exit
+!
+! --- Tuneles GRE + IPsec hacia las sucursales ---
+interface tunnel 1
+ description TUNEL-HACIA-R-TALCA
+ ip address 172.16.0.1 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.6
+ tunnel protection ipsec profile PROF-AGRO
+ exit
+interface tunnel 2
+ description TUNEL-HACIA-R-CONCEPCION
+ ip address 172.16.0.5 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.10
+ tunnel protection ipsec profile PROF-AGRO
+ exit
+interface tunnel 3
+ description TUNEL-HACIA-R-LOS-ANGELES
+ ip address 172.16.0.9 255.255.255.252
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source ethernet 0/0
+ tunnel destination 203.0.113.14
+ tunnel protection ipsec profile PROF-AGRO
+ exit
+!
+! --- OSPF area 0 sobre los tuneles ---
+router ospf 1
+ router-id 1.1.1.1
+ passive-interface default
+ no passive-interface tunnel 1
+ no passive-interface tunnel 2
+ no passive-interface tunnel 3
+ network 192.168.40.0 0.0.0.255 area 0
+ network 172.16.0.0 0.0.0.15 area 0
+ exit
+!
+! --- QoS de voz en la WAN (parte 10) ---
+! Clasifica por marca (EF/CS3, puesta por los switches) o por puertos de voz (equipos que no marcan)
+ip access-list extended VOZ-RTP
+ permit udp any any range 10000 20000
+ permit udp any range 10000 20000 any
+ip access-list extended VOZ-SIP
+ permit udp any any eq 5060
+ permit udp any eq 5060 any
+class-map match-any CM-VOZ
+ match dscp ef
+ match access-group name VOZ-RTP
+class-map match-any CM-SENAL
+ match dscp cs3
+ match access-group name VOZ-SIP
+! Politica hija: LLQ 1 Mbps para voz, 256 kbps para senalizacion, WFQ para el resto
+policy-map PM-WAN-HIJA
+ class CM-VOZ
+  priority 1000
+ class CM-SENAL
+  bandwidth 256
+ class class-default
+  fair-queue
+! Politica padre: shaper a 10 Mbps (velocidad contratada simulada del enlace WAN)
+policy-map PM-WAN-PADRE
+ class class-default
+  shape average 10000000
+  service-policy PM-WAN-HIJA
+! qos pre-classify: clasifica por puertos antes del cifrado IPsec
+interface tunnel 1
+ qos pre-classify
+interface tunnel 2
+ qos pre-classify
+interface tunnel 3
+ qos pre-classify
+interface ethernet 0/0
+ service-policy output PM-WAN-PADRE
+ exit
+!
+! --- Seguridad basica de gestion (endurecimiento) ---
+! La clave real NO se documenta: cumple politica de 12+ caracteres (may/min/num/simbolo)
+service password-encryption
+enable secret <clave no documentada>
+username admin privilege 15 secret <clave no documentada>
+ip domain-name agroprodel.cl
+crypto key generate rsa general-keys modulus 2048
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+login block-for 120 attempts 3 within 60
+no ip http server
+no ip http secure-server
+banner motd ^
+ACCESO RESTRINGIDO - Agroprodel Ltda.
+Solo personal autorizado. Toda actividad es registrada.
+^
+ip access-list standard GESTION-SSH
+ remark Redes de administracion (VLAN 99) de las 4 sedes
+ permit 192.168.40.240 0.0.0.15
+ permit 192.168.10.192 0.0.0.15
+ permit 192.168.20.160 0.0.0.15
+ permit 192.168.30.128 0.0.0.15
+ remark Estacion de gestion del laboratorio (PC Temuco)
+ permit host 192.168.40.232
+ deny any log
+line console 0
+ login local
+line vty 0 4
+ login local
+ transport input ssh
+ exec-timeout 10 0
+ access-class GESTION-SSH in
+ exit
+!
+! --- ACL entre VLAN (minimo privilegio, segun documento de direccionamiento) ---
+ip access-list extended DEPTOS-IN
+ remark DHCP hacia el router
+ permit udp any any eq bootps
+ remark Servidores de la casa matriz (Issabel, VLAN 80)
+ permit ip any 192.168.40.224 0.0.0.15
+ remark Bloqueo de redes internas (otros deptos, voz, IoT, gestion)
+ deny ip any 192.168.0.0 0.0.255.255 log
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 10.0.0.0 0.255.255.255
+ remark Internet y servicios en la nube
+ permit ip any any
+ip access-list extended VOZ-IN
+ permit udp any any eq bootps
+ permit ip any 192.168.40.224 0.0.0.15
+ remark Voz de las 4 sedes
+ permit ip any 192.168.40.176 0.0.0.15
+ permit ip any 192.168.10.144 0.0.0.15
+ permit ip any 192.168.20.112 0.0.0.15
+ permit ip any 192.168.30.80 0.0.0.15
+ deny ip any any log
+ip access-list extended IOT-IN
+ permit udp any any eq bootps
+ deny ip any 192.168.0.0 0.0.255.255 log
+ deny ip any 172.16.0.0 0.15.255.255
+ deny ip any 10.0.0.0 0.255.255.255
+ permit ip any any
+interface ethernet 0/1.10
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.20
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.30
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.40
+ ip access-group DEPTOS-IN in
+interface ethernet 0/1.50
+ ip access-group VOZ-IN in
+interface ethernet 0/1.70
+ ip access-group IOT-IN in
+ exit
+!
+! --- IPv6 doble pila (fase 1: piloto Temuco-Talca) - ver Direccionamiento_IPv6_Agroprodel.docx ---
+ipv6 unicast-routing
+interface loopback 0
+ description IDENTIDAD-R-TEMUCO
+ ipv6 address 2001:DB8:A9:FFF::1/128
+ ipv6 ospf 1 area 0
+ exit
+ipv6 router ospf 1
+ router-id 1.1.1.1
+ passive-interface default
+ exit
+! Seguridad IPv6 con paridad IPv4 (se crea antes de habilitar las VLAN)
+ipv6 access-list DEPTOS-IN-V6
+ remark Descubrimiento de vecinos (necesario para IPv6)
+ permit icmp any any nd-na
+ permit icmp any any nd-ns
+ permit icmp any any router-solicitation
+ remark Servidores de la casa matriz (VLAN 80)
+ permit ipv6 any 2001:DB8:A9:180::/64
+ remark Bloqueo de las redes internas de la empresa
+ deny ipv6 any 2001:DB8:A9::/48 log
+ permit ipv6 any any
+ipv6 access-list GESTION-SSH-V6
+ remark Solo las VLAN 99 de las 4 sedes
+ permit ipv6 2001:DB8:A9:199::/64 any
+ permit ipv6 2001:DB8:A9:299::/64 any
+ permit ipv6 2001:DB8:A9:399::/64 any
+ permit ipv6 2001:DB8:A9:499::/64 any
+ deny ipv6 any any log
+line vty 0 4
+ ipv6 access-class GESTION-SSH-V6 in
+ exit
+interface ethernet 0/1.10
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:110::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.20
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:120::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.30
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:130::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.40
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:140::1/64
+ ipv6 traffic-filter DEPTOS-IN-V6 in
+ ipv6 verify unicast source reachable-via rx
+ no ipv6 redirects
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.80
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:180::1/64
+ ipv6 nd prefix 2001:DB8:A9:180::/64 2592000 604800 no-autoconfig
+ ipv6 ospf 1 area 0
+interface ethernet 0/1.99
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:A9:199::1/64
+ ipv6 nd prefix 2001:DB8:A9:199::/64 2592000 604800 no-autoconfig
+ ipv6 ospf 1 area 0
+ exit
+! VLAN 50, 60 y 70 sin IPv6 (decision de seguridad)
+interface tunnel 1
+ ipv6 address 2001:DB8:A9:F01::1/64
+ ipv6 mtu 1400
+ ipv6 tcp adjust-mss 1340
+ ipv6 nd ra suppress all
+ ipv6 ospf 1 area 0
+ exit
+ipv6 router ospf 1
+ no passive-interface Tunnel1
+ exit
+interface tunnel 2
+ ipv6 address 2001:DB8:A9:F02::1/64
+ ipv6 mtu 1400
+ ipv6 tcp adjust-mss 1340
+ ipv6 nd ra suppress all
+ ipv6 ospf 1 area 0
+ exit
+ipv6 router ospf 1
+ no passive-interface Tunnel2
+ exit
+interface tunnel 3
+ ipv6 address 2001:DB8:A9:F03::1/64
+ ipv6 mtu 1400
+ ipv6 tcp adjust-mss 1340
+ ipv6 nd ra suppress all
+ ipv6 ospf 1 area 0
+ exit
+ipv6 router ospf 1
+ no passive-interface Tunnel3
+ exit
+!
+! ============================================================
+! VPN SITIO A SITIO HACIA AWS (SOC) - IKEv2 / IPsec
+! R-TEMUCO (detras de NAT) <-> SRV-NOC strongSwan (EIP <EIP-SRV-NOC>)
+! Trafico protegido: 192.168.0.0/16 (sedes) <-> 10.40.0.0/16 (VPC)
+! ============================================================
+crypto ikev2 proposal PROP-AWS
+ encryption aes-cbc-256
+ integrity sha256
+ group 14
+ exit
+crypto ikev2 policy POL-AWS
+ proposal PROP-AWS
+ exit
+crypto ikev2 keyring KR-AWS
+ peer SRV-NOC
+  address <EIP-SRV-NOC>
+  pre-shared-key <clave no documentada>
+  exit
+ exit
+crypto ikev2 profile PROF-AWS
+ match identity remote address <EIP-SRV-NOC> 255.255.255.255
+ identity local fqdn r-temuco.agroprodel.cl
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local KR-AWS
+ dpd 30 5 on-demand
+ exit
+crypto ipsec transform-set TS-AWS esp-aes 256 esp-sha256-hmac
+ mode tunnel
+ exit
+ip access-list extended VPN-AWS
+ 10 permit ip 192.168.0.0 0.0.255.255 10.40.0.0 0.0.255.255
+ ! Red de transito R-TEMUCO <-> FW-TEMUCO: permite al SOC monitorear el firewall por la VPN
+ 20 permit ip 203.0.113.0 0.0.0.3 10.40.0.0 0.0.255.255
+ exit
+interface ethernet 0/0
+ ! el trafico del FW hacia el SOC entra y sale por e0/0 antes de cifrarse
+ no ip redirects
+ exit
+crypto map CM-AWS 10 ipsec-isakmp
+ set peer <EIP-SRV-NOC>
+ set transform-set TS-AWS
+ set pfs group14
+ set ikev2-profile PROF-AWS
+ match address VPN-AWS
+ exit
+interface ethernet 0/0
+ crypto map CM-AWS
+ exit
+!
+! --- NAT: excluye el trafico hacia la VPC (va cifrado por la VPN) ---
+ip access-list extended NAT-TEMUCO-EXT
+ deny ip 192.168.0.0 0.0.255.255 10.40.0.0 0.0.255.255
+ permit ip 192.168.40.0 0.0.0.255 any
+ exit
+no ip nat inside source list NAT-TEMUCO interface ethernet 0/0 overload
+ip nat inside source list NAT-TEMUCO-EXT interface ethernet 0/0 overload
+!
+! --- Anuncio de la VPC a las sedes por OSPF (solo 10.40.0.0/16) ---
+ip route 10.40.0.0 255.255.0.0 203.0.113.1 name AWS-SOC
+ip prefix-list PL-AWS seq 10 permit 10.40.0.0/16
+route-map RM-AWS permit 10
+ match ip address prefix-list PL-AWS
+ exit
+router ospf 1
+ redistribute static subnets route-map RM-AWS
+ exit
+!
+! --- Sonda IP SLA: mantiene la VPN activa (AWS no puede iniciar el tunel) y mide su latencia ---
+ip sla 10
+ icmp-echo 10.40.1.30 source-ip 192.168.40.241
+ frequency 30
+ exit
+ip sla schedule 10 life forever start-time now
+!
+! --- SNMPv3 authPriv para Zabbix (solo SRV-NOC 10.40.1.30, por la VPN) ---
+ip access-list standard SNMP-NOC
+ permit host 10.40.1.30
+ exit
+snmp-server view VISTA-NOC iso included
+snmp-server group GRP-NOC v3 priv read VISTA-NOC access SNMP-NOC
+snmp-server user zabbix GRP-NOC v3 auth sha <clave no documentada> priv aes 128 <clave no documentada>
+snmp-server location Temuco - Casa Matriz
+snmp-server contact NOC Agroprodel
+snmp-server ifindex persist
+!
+!
+! --- Syslog hacia el SIEM (Wazuh, SRV-SIEM 10.40.1.20) y hora sincronizada (16-11-2026) ---
+! Origen VLAN 99: el syslog viaja cifrado por la VPN (dominio 192.168.0.0/16 <-> 10.40.0.0/16)
+clock timezone CLT -3 0
+ntp server 216.239.35.0
+ntp server 216.239.35.4
+service timestamps log datetime msec localtime show-timezone
+logging source-interface Ethernet0/1.99
+logging trap informational
+logging host 10.40.1.20
+end
+write memory

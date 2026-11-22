@@ -1,0 +1,48 @@
+==========================================================
+FW-TEMUCO - Firewall perimetral OPNsense 26.7.9 (casa matriz Temuco)
+Proyecto Agroprodel Ltda. - Configuracion aplicada
+==========================================================
+
+Interfaces
+  WAN  (vtnet0) 203.0.113.18/30  -> ISP e0/0 (203.0.113.17)
+  LAN  (vtnet1) 203.0.113.1/30   -> R-TEMUCO e0/0 (203.0.113.2)
+  OPT1 (vtnet2) DHCP             -> red de administracion (Web GUI)
+  WAN: "Block private networks" y "Block bogon networks" desactivados (red de transito del laboratorio)
+  NAT de salida (Outbound NAT): deshabilitado (R-TEMUCO realiza el PAT)
+
+Alias
+  SUCURSALES (Host(s)): 203.0.113.6, 203.0.113.10, 203.0.113.14
+
+Reglas
+  LAN  : IPv4 any desde LAN net -> any                          (Default allow LAN)
+  LAN  : TCP desde 10.40.1.30/32 -> This Firewall puerto 10050  (SOC AWS SRV-NOC -> agente Zabbix, via VPN; log)
+  OPT1 : TCP desde OPT1 net -> This Firewall puerto 443          (acceso web de administracion)
+  WAN  : UDP desde SUCURSALES -> 203.0.113.2 puerto 500          (IKE)
+  WAN  : UDP desde SUCURSALES -> 203.0.113.2 puerto 4500         (NAT-T)
+  WAN  : ESP desde SUCURSALES -> 203.0.113.2                     (trafico IPsec)
+  WAN  : ICMP desde any -> LAN net                               (pruebas de conectividad)
+
+Gateways y rutas
+  WAN_GW      203.0.113.17 (salida por defecto) · monitoreo dpinger hacia 8.8.8.8
+  GW_RTEMUCO  interfaz LAN, 203.0.113.2 · no es "Upstream Gateway" · monitoreo deshabilitado
+  Ruta        10.40.0.0/16 via GW_RTEMUCO (VPC del SOC en AWS, a traves de la VPN IKEv2 de R-TEMUCO)
+
+Agente Zabbix (plugin os-zabbix7-agent, agente 7.0)
+  Main Settings    Enabled · Hostname FW-TEMUCO · Listen Port 10050 · Listen IPs 203.0.113.1 (solo LAN)
+                   Source IP 203.0.113.1 (el trafico viaja cifrado por la VPN) · Zabbix Servers 10.40.1.30
+                   sudo root deshabilitado
+  Zabbix Features  Active Checks habilitado (servidor 10.40.1.30, refresh 120 s)
+                   Remote Commands deshabilitado (minimo privilegio)
+  User Parameter   opnsense.gateways = /usr/local/sbin/configctl interface gateways status
+                   (estado, latencia, jitter y perdida del enlace a Internet)
+  Plantillas       FreeBSD by Zabbix agent · Agroprodel OPNsense Enlace Internet
+
+Registro remoto (SIEM)
+  System > Settings > Logging > Remote: Enabled · UDP (IPv4) · destino 10.40.1.20 puerto 514
+  (Wazuh en SRV-SIEM, a traves de la VPN)
+
+IDS Suricata
+  Considerado en el diseno de seguridad (modo IDS en la interfaz WAN, reglas ET Open y envio de
+  alertas a Wazuh). No se mantiene en operacion en el laboratorio: con las reglas cargadas, el
+  proceso se detiene por falta de memoria en la maquina virtual (2 GB). Ver informe, seccion de
+  seguridad perimetral.

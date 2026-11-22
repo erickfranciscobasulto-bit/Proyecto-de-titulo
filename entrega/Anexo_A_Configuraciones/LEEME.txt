@@ -1,0 +1,16 @@
+Anexo A - Configuraciones de los equipos
+Proyecto: Diseno de Red de Datos, Telefonia IP y Servicios para Agroprodel Ltda.
+
+Contenido (20 archivos de configuracion):
+  Routers                     R-TEMUCO, R-TALCA, R-CONCEPCION, R-LOS-ANGELES
+  Switches de distribucion    DIST-TEMUCO, DIST-TALCA, DIST-CONCEPCION, DIST-LOS-ANGELES
+  Switches de acceso          ACC1 y ACC2 de cada sede
+  Firewall perimetral         FW-TEMUCO (OPNsense)
+  Proveedor de Internet       ISP (simulado en el laboratorio)
+  Central telefonica          SRV-ISSABEL (configuracion de red; respaldo completo en el Anexo I)
+  Puente de laboratorio       SW-PUENTE (conecta el PC y el telefono fisicos con la maqueta EVE-NG)
+
+Notas
+  - Por seguridad, las contrasenas y claves precompartidas se reemplazaron por <clave no documentada>.
+  - Las IP publicas de los servidores en AWS se reemplazaron por <EIP-SRV-NOC> y <EIP-SRV-AGROPRODEL>.
+  - Las configuraciones de los switches y routers Cisco pueden aplicarse en modo de configuracion global.
