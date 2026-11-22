@@ -9,6 +9,8 @@ Contenido (20 archivos de configuracion):
   Proveedor de Internet       ISP (simulado en el laboratorio)
   Central telefonica          SRV-ISSABEL (configuracion de red; respaldo completo en el Anexo I)
   Puente de laboratorio       SW-PUENTE (conecta el PC y el telefono fisicos con la maqueta EVE-NG)
+  Registro de errores         Registro_Errores_Networking_Agroprodel.docx (incidencias de la red, la nube y el SOC,
+                              y problemas esperables en la operacion real con su solucion)
 
 Notas
   - Por seguridad, las contrasenas y claves precompartidas se reemplazaron por <clave no documentada>.
