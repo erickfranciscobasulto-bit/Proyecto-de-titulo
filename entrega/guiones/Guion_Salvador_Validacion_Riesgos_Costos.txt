@@ -1,0 +1,77 @@
+GUION DE SALVADOR - VALIDACION, RIESGOS, COTIZACION Y EVALUACION
+Proyecto Agroprodel Ltda. · Tiempo total aprox.: 2 min 30 s
+====================================================================
+
+1. VALIDACION INTEGRAL DEL PROYECTO (35 s)
+--------------------------------------------------------------------
+"Validamos el proyecto con pruebas que cruzan las áreas, no por
+separado. La llamada entre Temuco y Talca por el túnel tuvo voz clara
+en ambos sentidos, y el IVR derivó la llamada no atendida a recepción.
+Al cortar un enlace del EtherChannel, el ping continuó sin pérdida.
+Un escaneo simulado desde Concepción fue bloqueado por la ACL y Wazuh
+lo alertó por Telegram en segundos. La web y el FTPS respondieron con
+cifrado válido, y el sensor activó el riego. La red está presente en
+todas las pruebas."
+
+>> Conector: "Validado el funcionamiento, evaluamos los riesgos."
+
+
+2. MATRIZ DE RIESGOS (35 s)
+--------------------------------------------------------------------
+"Evaluamos 30 riesgos con ISO 31000, donde el nivel es probabilidad
+por impacto en una escala de 1 a 5. Aquí están los seis principales.
+Los tres críticos (ataque desde Internet, corte durante la migración y
+ransomware) bajan a nivel medio con firewall y SIEM, migración fuera
+de horario con plan de vuelta atrás, y segmentación con respaldo fuera
+de sitio. El acceso de visitantes y la falla de la central quedan en
+nivel bajo. La caída del enlace de la casa matriz se mitiga con
+monitoreo y, como mejora, un segundo router."
+
+>> Conector: "Con los riesgos controlados, pasamos a la inversión."
+
+   Si preguntan por R-13 (segundo router HSRP):
+   "Hoy se mitiga con monitoreo Zabbix; el segundo router con HSRP es
+   la mejora del escenario B."
+
+
+3. COTIZACION DEL PROYECTO (35 s)
+--------------------------------------------------------------------
+"La inversión neta es de 101,2 millones de pesos. El 80 % corresponde
+a equipos, licencias y cableado, con la conmutación como mayor
+partida: 12 switches Catalyst 9200L, seguida del cableado certificado
+de 290 puntos. A eso se suman 11,8 millones de mano de obra por 456
+horas y un 10 % de contingencia. El software es open source, sin
+costo de licencia. La operación anual es de 11,1 millones."
+
+>> Conector: "Con estos costos, evaluamos su factibilidad."
+
+
+4. EVALUACION ECONOMICA (45 s)
+--------------------------------------------------------------------
+"A cinco años y con una tasa del 12 %, el proyecto ahorra 24,4
+millones al año, principalmente por productividad recuperada,
+telefonía y soporte en terreno evitado. El VAN es de menos 40,7
+millones y la TIR de menos 4,2 %, algo esperable en infraestructura:
+no genera ventas, pero deja un flujo positivo de unos 14 millones al
+año y asegura la continuidad operacional. Para llegar a VAN cero, el
+ahorro tendría que subir a 39,1 millones. Además, la ampliación del
+riego IoT a 18 zonas sí es rentable, con un VAN de más 5 millones."
+
+>> Conector: "Con esto, Nabidh presenta las conclusiones."
+
+
+====================================================================
+DATOS CLAVE PARA MEMORIZAR
+--------------------------------------------------------------------
+CAPEX neto ............ $101.150.977  (101,2 millones)
+Con IVA ............... $120.369.662  (IVA recuperable: 19,2 millones)
+Mano de obra .......... $11.752.000   (456 h + viáticos)
+Contingencia .......... $9.195.543    (10 %)
+OPEX anual ............ $11.124.751
+Ahorro año 1 .......... $24,4 MM
+VAN (5 años, 12 %) .... -$40,7 MM
+TIR ................... -4,2 %
+VAN = 0 si ahorra ..... $39,1 MM al año
+Costo por trabajador .. ~$12.900 al mes
+IoT 18 zonas .......... VAN +$5,0 MM, TIR 27,6 %
+MM = millones de pesos chilenos.
